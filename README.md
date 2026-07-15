@@ -5,8 +5,8 @@ semester for BS Business Administration freshmen at CSU Bakersfield, using
 real historical course-taking patterns plus a generative AI layer for
 explanation and ad hoc Q&A.
 
-Built for a 4-day hackathon. AWS Bedrock, Kiro, and Claude API tokens
-available. See `claude-starter-context.md` for the full scoping/decision
+Built for a 4-day hackathon. AWS Bedrock, Kiro, and Kiro API tokens
+available. See `kiro-starter-context.md` for the full scoping/decision
 history — this file covers the architecture and how the pieces fit together.
 
 ---
@@ -38,7 +38,7 @@ history — this file covers the architecture and how the pieces fit together.
                          │  (precomputed JSON)
                          ▼
           ┌───────────────────────────────┐
-          │   Bedrock — Claude             │
+          │   Bedrock — Kiro              │
           │  explains/ranks combos,        │
           │  answers staff "what-if" Q&A   │
           └─────────────┬─────────────────┘
@@ -59,7 +59,7 @@ history — this file covers the architecture and how the pieces fit together.
 ```
 
 **Guiding principle:** *compute first, LLM explains.* Frequency counting,
-ranking, and unit-sum filtering are deterministic (pandas). Claude never
+ranking, and unit-sum filtering are deterministic (pandas). Kiro never
 invents a schedule or does arithmetic — it explains, writes rationale, and
 answers ad hoc questions over data that's already been computed.
 
@@ -80,7 +80,7 @@ for the hackathon — no live sync needed.
   this is precomputed once and stored back in S3 rather than recomputed on
   every request, since the dataset doesn't change during the hackathon
 
-### 3. Reasoning layer — Bedrock (Claude)
+### 3. Reasoning layer — Bedrock (Kiro)
 Two jobs, both grounded strictly in the precomputed JSON — never given raw
 student-level data:
 - **Recommendation + rationale:** turns the top-ranked combo into a
@@ -91,7 +91,7 @@ student-level data:
 ### 4. API layer — API Gateway + Lambda
 Thin layer exposing:
 - `GET /recommendation?term=` — returns the top combo(s) + rationale
-- `POST /ask` — takes a staff question, returns Claude's answer grounded in
+- `POST /ask` — takes a staff question, returns Kiro's answer grounded in
   the computed data
 
 ### 5. Frontend — Streamlit
@@ -105,7 +105,7 @@ lineup and rationale up front, with a Q&A box underneath for follow-ups.
 ```
 .
 ├── README.md
-├── claude-starter-context.md
+├── kiro-starter-context.md
 ├── data/
 │   └── (local dev copies of filtered CSVs — not committed if large/sensitive)
 ├── mining/
@@ -138,4 +138,4 @@ re-identify students or join against any external roster.
 ## Team
 
 4 backend developers. Day-by-day task split and scope traps are documented
-in `claude-starter-context.md`.
+in `kiro-starter-context.md`.

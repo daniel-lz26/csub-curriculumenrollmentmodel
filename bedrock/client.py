@@ -1,14 +1,13 @@
-"""Reasoning layer: Claude explains/ranks the mining layer's precomputed JSON.
+"""Reasoning layer: Kiro explains/ranks the mining layer's precomputed JSON.
 
-Implemented against the Anthropic API directly (not boto3/Bedrock) so it's
-runnable and testable without AWS access during the hackathon build. Porting
-to Bedrock later is a client-construction change only (swap `anthropic.Anthropic()`
-for `anthropic.AnthropicBedrock()`) — the prompts and call sites below are
-otherwise unchanged.
+Implemented against AWS Bedrock (boto3 bedrock-runtime) so it runs natively
+in Lambda with IAM-based auth — no API keys needed in production. For local
+development, ensure `aws configure` has valid credentials with
+bedrock:InvokeModel permission.
 
-Governing principle (see claude-starter-context.md): compute first, LLM
-explains. Claude is never asked to invent a schedule, rank combinations, or do
-arithmetic — pandas already did that in mining/co_occurrence.py. Claude only
+Governing principle (see kiro-starter-context.md): compute first, LLM
+explains. Kiro is never asked to invent a schedule, rank combinations, or do
+arithmetic — pandas already did that in mining/co_occurrence.py. Kiro only
 writes rationale and answers ad hoc questions grounded in that computed JSON.
 """
 from __future__ import annotations
@@ -16,12 +15,13 @@ from __future__ import annotations
 import json
 import os
 
-import anthropic
+import boto3
 from dotenv import load_dotenv
 
 load_dotenv()
 
-MODEL = "claude-opus-4-8"
+MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "anthropic.claude-3-haiku-20240307-v1:0")
+AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
 
 GUARDRAIL = (
     "Only use facts present in the JSON provided below. Do not introduce course "
@@ -32,13 +32,38 @@ GUARDRAIL = (
 )
 
 
-def _client() -> anthropic.Anthropic:
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise RuntimeError(
-            "ANTHROPIC_API_KEY is not set. Add it to a .env file or the "
-            "environment before calling the LLM layer."
-        )
-    return anthropic.Anthropic()
+def _client():
+    """Create a Bedrock Runtime client using environment/IAM credentials."""
+    return boto3.client(
+        service_name="bedrock-runtime",
+        region_name=AWS_REGION,
+    )
+
+
+def _invoke(system: str, user_content: str, max_tokens: int = 512) -> str:
+    """Invoke the Kiro model via Bedrock Runtime and return the text response."""
+    client = _client()
+    body = json.dumps({
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": max_tokens,
+        "system": system,
+        "messages": [
+            {
+                "role": "user",
+                "content": user_content,
+            }
+        ],
+    })
+
+    response = client.invoke_model(
+        modelId=MODEL_ID,
+        contentType="application/json",
+        accept="application/json",
+        body=body,
+    )
+
+    result = json.loads(response["body"].read())
+    return next(b["text"] for b in result["content"] if b["type"] == "text")
 
 
 def generate_recommendation(term_name: str, term_data: dict) -> str:
@@ -62,23 +87,12 @@ def generate_recommendation(term_name: str, term_data: dict) -> str:
             "made for this term."
         )
 
-    client = _client()
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=512,
-        system=system,
-        messages=[
-            {
-                "role": "user",
-                "content": (
-                    f"Precomputed data for {term_name}:\n"
-                    f"{json.dumps(term_data, indent=2)}\n\n"
-                    "Write the recommendation rationale."
-                ),
-            }
-        ],
+    user_content = (
+        f"Precomputed data for {term_name}:\n"
+        f"{json.dumps(term_data, indent=2)}\n\n"
+        "Write the recommendation rationale."
     )
-    return next(b.text for b in response.content if b.type == "text")
+    return _invoke(system, user_content)
 
 
 def answer_question(question: str, mined_data: dict) -> str:
@@ -94,20 +108,9 @@ def answer_question(question: str, mined_data: dict) -> str:
         f"using only the precomputed JSON provided below. {GUARDRAIL} Keep "
         "answers concise and staff-appropriate."
     )
-    client = _client()
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=512,
-        system=system,
-        messages=[
-            {
-                "role": "user",
-                "content": (
-                    f"Precomputed data (all mined terms):\n"
-                    f"{json.dumps(mined_data, indent=2)}\n\n"
-                    f"Staff question: {question}"
-                ),
-            }
-        ],
+    user_content = (
+        f"Precomputed data (all mined terms):\n"
+        f"{json.dumps(mined_data, indent=2)}\n\n"
+        f"Staff question: {question}"
     )
-    return next(b.text for b in response.content if b.type == "text")
+    return _invoke(system, user_content)

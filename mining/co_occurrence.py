@@ -25,7 +25,7 @@ UNIT_TARGET_HIGH = 15
 DEFAULT_UNITS = 3  # fallback when a course isn't in the offering catalog
 
 # CSU-style term code: YYYY + single digit. Confirmed convention (see
-# claude-starter-context.md): 1=Winter (rare), 2=Spring, 3=Summer, 4=Fall.
+# kiro-starter-context.md): 1=Winter (rare), 2=Spring, 3=Summer, 4=Fall.
 TERM_DIGIT_MAP = {"1": "Winter", "2": "Spring", "3": "Summer", "4": "Fall"}
 
 
@@ -38,7 +38,7 @@ def load_ba_freshman_rows(path: Path = SENIOR_FILE) -> pd.DataFrame:
     Business Administration students.
 
     "Freshman year" is defined as each student's earliest Course Term value
-    (per claude-starter-context.md: Enroll Term is the student's most recent
+    (per kiro-starter-context.md: Enroll Term is the student's most recent
     term, not the term a given course row was taken in — Course Term must be
     used to find freshman-year courses).
     """
@@ -60,7 +60,7 @@ def course_frequency(freshman: pd.DataFrame, term_type: str | None = None) -> pd
     term type (Fall/Spring/Summer/Winter).
 
     Counted per row, matching the methodology behind the confirmed numbers in
-    claude-starter-context.md, not deduplicated per student — some courses
+    kiro-starter-context.md, not deduplicated per student — some courses
     (e.g. MATH 1010) appear as two rows per student in the same term, a
     paired lecture + co-requisite support section under one catalog number
     (see the bimodal-units handling in load_unit_catalog). Cohort size (the

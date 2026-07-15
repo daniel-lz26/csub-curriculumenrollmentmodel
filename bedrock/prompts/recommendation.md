@@ -1,6 +1,6 @@
 # Recommendation rationale prompt
 
-System context passed to Claude:
+System context passed to Kiro:
 - Scope: BS Business Administration, Freshman class year, target unit range (14-15)
 - The full precomputed JSON for the requested term (course frequency + candidate schedules)
 - An explicit instruction not to introduce course names, counts, or claims absent from the JSON

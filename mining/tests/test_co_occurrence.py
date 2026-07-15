@@ -1,5 +1,5 @@
 """Validates the mining pipeline against the known-good numbers recorded in
-claude-starter-context.md, so a refactor can't silently drift from the
+kiro-starter-context.md, so a refactor can't silently drift from the
 confirmed real-data baseline.
 """
 from mining.co_occurrence import (
@@ -10,7 +10,7 @@ from mining.co_occurrence import (
     units_for,
 )
 
-# From claude-starter-context.md section 4: top first-term courses among the
+# From kiro-starter-context.md section 4: top first-term courses among the
 # 156 Business Administration students, grouped by earliest Course Term
 # (all term types combined).
 CONFIRMED_FIRST_TERM_COUNTS = {
