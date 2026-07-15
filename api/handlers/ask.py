@@ -1,7 +1,7 @@
 """POST /ask  { "question": "..." }
 
 Lambda-shaped handler (event/context) so this ports to API Gateway + Lambda
-with no logic change. Passes the full precomputed dataset to Claude on every
+with no logic change. Passes the full precomputed dataset to Kiro on every
 call (see bedrock/client.py) rather than maintaining conversation state.
 """
 from __future__ import annotations

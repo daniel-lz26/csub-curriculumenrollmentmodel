@@ -1,6 +1,6 @@
 # Ad hoc Q&A prompt
 
-System context passed to Claude on every call (stateless — no conversation memory needed,
+System context passed to Kiro on every call (stateless — no conversation memory needed,
 the computed dataset is small enough to pass whole each time):
 - Scope: BS Business Administration, Freshman class year, target unit range (14-15)
 - The full precomputed JSON for all mined terms (course frequency + candidate schedules)

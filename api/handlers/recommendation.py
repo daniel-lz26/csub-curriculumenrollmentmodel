@@ -2,7 +2,7 @@
 
 Lambda-shaped handler (event/context) so this ports to API Gateway + Lambda
 with no logic change — only the deployment wrapper differs. Returns the
-top candidate schedule(s) for the requested term plus Claude's rationale.
+top candidate schedule(s) for the requested term plus Kiro's rationale.
 """
 from __future__ import annotations
 
