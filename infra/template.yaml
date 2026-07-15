@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  API Gateway + Lambda layer for the BS Business Administration Freshman
+  Scheduling Tool. Serves the precomputed mining/Bedrock output as JSON
+  (see README.md architecture diagram). CodeUri is the repo root so both
+  Lambdas can import the sibling `mining` and `bedrock` packages unchanged.
+
+Parameters:
+  AnthropicApiKey:
+    Type: String
+    NoEcho: true
+    Description: >
+      Anthropic API key used by bedrock/client.py. Passed as a parameter for
+      the hackathon; move to Secrets Manager before this goes beyond a demo.
+
+Globals:
+  Function:
+    Runtime: python3.13
+    CodeUri: ../
+    Timeout: 30
+    MemorySize: 512
+    Environment:
+      Variables:
+        ANTHROPIC_API_KEY: !Ref AnthropicApiKey
+
+Resources:
+  RecommendationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: api.handlers.recommendation.handler
+      Events:
+        GetRecommendation:
+          Type: Api
+          Properties:
+            Path: /recommendation
+            Method: get
+
+  AskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: api.handlers.ask.handler
+      Events:
+        PostAsk:
+          Type: Api
+          Properties:
+            Path: /ask
+            Method: post
+
+Outputs:
+  ApiUrl:
+    Description: Base invoke URL for the deployed stage
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

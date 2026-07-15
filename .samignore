@@ -1,0 +1,14 @@
+# Excluded from the `sam build` deployment package (CodeUri is repo root).
+# data/output/recommendation.json IS needed at runtime (see api/handlers/_data.py)
+# and is intentionally not excluded here.
+.git/
+.claude/
+.pytest_cache/
+__pycache__/
+*.pyc
+frontend/
+mining/tests/
+api/tests/
+infra/
+data/raw/
+.env
