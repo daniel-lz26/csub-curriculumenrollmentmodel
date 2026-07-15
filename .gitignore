@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project data (raw student records + large snapshot files; kept local only)
+/data/raw/
+/data/output/
+*.xlsx
+*.csv
