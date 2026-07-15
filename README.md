@@ -58,7 +58,7 @@ Three things ship at the end of the hackathon, not just the tool:
                          │  (precomputed JSON)
                          ▼
           ┌───────────────────────────────┐
-          │   Bedrock — Claude             │
+          │   Bedrock — Kiro              │
           │  explains/ranks combos,        │
           │  answers staff "what-if" Q&A   │
           └─────────────┬─────────────────┘
@@ -79,7 +79,7 @@ Three things ship at the end of the hackathon, not just the tool:
 ```
 
 **Guiding principle:** *compute first, LLM explains.* Frequency counting,
-ranking, and unit-sum filtering are deterministic (pandas). Claude never
+ranking, and unit-sum filtering are deterministic (pandas). Kiro never
 invents a schedule or does arithmetic — it explains, writes rationale, and
 answers ad hoc questions over data that's already been computed.
 
@@ -134,7 +134,7 @@ Static for the hackathon — no live sync needed.
   `data/output/recommendation.json` rather than recomputed on every
   request, since the dataset doesn't change during the hackathon
 
-### 3. Reasoning layer — Bedrock (Claude)
+### 3. Reasoning layer — Bedrock (Kiro)
 Two jobs, both grounded strictly in the precomputed JSON — never given raw
 student-level data:
 - **Recommendation + rationale:** turns the top-ranked combo into a
@@ -145,7 +145,7 @@ student-level data:
 ### 4. API layer — API Gateway + Lambda
 Thin layer exposing:
 - `GET /recommendation?term=` — returns the top combo(s) + rationale
-- `POST /ask` — takes a staff question, returns Claude's answer grounded in
+- `POST /ask` — takes a staff question, returns Kiro's answer grounded in
   the computed data
 
 ### 5. Frontend — Streamlit
