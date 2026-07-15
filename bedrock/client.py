@@ -5,9 +5,9 @@ in Lambda with IAM-based auth — no API keys needed in production. For local
 development, ensure `aws configure` has valid credentials with
 bedrock:InvokeModel permission.
 
-Governing principle (see kiro-starter-context.md): compute first, LLM
-explains. Kiro is never asked to invent a schedule, rank combinations, or do
-arithmetic — pandas already did that in mining/co_occurrence.py. Kiro only
+Governing principle (see contextv67/claude-starter-context.md): compute first, LLM
+explains. Claude is never asked to invent a schedule, rank combinations, or do
+arithmetic — pandas already did that in mining/co_occurrence.py. Claude only
 writes rationale and answers ad hoc questions grounded in that computed JSON.
 """
 from __future__ import annotations

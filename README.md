@@ -1,23 +1,38 @@
 # BS Business Administration Freshman Scheduling Tool
 
-A staff-facing tool that recommends which courses/sections to set up each
-semester for BS Business Administration freshmen at CSU Bakersfield, using
-real historical course-taking patterns plus a generative AI layer for
-explanation and ad hoc Q&A.
+A department-chair-facing tool that recommends which courses/sections to
+set up each semester for BS Business Administration freshmen at CSU
+Bakersfield, using real historical course-taking patterns plus a
+generative AI layer for explanation and ad hoc Q&A.
 
-Built for a 4-day hackathon. AWS Bedrock, Kiro, and Kiro API tokens
-available. See `kiro-starter-context.md` for the full scoping/decision
-history — this file covers the architecture and how the pieces fit together.
+Built for a 4-day hackathon. AWS Bedrock, Kiro, and Claude API tokens
+available. See `contextv67/claude-starter-context.md` for the full
+scoping/decision history — this file covers the architecture and how the
+pieces fit together.
 
 ---
 
 ## What this is (and isn't)
 
-- **Is:** a decision-support tool for admin/staff planning course offerings
-  for one major (Business Administration), one class year (freshmen),
-  targeting 14–15 unit schedules.
+- **Is:** a decision-support tool for department chairs and schedule
+  builders planning course offerings for one major (Business
+  Administration), one class year (freshmen), targeting 14–15 unit
+  schedules per term. Built for a sophisticated, schedule-literate user,
+  not a general staff dashboard.
 - **Isn't:** a predictive ML model, a student-facing planner, an advisor
   tool, or scoped to any major/class year beyond the above.
+
+## Deliverables
+
+Three things ship at the end of the hackathon, not just the tool:
+
+1. **The tool** — dataset + working demo (architecture below)
+2. **A short user guide** — how a chair actually uses it
+3. **A process write-up** — the methodology we used (mining approach, how
+   GEM courses — ones that satisfy both a major and GE requirement — are
+   identified and tagged, what's assumed vs. real), so CSUB can hand it to
+   psychology or another major and reproduce it with their own data.
+   Deborah asked for this explicitly — it's not optional polish.
 
 ---
 
@@ -32,8 +47,13 @@ history — this file covers the architecture and how the pieces fit together.
                            ▼
           ┌───────────────────────────────┐
           │   Lambda — pandas mining      │
-          │  course co-occurrence by term │
-          │  → candidate 14-15 unit combos│
+          │  course co-occurrence by term, │
+          │  candidate 14-15 unit combos,  │
+          │  each course tagged Major/GE/  │
+          │  GEM from the roadmap (labels  │
+          │  only, not the unit math) +    │
+          │  informational day/time from   │
+          │  E3/E4 post-census snapshots   │
           └─────────────┬─────────────────┘
                          │  (precomputed JSON)
                          ▼
@@ -67,18 +87,52 @@ answers ad hoc questions over data that's already been computed.
 
 ## Components
 
-### 1. Data layer — S3
-Raw source: `Senior_spring_2026.xlsx`, filtered to Business Administration
-majors and exported to CSV. 156 students, ~6,700 course-taking rows. Static
-for the hackathon — no live sync needed.
+### 1. Data layer — S3 / `data/raw`
+- `Senior spring 2026.xlsx` — 1,106 students / 51,307 rows across all
+  majors; 169 on the Business Administration concentration path (7,210
+  rows). Primary enrollment source; freshman-year rows (each student's
+  earliest `Course Term`) are isolable for 156 of those 169 students, and
+  match the roadmap closely in spot-checks (see `CHANGES.md` and
+  `contextv67/claude-starter-context.md`).
+- `BSBAcourse_catalog.xlsx` — `Program_Roadmaps` (term-by-term degree map
+  for all 10 BSBA concentrations, 626 rows, with `req_type` flagging GEM
+  courses), plus `BA_Courses` and `GE_Courses`. Used to tag each freshman
+  course as Major / General Education / Major-Gen-Ed (GEM) — an
+  informational label attached to the mining output, not currently used to
+  change the unit-summing arithmetic (which stays a flat 14–15 target for
+  both Fall and Spring; see `contextv67/claude-starter-context.md` §7 for
+  why).
+- `E3E4_Course Offering and Waitlist_daily snapshot for Fall 2025 and
+  2026.csv` — received. Real per-section credit units are used for
+  unit-summing (a course missing from this file falls back to a flagged
+  estimate). Meeting day/time is only populated in snapshots taken on or
+  after 2025-10-20 (the post-Fall-2025-census fix date); where present,
+  it's surfaced as an informational enrichment — the most common current
+  meeting slot(s) per course — not a conflict-checked schedule assignment.
+- `E6_Student_Course_Scheduling_Pattern.xlsx` — used separately by
+  `mining/build_freshman_dataset.py` to build a likely-freshman roster (91
+  of 434 students, via a "≥50% of first-term courses are 1000-level"
+  rule). Not joined into the main co-occurrence pipeline: it shares no
+  student IDs with `Senior spring 2026.xlsx` and has no `Major` column.
+  Open question with Deborah/IRPA on what population it represents.
+
+Static for the hackathon — no live sync needed.
 
 ### 2. Mining layer — Lambda (Python/pandas)
-- Groups students by earliest course term to isolate freshman-year courses
-- Counts course co-occurrence within that term
-- Rolls counts into candidate combinations that sum to 14–15 units
-- Outputs a small structured JSON (course, term, frequency, unit count) —
-  this is precomputed once and stored back in S3 rather than recomputed on
-  every request, since the dataset doesn't change during the hackathon
+- Groups students by earliest `Course Term` to isolate freshman-year
+  courses (not `Enroll Term` — see term conventions in
+  `contextv67/claude-starter-context.md`)
+- Counts course co-occurrence per row within a term type (Fall/Spring)
+- Searches combinations of the most frequent courses for ones summing to
+  14–15 units — the same target for both terms
+- Tags each course with its `req_type` (Major / General Education /
+  Major-Gen-Ed) from the roadmap and its most common current meeting
+  slot(s) from E3/E4 — both informational, neither affects ranking or the
+  unit-sum search
+- Outputs a small structured JSON (course, term, frequency, unit count,
+  req_type, meeting patterns) — precomputed once to
+  `data/output/recommendation.json` rather than recomputed on every
+  request, since the dataset doesn't change during the hackathon
 
 ### 3. Reasoning layer — Bedrock (Kiro)
 Two jobs, both grounded strictly in the precomputed JSON — never given raw
@@ -95,34 +149,43 @@ Thin layer exposing:
   the computed data
 
 ### 5. Frontend — Streamlit
-Staff-facing, not a chatbot-first UI: pick a term, see the recommended
-lineup and rationale up front, with a Q&A box underneath for follow-ups.
+Chair-facing, not a chatbot-first UI: pick a term, see the recommended
+lineup and rationale up front — including each course's requirement type
+and typical meeting time, with a caption noting meeting times aren't
+conflict-checked — with a Q&A box underneath for follow-ups.
 
 ---
 
-## Suggested repo structure
+## Repo structure
 
 ```
 .
 ├── README.md
-├── kiro-starter-context.md
+├── CHANGES.md                      # data feasibility findings, open questions
+├── contextv67/
+│   └── claude-starter-context.md   # full scoping/decision history
 ├── data/
-│   └── (local dev copies of filtered CSVs — not committed if large/sensitive)
+│   ├── raw/                        # gitignored — source xlsx/csv files
+│   └── output/                     # gitignored — precomputed mining JSON + freshman dataset CSVs
 ├── mining/
-│   └── co_occurrence.py          # pandas mining logic, unit tested against
-│                                  # known first-term numbers (see context file)
+│   ├── co_occurrence.py            # pandas mining logic, unit tested against
+│   │                                # known first-term numbers (see contextv67)
+│   ├── build_freshman_dataset.py   # separate E6-based freshman roster builder
+│   ├── FRESHMAN_DATASET.md
+│   └── tests/
 ├── bedrock/
 │   ├── prompts/
 │   │   ├── recommendation.md
 │   │   └── qa.md
 │   └── client.py
 ├── api/
-│   └── handlers/
-│       ├── recommendation.py
-│       └── ask.py
-├── infra/                        # IaC (SAM/CDK), scaffolded via Kiro
+│   ├── handlers/
+│   │   ├── recommendation.py
+│   │   └── ask.py
+│   └── tests/
+├── infra/                          # SAM template (API Gateway + Lambda)
 └── frontend/
-    └── app.py                    # Streamlit
+    └── app.py                      # Streamlit
 ```
 
 ---
@@ -137,5 +200,6 @@ re-identify students or join against any external roster.
 
 ## Team
 
-4 backend developers. Day-by-day task split and scope traps are documented
-in `kiro-starter-context.md`.
+4 backend developers. See `contextv67/claude-starter-context.md` for the
+scoping/decision history; day-by-day task assignments aren't tracked in
+this repo.

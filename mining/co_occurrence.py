@@ -18,14 +18,20 @@ DATA_OUTPUT = Path(__file__).resolve().parent.parent / "data" / "output"
 
 SENIOR_FILE = DATA_RAW / "Senior spring 2026.xlsx"
 OFFERING_FILE = DATA_RAW / "E3E4_Course Offering and Waitlist_daily snapshot for Fall 2025 and 2026.csv"
+CATALOG_FILE = DATA_RAW / "BSBAcourse_catalog.xlsx"
 
 TARGET_MAJOR = "business administration"
 UNIT_TARGET_LOW = 14
 UNIT_TARGET_HIGH = 15
 DEFAULT_UNITS = 3  # fallback when a course isn't in the offering catalog
 
+# Per the E3/E4 source doc (see CHANGES.md): "the meeting time and day was
+# added to the snapshot data after census Fall 2025 (precisely 10/20/2025)."
+# Snapshots before this date have blank MEETING_DAY/MEETING_TIME_* columns.
+DAYTIME_AVAILABLE_FROM = "2025-10-20"
+
 # CSU-style term code: YYYY + single digit. Confirmed convention (see
-# kiro-starter-context.md): 1=Winter (rare), 2=Spring, 3=Summer, 4=Fall.
+# contextv67/claude-starter-context.md): 1=Winter (rare), 2=Spring, 3=Summer, 4=Fall.
 TERM_DIGIT_MAP = {"1": "Winter", "2": "Spring", "3": "Summer", "4": "Fall"}
 
 
@@ -38,7 +44,7 @@ def load_ba_freshman_rows(path: Path = SENIOR_FILE) -> pd.DataFrame:
     Business Administration students.
 
     "Freshman year" is defined as each student's earliest Course Term value
-    (per kiro-starter-context.md: Enroll Term is the student's most recent
+    (per contextv67/claude-starter-context.md: Enroll Term is the student's most recent
     term, not the term a given course row was taken in — Course Term must be
     used to find freshman-year courses).
     """
@@ -60,7 +66,7 @@ def course_frequency(freshman: pd.DataFrame, term_type: str | None = None) -> pd
     term type (Fall/Spring/Summer/Winter).
 
     Counted per row, matching the methodology behind the confirmed numbers in
-    kiro-starter-context.md, not deduplicated per student — some courses
+    contextv67/claude-starter-context.md, not deduplicated per student — some courses
     (e.g. MATH 1010) appear as two rows per student in the same term, a
     paired lecture + co-requisite support section under one catalog number
     (see the bimodal-units handling in load_unit_catalog). Cohort size (the
@@ -122,9 +128,116 @@ def units_for(course: str, catalog: dict[str, dict]) -> tuple[int, bool]:
     return entry["units"], entry["ambiguous_units"]
 
 
+def load_requirement_types(path: Path = CATALOG_FILE) -> dict[str, str]:
+    """Course -> req_type ('Major', 'General Education', or 'Major / Gen Ed',
+    i.e. a GEM) sourced from BSBAcourse_catalog.xlsx.
+
+    Freshman-year (term_num <= 2) rows in `Program_Roadmaps` are near-identical
+    across all 10 BSBA concentrations (confirmed in CHANGES.md), so rows are
+    pooled across every `BA - *` major rather than picking one concentration.
+    Pure-GE requirement rows (e.g. "GE 1A: English Composition",
+    `is_ge_placeholder=True`) name a GE area, not a course, so they're
+    skipped here; the actual freshman GE courses that satisfy them (e.g.
+    ENGL 1109) are tagged "General Education" from the `GE_Courses` sheet
+    instead. A course only shows up keyed by its own code in
+    `Program_Roadmaps` when it's a Major or GEM requirement.
+    """
+    roadmap = pd.read_excel(path, sheet_name="Program_Roadmaps")
+    freshman = roadmap[
+        roadmap["major"].str.startswith("BA -")
+        & (roadmap["term_num"] <= 2)
+        & ~roadmap["is_ge_placeholder"]
+    ]
+
+    req_types: dict[str, str] = {}
+    for _, row in freshman.iterrows():
+        for option in str(row["requirement"]).split(" or "):
+            req_types.setdefault(option.strip(), row["req_type"])
+
+    ge_courses = pd.read_excel(path, sheet_name="GE_Courses")
+    for course in _course_key(ge_courses["subject"], ge_courses["course_num"]):
+        req_types.setdefault(course, "General Education")
+
+    return req_types
+
+
+def load_meeting_patterns(
+    path: Path = OFFERING_FILE, min_snapshot: str = DAYTIME_AVAILABLE_FROM
+) -> dict[str, list[dict]]:
+    """Course -> up to 6 most common current section meeting slots
+    (day/time + how many sections use that slot), sourced from E3E4
+    snapshots taken on/after `min_snapshot`.
+
+    Meeting day/time is blank before `min_snapshot` (see DAYTIME_AVAILABLE_FROM),
+    so earlier snapshots are excluded rather than read as "no meeting". A few
+    section rows pack a multi-day pattern plus facility/date-range text into
+    MEETING_DAY with the time columns left at "00:00:00" (not a real
+    midnight meeting) — those are flagged via `note` instead of showing a
+    fabricated time. "No Patterns" means an asynchronous/online section with
+    no fixed meeting time.
+
+    Informational enrichment only, per CHANGES.md ("day/time is an optional
+    enrichment step, not a hard dependency of block generation"): this shows
+    what times a course is currently offered at, it does not resolve which
+    section a given schedule block would use or check for time conflicts
+    between courses in the same candidate schedule.
+    """
+    usecols = ["SNAPSHOT_DATE", "SUBJECT", "CATALOG_NBR", "CLASS_SECTION",
+               "MEETING_DAY", "MEETING_TIME_START", "MEETING_TIME_END"]
+    offering = pd.read_csv(path, usecols=usecols, low_memory=False)
+    offering["snap_dt"] = pd.to_datetime(offering["SNAPSHOT_DATE"])
+    offering = offering[offering["snap_dt"] >= min_snapshot]
+    if offering.empty:
+        return {}
+
+    offering["course"] = _course_key(offering["SUBJECT"], offering["CATALOG_NBR"])
+    offering = offering.sort_values("snap_dt").drop_duplicates(["course", "CLASS_SECTION"], keep="last")
+
+    patterns: dict[str, list[dict]] = {}
+    for course, group in offering.groupby("course"):
+        slot_counts: dict[tuple, int] = {}
+        for _, row in group.iterrows():
+            day = str(row["MEETING_DAY"]).strip()
+            if not day or day.lower() == "nan":
+                continue
+            start, end = row["MEETING_TIME_START"], row["MEETING_TIME_END"]
+            if day == "No Patterns":
+                slot = ("No Patterns", None, None, "asynchronous / no fixed meeting time")
+            elif pd.isna(start) or start == "00:00:00":
+                slot = (day, None, None, "day/time not cleanly parseable from source data")
+            else:
+                slot = (day, start, end, None)
+            slot_counts[slot] = slot_counts.get(slot, 0) + 1
+        if not slot_counts:
+            continue
+        top_slots = sorted(slot_counts.items(), key=lambda kv: kv[1], reverse=True)[:6]
+        patterns[course] = [
+            {"days": d, "start": s, "end": e, "note": n, "sections": count}
+            for (d, s, e, n), count in top_slots
+        ]
+    return patterns
+
+
+def describe_course(
+    course: str,
+    catalog: dict[str, dict],
+    req_types: dict[str, str],
+    meeting_patterns: dict[str, list[dict]],
+) -> dict:
+    units, estimated = units_for(course, catalog)
+    return {
+        "units": units,
+        "units_estimated": estimated,
+        "req_type": req_types.get(course),
+        "meeting_patterns": meeting_patterns.get(course, []),
+    }
+
+
 def build_candidate_schedules(
     freq: pd.DataFrame,
     catalog: dict[str, dict],
+    req_types: dict[str, str] | None = None,
+    meeting_patterns: dict[str, list[dict]] | None = None,
     top_n_courses: int = 12,
     max_courses: int = 6,
     max_results: int = 5,
@@ -134,22 +247,22 @@ def build_candidate_schedules(
     defensible proxy for "how well-supported by real historical patterns is
     this lineup" — not a probability model).
     """
+    req_types = req_types or {}
+    meeting_patterns = meeting_patterns or {}
+
     top = freq.sort_values("count", ascending=False).head(top_n_courses).reset_index(drop=True)
     if top.empty:
         return []
 
     courses = top["course"].tolist()
     pct_by_course = dict(zip(top["course"], top["pct"]))
-    units_by_course = {}
-    estimated_by_course = {}
-    for c in courses:
-        units_by_course[c], estimated_by_course[c] = units_for(c, catalog)
+    course_info = {c: describe_course(c, catalog, req_types, meeting_patterns) for c in courses}
 
     results = []
     seen = set()
     for size in range(2, max_courses + 1):
         for combo in itertools.combinations(courses, size):
-            total_units = sum(units_by_course[c] for c in combo)
+            total_units = sum(course_info[c]["units"] for c in combo)
             if not (UNIT_TARGET_LOW <= total_units <= UNIT_TARGET_HIGH):
                 continue
             key = frozenset(combo)
@@ -162,9 +275,11 @@ def build_candidate_schedules(
                     "courses": [
                         {
                             "course": c,
-                            "units": units_by_course[c],
-                            "units_estimated": estimated_by_course[c],
+                            "units": course_info[c]["units"],
+                            "units_estimated": course_info[c]["units_estimated"],
                             "pct_of_cohort": round(pct_by_course[c], 4),
+                            "req_type": course_info[c]["req_type"],
+                            "meeting_patterns": course_info[c]["meeting_patterns"],
                         }
                         for c in combo
                     ],
@@ -177,9 +292,15 @@ def build_candidate_schedules(
     return results[:max_results]
 
 
-def mine(senior_path: Path = SENIOR_FILE, offering_path: Path = OFFERING_FILE) -> dict:
+def mine(
+    senior_path: Path = SENIOR_FILE,
+    offering_path: Path = OFFERING_FILE,
+    catalog_path: Path = CATALOG_FILE,
+) -> dict:
     freshman = load_ba_freshman_rows(senior_path)
     catalog = load_unit_catalog(offering_path)
+    req_types = load_requirement_types(catalog_path)
+    meeting_patterns = load_meeting_patterns(offering_path)
 
     terms_output = {}
     for term_type in ["Fall", "Spring"]:
@@ -191,27 +312,44 @@ def mine(senior_path: Path = SENIOR_FILE, offering_path: Path = OFFERING_FILE) -
 
         freq_out = []
         for _, row in freq.iterrows():
-            units, estimated = units_for(row["course"], catalog)
+            info = describe_course(row["course"], catalog, req_types, meeting_patterns)
             freq_out.append(
                 {
                     "course": row["course"],
                     "count": int(row["count"]),
                     "pct_of_cohort": round(float(row["pct"]), 4),
-                    "units": units,
-                    "units_estimated": estimated,
+                    **info,
                 }
             )
 
         terms_output[term_type] = {
             "cohort_size": int(cohort_size),
             "course_frequency": freq_out,
-            "candidate_schedules": build_candidate_schedules(freq, catalog),
+            "candidate_schedules": build_candidate_schedules(freq, catalog, req_types, meeting_patterns),
         }
 
     return {
         "major": "Business Administration",
         "class_year": "Freshman",
         "unit_target": [UNIT_TARGET_LOW, UNIT_TARGET_HIGH],
+        "assumptions": {
+            "req_type": (
+                "Major / General Education / Major-Gen-Ed(GEM) classification is "
+                "sourced from BSBAcourse_catalog.xlsx Program_Roadmaps, pooling "
+                "freshman-year (term 1-2) rows across all 10 BSBA concentrations "
+                "since they're near-identical in freshman year. null means the "
+                "course isn't in that roadmap slice."
+            ),
+            "meeting_patterns": (
+                f"Section day/time is sourced from E3E4 snapshots on/after "
+                f"{DAYTIME_AVAILABLE_FROM} (meeting data is blank before Fall "
+                "2025 census). Informational only: shows the most common current "
+                "meeting slots for a course, does not resolve a specific section "
+                "or check for time conflicts between courses in the same "
+                "candidate schedule. An empty list means no post-census meeting "
+                "data was found for that course."
+            ),
+        },
         "terms": terms_output,
     }
 

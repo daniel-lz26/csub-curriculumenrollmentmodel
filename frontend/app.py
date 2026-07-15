@@ -37,17 +37,32 @@ else:
     st.markdown("### Recommended lineup")
     top = term_data["candidate_schedules"][0] if term_data["candidate_schedules"] else None
     if top:
+        def _meeting_summary(course: dict) -> str:
+            patterns = course.get("meeting_patterns") or []
+            if not patterns:
+                return "no post-census meeting data"
+            best = patterns[0]
+            if best["note"]:
+                return best["note"]
+            return f"{best['days']} {best['start']}-{best['end']}"
+
         st.table(
             [
                 {
                     "Course": c["course"],
                     "Units": c["units"] if not c["units_estimated"] else f"{c['units']} (uncertain)",
                     "% of cohort": f"{c['pct_of_cohort']:.0%}",
+                    "Requirement": c.get("req_type") or "—",
+                    "Typical meeting time": _meeting_summary(c),
                 }
                 for c in top["courses"]
             ]
         )
         st.write(f"**Total units:** {top['total_units']}")
+        st.caption(
+            "Meeting times are informational (most common section slot currently "
+            "on file) and aren't checked for conflicts across courses."
+        )
     st.markdown("### Rationale")
     st.write(rationale)
 
@@ -63,6 +78,7 @@ else:
                     "Count": c["count"],
                     "% of cohort": f"{c['pct_of_cohort']:.0%}",
                     "Units": c["units"],
+                    "Requirement": c.get("req_type") or "—",
                 }
                 for c in term_data["course_frequency"]
             ]
