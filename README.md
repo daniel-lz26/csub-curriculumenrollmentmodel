@@ -139,27 +139,29 @@ Two jobs, both grounded strictly in the precomputed JSON — never given raw
 student-level data: recommendation + rationale, and ad hoc Q&A
 ("what if we can't offer X?") by re-filtering/re-explaining the same
 computed dataset. `bedrock/client.py` backs `frontend/app.py` (Streamlit)
-in-process, no Lambda involved. Not part of the deployed API — see below.
+in-process, no Lambda involved. Not part of the deployed API (the deployed
+`/advisor` endpoint below also calls Bedrock, but through its own
+`advisor/llm_bedrock.py` grounded in the roadmap data, not this module).
 
 ### 4. API layer — API Gateway + Lambda + S3
 One endpoint: `POST /advisor` — a schedule "what-if" advisor. Takes a
 question (plus optional `major`/`course` context from whatever's on screen),
 computes real degree-roadmap/prerequisite facts deterministically
 (`advisor/roadmap.py`, precomputed from `BSBAcourse_catalog.xlsx` by
-`advisor/build_data.py`), and has OpenAI (`advisor/llm_openai.py`) narrate
-them — same compute-first/LLM-explains split as the Bedrock/Kiro layer
-above, different provider. This replaced an earlier `POST /ask` (pooled
-mining-stats Q&A over Bedrock) and `GET /recommendation` — neither was
-specific to the major/block on screen, and `/recommendation` had no caller
-in the current frontend at all.
+`advisor/build_data.py`), and has Bedrock (`advisor/llm_bedrock.py`) narrate
+them — same compute-first/LLM-explains split as the local Streamlit tool's
+`bedrock/client.py`, just a different model/prompt for a different job. This
+replaced an earlier `POST /ask` (pooled mining-stats Q&A) and `GET
+/recommendation` — neither was specific to the major/block on screen, and
+`/recommendation` had no caller in the current frontend at all.
 
-Prompt-injection posture (see `advisor/llm_openai.py`'s docstring for
+Prompt-injection posture (see `advisor/llm_bedrock.py`'s docstring for
 detail): the student's question is spotlighted in delimiters with an
 explicit refusal rule for override/reveal-prompt attempts, server-side input
 validation rejects oversized/malformed input before any LLM call, the model
 is never given tool-use (so a jailbreak can only produce bad text, not take
-an action), and both its Secrets Manager and S3 permissions are scoped to
-exactly the one secret/bucket it needs.
+an action), and its IAM (`bedrock:InvokeModel`) and S3 permissions are
+scoped to exactly what it needs.
 
 Two S3 buckets, both created by `infra/template.yaml`:
 - **DataBucket** — private. Holds the precomputed roadmap-advisor cache
@@ -174,11 +176,9 @@ Two S3 buckets, both created by `infra/template.yaml`:
   public access at all, only readable via Origin Access Control from that
   one distribution.
 
-The OpenAI API key lives in Secrets Manager (`OpenAIApiKeySecret`), created
-with a placeholder value by `template.yaml` — the real key is never a
-CloudFormation parameter (which would persist it in stack history). Run
-`infra/set_openai_key.sh` once after the first deploy to store it (prompts
-for the key, never echoes it or puts it in shell history).
+No API key to manage: `AdvisorFunction` authenticates to Bedrock via IAM
+(`bedrock:InvokeModel`, see `infra/template.yaml`), the same pattern
+`bedrock/client.py` already used for the local Streamlit tool.
 
 Deploy with `infra/deploy.sh` (wraps `sam build`/`sam deploy`, then uploads
 `roadmap_advisor.json` to DataBucket, syncs `frontend/web/` to
@@ -194,8 +194,8 @@ project doesn't use). Without pruning, the build pulls in the full
 `data/raw/` (130MB+ of source xlsx/csv) and test directories, which alone
 pushes the function past Lambda's 250MB unzipped limit — `deploy.sh` strips
 those paths from the build output before deploying. The Lambda's execution
-role has inline `secretsmanager:GetSecretValue` and DataBucket-read policies
-(see `infra/template.yaml`), each scoped to exactly the one resource it needs.
+role has inline `bedrock:InvokeModel` and DataBucket-read policies (see
+`infra/template.yaml`), each scoped to exactly the resources it needs.
 
 ### 5. Frontend
 Two frontends exist:

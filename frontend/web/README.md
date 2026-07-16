@@ -50,7 +50,7 @@ opened as a file."
 (`api/handlers/advisor.py`), which computes real degree-roadmap and
 prerequisite facts for the major currently on screen
 (`advisor/roadmap.py`, precomputed from `BSBAcourse_catalog.xlsx` — see
-`advisor/build_data.py`) and has OpenAI (`advisor/llm_openai.py`) narrate
+`advisor/build_data.py`) and has Bedrock (`advisor/llm_bedrock.py`) narrate
 them. It's grounded in the *specific* major on screen (sent as request
 context), unlike the older `/ask` endpoint it replaced, which only answered
 over pooled all-concentration mining stats. Where the catalog doesn't list a
@@ -66,9 +66,8 @@ the deployed `ApiUrl` stack output and patches it into the copy of
 `config.js` it uploads to FrontendBucket, so the live site always has the
 advisor enabled without editing this repo. The repo's own `config.js` stays
 blank on purpose, so local `python -m http.server` runs stay in offline/demo
-mode. You also need to run `infra/set_openai_key.sh` once after the first
-deploy — the stack creates the OpenAI secret with a placeholder value, so
-`/advisor` returns a 503 until the real key is stored.
+mode. No separate key-setup step needed — the advisor authenticates to
+Bedrock via IAM, not an API key.
 
 If you want the live advisor while developing locally too, set
 `API_BASE_URL` in your local `config.js` to the stack's `ApiUrl` output (no

@@ -3,9 +3,9 @@
 # deployed Lambda and frontend need (roadmap_advisor.json, frontend/web/*).
 #
 # First run ever: `./deploy.sh --guided` (walks you through stack name/region
-# and writes samconfig.toml), then run `./infra/set_openai_key.sh` once to
-# store the real OpenAI key (the template only creates a placeholder secret
-# -- see infra/template.yaml). Every run after that: `./deploy.sh`.
+# and writes samconfig.toml). Every run after that: `./deploy.sh`. No API key
+# to configure -- AdvisorFunction authenticates to Bedrock via IAM
+# (bedrock:InvokeModel, see infra/template.yaml).
 #
 # `.samignore` is NOT read by `sam build` (verified against SAM CLI 1.163.0 /
 # aws-lambda-builders 1.65.0 — neither package references "samignore"; it
@@ -106,9 +106,6 @@ echo ""
 echo "Deployed."
 echo "  Frontend:  $FRONTEND_URL"
 echo "  API:       $API_URL"
-echo ""
-echo "If you haven't yet, run ./set_openai_key.sh once to store the real OpenAI key"
-echo "(the secret currently holds a placeholder -- /advisor will 503 until it's set)."
 echo ""
 echo "Note: if this is the first deploy since adding CloudFront, the distribution"
 echo "can take 10-20 minutes to finish propagating before the URL above works."

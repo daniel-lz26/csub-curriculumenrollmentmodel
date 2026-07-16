@@ -2,22 +2,23 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   API Gateway + Lambda + S3 + CloudFront for the BSBA Freshman Scheduling
-  Tool. AdvisorFunction serves the schedule "what-if" advisor (OpenAI-backed,
-  grounded in a precomputed degree-roadmap/prerequisite dataset stored in
-  DataBucket -- see api/handlers/advisor.py and advisor/roadmap.py).
-  FrontendBucket hosts the static site in frontend/web/ (schedule_engine
-  artifacts + the advisor UI), served through CloudFront for a clean HTTPS
-  URL -- the bucket itself is private, readable only via Origin Access
-  Control from that one distribution. CodeUri is the repo root so the Lambda
-  can import the sibling `advisor`/`mining` packages unchanged.
+  Tool. AdvisorFunction serves the schedule "what-if" advisor (Bedrock-backed,
+  IAM auth -- no API key, grounded in a precomputed degree-roadmap/
+  prerequisite dataset stored in DataBucket -- see api/handlers/advisor.py
+  and advisor/roadmap.py). FrontendBucket hosts the static site in
+  frontend/web/ (schedule_engine artifacts + the advisor UI), served through
+  CloudFront for a clean HTTPS URL -- the bucket itself is private, readable
+  only via Origin Access Control from that one distribution. CodeUri is the
+  repo root so the Lambda can import the sibling `advisor`/`mining` packages
+  unchanged.
 
 Parameters:
-  OpenAIModel:
+  BedrockModelId:
     Type: String
-    Default: gpt-4o-mini
+    Default: anthropic.claude-haiku-4-5-20251001-v1:0
     Description: >
-      OpenAI model invoked by advisor/llm_openai.py. Overridable per-stage
-      without a redeploy of application code.
+      Bedrock model ID invoked by advisor/llm_bedrock.py. Overridable
+      per-stage without a redeploy of application code.
 
 Globals:
   Function:
@@ -37,8 +38,8 @@ Globals:
       AllowHeaders: "'Content-Type'"
       AllowMethods: "'GET,POST,OPTIONS'"
     # Cheap defense-in-depth against automated prompt-injection probing or
-    # runaway cost (each request calls the OpenAI API, which is billed):
-    # caps the whole stage well above normal interactive use.
+    # runaway cost (each request calls Bedrock, which is billed): caps the
+    # whole stage well above normal interactive use.
     MethodSettings:
       - ResourcePath: "/*"
         HttpMethod: "*"
@@ -141,32 +142,20 @@ Resources:
             ResponseCode: 200
             ResponsePagePath: /index.html
 
-  # Holds the OpenAI API key. Created with a placeholder value -- the real
-  # key is never a CloudFormation parameter (which would persist it in the
-  # stack's parameter history). Populate it once, out-of-band, with
-  # infra/set_openai_key.sh after the first deploy.
-  OpenAIApiKeySecret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Description: >
-        OpenAI API key for AdvisorFunction. Populate with
-        infra/set_openai_key.sh -- never put the real key in this template.
-      SecretString: '{"OPENAI_API_KEY":"REPLACE_ME"}'
-
   AdvisorFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: api.handlers.advisor.handler
       Environment:
         Variables:
-          OPENAI_MODEL: !Ref OpenAIModel
-          OPENAI_SECRET_ARN: !Ref OpenAIApiKeySecret
+          BEDROCK_MODEL_ID: !Ref BedrockModelId
           DATA_BUCKET: !Ref DataBucket
       Policies:
         - Statement:
             - Effect: Allow
-              Action: secretsmanager:GetSecretValue
-              Resource: !Ref OpenAIApiKeySecret
+              Action: bedrock:InvokeModel
+              Resource:
+                - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/*"
         - Statement:
             - Effect: Allow
               Action: s3:GetObject
@@ -199,8 +188,3 @@ Outputs:
       CloudFront distribution ID -- infra/deploy.sh uses this to invalidate
       the cache after syncing frontend/web/, so updates show up immediately.
     Value: !Ref FrontendDistribution
-  OpenAIApiKeySecretArn:
-    Description: >
-      Secrets Manager secret ARN for the OpenAI key -- pass to
-      infra/set_openai_key.sh (or populate via the console/CLI directly).
-    Value: !Ref OpenAIApiKeySecret

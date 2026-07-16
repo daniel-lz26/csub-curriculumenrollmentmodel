@@ -30,10 +30,10 @@ const MAJOR_ARTIFACTS = [
 // Regenerate + re-copy into data/artifacts/ to refresh; there's nothing to
 // point at a deployed URL for here yet.
 
-// ---- What-if advisor endpoint (advisor/roadmap.py + advisor/llm_openai.py) ----
+// ---- What-if advisor endpoint (advisor/roadmap.py + advisor/llm_bedrock.py) ----
 // The "What-if advisor" box calls POST /advisor (api/handlers/advisor.py),
 // which computes real degree-roadmap/prerequisite facts for the major
-// currently on screen and has OpenAI narrate them -- not the pooled,
+// currently on screen and has Bedrock narrate them -- not the pooled,
 // all-concentration mining dataset the old /ask endpoint used. Leave
 // API_BASE_URL "" to run it in offline/demo mode (advisor disabled, since
 // there's no API to call without a deployment); infra/deploy.sh sets this

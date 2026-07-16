@@ -3,7 +3,7 @@
 Replaces the old /ask endpoint (pooled mining-stats Q&A over
 mining/co_occurrence.py output) with a schedule "what-if" advisor:
 advisor/roadmap.py computes the real degree-roadmap/prerequisite facts
-deterministically, advisor/llm_openai.py only narrates them in plain
+deterministically, advisor/llm_bedrock.py only narrates them in plain
 language -- same compute-first/LLM-explains split bedrock/client.py used for
 the old endpoint (see advisor/roadmap.py's docstring for what this data can
 and can't confirm).
@@ -14,7 +14,7 @@ import json
 import os
 import re
 
-from advisor.llm_openai import answer_question
+from advisor.llm_bedrock import answer_question
 from advisor.roadmap import RoadmapAdvisor
 from ._data import load_roadmap_data
 
@@ -32,7 +32,7 @@ MAX_CONTEXT_FIELD_LENGTH = 100
 # input. Newline/tab/carriage-return are still allowed for readability.
 _DISALLOWED_CONTROL_CHARS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 
-DEFAULT_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+DEFAULT_MODEL = os.environ.get("BEDROCK_MODEL_ID", "anthropic.claude-haiku-4-5-20251001-v1:0")
 
 
 def _validate_question(question: str) -> str | None:

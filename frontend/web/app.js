@@ -517,7 +517,7 @@ function renderQaThread() {
 
 function classifyError(msg) {
   const lower = (msg || "").toLowerCase();
-  if (/credential|access.?denied|not set|openai|secret|forbidden/.test(lower)) {
+  if (/credential|access.?denied|not set|bedrock|forbidden/.test(lower)) {
     return `The advisor isn't configured for this environment (${msg}). Contact whoever owns AWS deployment.`;
   }
   if (/throttl|timeout|rate|temporar|503|529/.test(lower)) {

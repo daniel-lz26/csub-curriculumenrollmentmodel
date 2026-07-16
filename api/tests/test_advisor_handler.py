@@ -1,8 +1,8 @@
 """Contract tests for the deployed /advisor Lambda (event/context shape
 matching API Gateway's REST API (v1) Lambda proxy integration -- see
-infra/template.yaml). advisor.llm_openai.answer_question and
+infra/template.yaml). advisor.llm_bedrock.answer_question and
 _data.load_roadmap_data are monkeypatched so these run without network
-access, an OpenAI key, or a precomputed data/output/roadmap_advisor.json on
+access, AWS credentials, or a precomputed data/output/roadmap_advisor.json on
 disk.
 """
 from __future__ import annotations
@@ -73,7 +73,7 @@ class TestAdvisorHandler:
 
     def test_returns_503_when_llm_unavailable(self, monkeypatch):
         def _raise(q, computed, model):
-            raise RuntimeError("OPENAI_API_KEY is not set")
+            raise RuntimeError("Bedrock request failed: AccessDeniedException")
 
         monkeypatch.setattr(advisor, "answer_question", _raise)
         resp = advisor.handler({"body": json.dumps({"question": "Why?"})})
