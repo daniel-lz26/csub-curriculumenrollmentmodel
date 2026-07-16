@@ -1,0 +1,895 @@
+{
+ "artifact_type": "cohort_schedule_set",
+ "schema_version": 1,
+ "generated_at": "2026-07-16T17:46:14+00:00",
+ "term": "Fall 2026",
+ "sections_snapshot": "7/5/2026",
+ "major": "BA - Supply Chain Logistics",
+ "preferences": {
+  "profile": "commuter_morning",
+  "preferred_window": {
+   "start": "10:00",
+   "end": "15:00"
+  },
+  "preferred_days_off": [],
+  "mode_preference": "in_person_lean",
+  "minimize_campus_days": true,
+  "avoid_waitlisted_sections": true,
+  "cohort_size_target": 25,
+  "num_blocks": 8
+ },
+ "roadmap_term1": [
+  {
+   "requirement": "BA 1000",
+   "req_type": "Major",
+   "units": 3.0,
+   "course_options": [
+    "BA 1000"
+   ],
+   "note": null
+  },
+  {
+   "requirement": "BA 1028",
+   "req_type": "Major / Gen Ed",
+   "units": 3.0,
+   "course_options": [
+    "BA 1028"
+   ],
+   "note": null
+  },
+  {
+   "requirement": "MATH 2200",
+   "req_type": "Major / Gen Ed",
+   "units": 4.0,
+   "course_options": [
+    "MATH 2200"
+   ],
+   "note": null
+  },
+  {
+   "requirement": "GE 1A: English Composition",
+   "req_type": "General Education",
+   "units": 3.0,
+   "course_options": [
+    "ENGL 1109"
+   ],
+   "note": null
+  },
+  {
+   "requirement": "GE 1C: Oral Communication",
+   "req_type": "General Education",
+   "units": 3.0,
+   "course_options": [
+    "COMM 1008",
+    "THTR 1009"
+   ],
+   "note": null
+  }
+ ],
+ "notes": [],
+ "blocks": [
+  {
+   "block_id": "A",
+   "label": "Morning core (10-3)",
+   "cohort_capacity": 10,
+   "total_units": 16.0,
+   "score": 20.49,
+   "advisories": [],
+   "courses": [
+    {
+     "requirement": "GE 1C: Oral Communication",
+     "req_type": "General Education",
+     "course": "COMM 1008",
+     "title": "Strategies of Public Comm",
+     "class_nbr": "82227",
+     "section": "09",
+     "units": 3.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "10:00",
+     "end": "11:15",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 16,
+     "waitlist": 0,
+     "freshman_popularity": "36/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1028",
+     "req_type": "Major / Gen Ed",
+     "course": "BA 1028",
+     "title": "First Year Seminar for Bus Mjr",
+     "class_nbr": "82309",
+     "section": "02",
+     "units": 3.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "11:30",
+     "end": "12:45",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 13,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "MATH 2200",
+     "req_type": "Major / Gen Ed",
+     "course": "MATH 2200",
+     "title": "Introduction to Statistical Co",
+     "class_nbr": "81073",
+     "section": "05",
+     "units": 4.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "13:00",
+     "end": "14:40",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 4,
+     "waitlist": 0,
+     "freshman_popularity": "9/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1A: English Composition",
+     "req_type": "General Education",
+     "course": "ENGL 1109",
+     "title": "Writing and Research",
+     "class_nbr": "81922",
+     "section": "21",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W",
+      "F"
+     ],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 0,
+     "waitlist": 0,
+     "freshman_popularity": "48/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1000",
+     "req_type": "Major",
+     "course": "BA 1000",
+     "title": "Introduction to Business",
+     "class_nbr": "82982",
+     "section": "05",
+     "units": 3.0,
+     "days": [],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 190,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    }
+   ]
+  },
+  {
+   "block_id": "B",
+   "label": "TTh-compact commuter",
+   "cohort_capacity": 9,
+   "total_units": 16.0,
+   "score": 14.98,
+   "advisories": [],
+   "courses": [
+    {
+     "requirement": "GE 1A: English Composition",
+     "req_type": "General Education",
+     "course": "ENGL 1109",
+     "title": "Writing and Research",
+     "class_nbr": "81914",
+     "section": "13",
+     "units": 3.0,
+     "days": [
+      "Th"
+     ],
+     "start": "10:00",
+     "end": "11:15",
+     "mode": "Hybrid",
+     "seats_open_at_generation": 12,
+     "waitlist": 0,
+     "freshman_popularity": "48/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1028",
+     "req_type": "Major / Gen Ed",
+     "course": "BA 1028",
+     "title": "First Year Seminar for Bus Mjr",
+     "class_nbr": "82309",
+     "section": "02",
+     "units": 3.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "11:30",
+     "end": "12:45",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 0,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1C: Oral Communication",
+     "req_type": "General Education",
+     "course": "COMM 1008",
+     "title": "Strategies of Public Comm",
+     "class_nbr": "82476",
+     "section": "17",
+     "units": 3.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "14:30",
+     "end": "15:45",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 17,
+     "waitlist": 0,
+     "freshman_popularity": "36/91 mined freshmen"
+    },
+    {
+     "requirement": "MATH 2200",
+     "req_type": "Major / Gen Ed",
+     "course": "MATH 2200",
+     "title": "Introduction to Statistical Co",
+     "class_nbr": "81074",
+     "section": "06",
+     "units": 4.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "16:00",
+     "end": "17:40",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 6,
+     "waitlist": 0,
+     "freshman_popularity": "9/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1000",
+     "req_type": "Major",
+     "course": "BA 1000",
+     "title": "Introduction to Business",
+     "class_nbr": "82983",
+     "section": "06",
+     "units": 3.0,
+     "days": [],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 187,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    }
+   ]
+  },
+  {
+   "block_id": "C",
+   "label": "Fridays-free",
+   "cohort_capacity": 11,
+   "total_units": 16.0,
+   "score": 14.84,
+   "advisories": [],
+   "courses": [
+    {
+     "requirement": "BA 1028",
+     "req_type": "Major / Gen Ed",
+     "course": "BA 1028",
+     "title": "First Year Seminar for Bus Mjr",
+     "class_nbr": "82281",
+     "section": "01",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W"
+     ],
+     "start": "09:30",
+     "end": "10:45",
+     "mode": "Hybrid",
+     "seats_open_at_generation": 16,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1C: Oral Communication",
+     "req_type": "General Education",
+     "course": "COMM 1008",
+     "title": "Strategies of Public Comm",
+     "class_nbr": "82207",
+     "section": "03",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W",
+      "F"
+     ],
+     "start": "11:00",
+     "end": "11:50",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 7,
+     "waitlist": 0,
+     "freshman_popularity": "36/91 mined freshmen"
+    },
+    {
+     "requirement": "MATH 2200",
+     "req_type": "Major / Gen Ed",
+     "course": "MATH 2200",
+     "title": "Introduction to Statistical Co",
+     "class_nbr": "81070",
+     "section": "02",
+     "units": 4.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "11:00",
+     "end": "12:40",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 0,
+     "waitlist": 0,
+     "freshman_popularity": "9/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1000",
+     "req_type": "Major",
+     "course": "BA 1000",
+     "title": "Introduction to Business",
+     "class_nbr": "82982",
+     "section": "05",
+     "units": 3.0,
+     "days": [],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 179,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1A: English Composition",
+     "req_type": "General Education",
+     "course": "ENGL 1109",
+     "title": "Writing and Research",
+     "class_nbr": "82967",
+     "section": "33",
+     "units": 3.0,
+     "days": [],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 189,
+     "waitlist": 0,
+     "freshman_popularity": "48/91 mined freshmen"
+    }
+   ]
+  },
+  {
+   "block_id": "D",
+   "label": "Early start (9-1)",
+   "cohort_capacity": 5,
+   "total_units": 16.0,
+   "score": 17.48,
+   "advisories": [],
+   "courses": [
+    {
+     "requirement": "MATH 2200",
+     "req_type": "Major / Gen Ed",
+     "course": "MATH 2200",
+     "title": "Introduction to Statistical Co",
+     "class_nbr": "81069",
+     "section": "01",
+     "units": 4.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "09:00",
+     "end": "10:40",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 0,
+     "waitlist": 0,
+     "freshman_popularity": "9/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1028",
+     "req_type": "Major / Gen Ed",
+     "course": "BA 1028",
+     "title": "First Year Seminar for Bus Mjr",
+     "class_nbr": "82281",
+     "section": "01",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W"
+     ],
+     "start": "09:30",
+     "end": "10:45",
+     "mode": "Hybrid",
+     "seats_open_at_generation": 8,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1C: Oral Communication",
+     "req_type": "General Education",
+     "course": "COMM 1008",
+     "title": "Strategies of Public Comm",
+     "class_nbr": "82207",
+     "section": "03",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W",
+      "F"
+     ],
+     "start": "11:00",
+     "end": "11:50",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 2,
+     "waitlist": 0,
+     "freshman_popularity": "36/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1A: English Composition",
+     "req_type": "General Education",
+     "course": "ENGL 1109",
+     "title": "Writing and Research",
+     "class_nbr": "81920",
+     "section": "19",
+     "units": 3.0,
+     "days": [
+      "Th"
+     ],
+     "start": "11:30",
+     "end": "12:45",
+     "mode": "Hybrid",
+     "seats_open_at_generation": 10,
+     "waitlist": 0,
+     "freshman_popularity": "48/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1000",
+     "req_type": "Major",
+     "course": "BA 1000",
+     "title": "Introduction to Business",
+     "class_nbr": "82983",
+     "section": "06",
+     "units": 3.0,
+     "days": [],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 179,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    }
+   ]
+  },
+  {
+   "block_id": "E",
+   "label": "Midday (11-4)",
+   "cohort_capacity": 6,
+   "total_units": 16.0,
+   "score": 16.25,
+   "advisories": [],
+   "courses": [
+    {
+     "requirement": "BA 1000",
+     "req_type": "Major",
+     "course": "BA 1000",
+     "title": "Introduction to Business",
+     "class_nbr": "82284",
+     "section": "01",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W"
+     ],
+     "start": "13:00",
+     "end": "14:15",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 17,
+     "waitlist": 3,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1028",
+     "req_type": "Major / Gen Ed",
+     "course": "BA 1028",
+     "title": "First Year Seminar for Bus Mjr",
+     "class_nbr": "82323",
+     "section": "03",
+     "units": 3.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "14:30",
+     "end": "15:45",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 23,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1C: Oral Communication",
+     "req_type": "General Education",
+     "course": "COMM 1008",
+     "title": "Strategies of Public Comm",
+     "class_nbr": "82480",
+     "section": "18",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W"
+     ],
+     "start": "14:30",
+     "end": "15:45",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 20,
+     "waitlist": 0,
+     "freshman_popularity": "36/91 mined freshmen"
+    },
+    {
+     "requirement": "MATH 2200",
+     "req_type": "Major / Gen Ed",
+     "course": "MATH 2200",
+     "title": "Introduction to Statistical Co",
+     "class_nbr": "81074",
+     "section": "06",
+     "units": 4.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "16:00",
+     "end": "17:40",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 0,
+     "waitlist": 0,
+     "freshman_popularity": "9/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1A: English Composition",
+     "req_type": "General Education",
+     "course": "ENGL 1109",
+     "title": "Writing and Research",
+     "class_nbr": "82968",
+     "section": "34",
+     "units": 3.0,
+     "days": [],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 194,
+     "waitlist": 0,
+     "freshman_popularity": "48/91 mined freshmen"
+    }
+   ]
+  },
+  {
+   "block_id": "F",
+   "label": "Online-lean flex",
+   "cohort_capacity": 8,
+   "total_units": 16.0,
+   "score": 13.57,
+   "advisories": [],
+   "courses": [
+    {
+     "requirement": "MATH 2200",
+     "req_type": "Major / Gen Ed",
+     "course": "MATH 2200",
+     "title": "Introduction to Statistical Co",
+     "class_nbr": "81072",
+     "section": "04",
+     "units": 4.0,
+     "days": [
+      "M",
+      "W"
+     ],
+     "start": "08:15",
+     "end": "09:55",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 0,
+     "waitlist": 0,
+     "freshman_popularity": "9/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1C: Oral Communication",
+     "req_type": "General Education",
+     "course": "COMM 1008",
+     "title": "Strategies of Public Comm",
+     "class_nbr": "82233",
+     "section": "11",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W",
+      "F"
+     ],
+     "start": "10:00",
+     "end": "10:50",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 4,
+     "waitlist": 0,
+     "freshman_popularity": "36/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1028",
+     "req_type": "Major / Gen Ed",
+     "course": "BA 1028",
+     "title": "First Year Seminar for Bus Mjr",
+     "class_nbr": "82323",
+     "section": "03",
+     "units": 3.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "14:30",
+     "end": "15:45",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 15,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1000",
+     "req_type": "Major",
+     "course": "BA 1000",
+     "title": "Introduction to Business",
+     "class_nbr": "82982",
+     "section": "05",
+     "units": 3.0,
+     "days": [],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 171,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1A: English Composition",
+     "req_type": "General Education",
+     "course": "ENGL 1109",
+     "title": "Writing and Research",
+     "class_nbr": "82966",
+     "section": "32",
+     "units": 3.0,
+     "days": [],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 188,
+     "waitlist": 0,
+     "freshman_popularity": "48/91 mined freshmen"
+    }
+   ]
+  },
+  {
+   "block_id": "G",
+   "label": "Most popular pairings",
+   "cohort_capacity": 8,
+   "total_units": 16.0,
+   "score": 13.22,
+   "advisories": [
+    "MATH 2200 #81071 is full at snapshot (waitlist 1) \u2014 needs reserved/added seats for this cohort"
+   ],
+   "courses": [
+    {
+     "requirement": "BA 1028",
+     "req_type": "Major / Gen Ed",
+     "course": "BA 1028",
+     "title": "First Year Seminar for Bus Mjr",
+     "class_nbr": "82281",
+     "section": "01",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W"
+     ],
+     "start": "09:30",
+     "end": "10:45",
+     "mode": "Hybrid",
+     "seats_open_at_generation": 0,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1C: Oral Communication",
+     "req_type": "General Education",
+     "course": "COMM 1008",
+     "title": "Strategies of Public Comm",
+     "class_nbr": "82227",
+     "section": "09",
+     "units": 3.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "10:00",
+     "end": "11:15",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 4,
+     "waitlist": 0,
+     "freshman_popularity": "36/91 mined freshmen"
+    },
+    {
+     "requirement": "MATH 2200",
+     "req_type": "Major / Gen Ed",
+     "course": "MATH 2200",
+     "title": "Introduction to Statistical Co",
+     "class_nbr": "81071",
+     "section": "03",
+     "units": 4.0,
+     "days": [
+      "M",
+      "W"
+     ],
+     "start": "11:00",
+     "end": "12:40",
+     "mode": "Face to Face",
+     "seats_open_at_generation": -8,
+     "waitlist": 1,
+     "freshman_popularity": "9/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1A: English Composition",
+     "req_type": "General Education",
+     "course": "ENGL 1109",
+     "title": "Writing and Research",
+     "class_nbr": "81920",
+     "section": "19",
+     "units": 3.0,
+     "days": [
+      "Th"
+     ],
+     "start": "11:30",
+     "end": "12:45",
+     "mode": "Hybrid",
+     "seats_open_at_generation": 2,
+     "waitlist": 0,
+     "freshman_popularity": "48/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1000",
+     "req_type": "Major",
+     "course": "BA 1000",
+     "title": "Introduction to Business",
+     "class_nbr": "82284",
+     "section": "01",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W"
+     ],
+     "start": "13:00",
+     "end": "14:15",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 9,
+     "waitlist": 3,
+     "freshman_popularity": "1/91 mined freshmen"
+    }
+   ]
+  },
+  {
+   "block_id": "H",
+   "label": "Lightest waitlist risk",
+   "cohort_capacity": 20,
+   "total_units": 16.0,
+   "score": 14.45,
+   "advisories": [
+    "MATH 2200 #81071 is full at snapshot (waitlist 1) \u2014 needs reserved/added seats for this cohort"
+   ],
+   "courses": [
+    {
+     "requirement": "GE 1C: Oral Communication",
+     "req_type": "General Education",
+     "course": "THTR 1009",
+     "title": "The Art of Presentation",
+     "class_nbr": "82562",
+     "section": "01",
+     "units": 3.0,
+     "days": [
+      "M",
+      "W",
+      "F"
+     ],
+     "start": "10:00",
+     "end": "10:50",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 0,
+     "waitlist": 0,
+     "freshman_popularity": "9/91 mined freshmen"
+    },
+    {
+     "requirement": "MATH 2200",
+     "req_type": "Major / Gen Ed",
+     "course": "MATH 2200",
+     "title": "Introduction to Statistical Co",
+     "class_nbr": "81071",
+     "section": "03",
+     "units": 4.0,
+     "days": [
+      "M",
+      "W"
+     ],
+     "start": "11:00",
+     "end": "12:40",
+     "mode": "Face to Face",
+     "seats_open_at_generation": -28,
+     "waitlist": 1,
+     "freshman_popularity": "9/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1028",
+     "req_type": "Major / Gen Ed",
+     "course": "BA 1028",
+     "title": "First Year Seminar for Bus Mjr",
+     "class_nbr": "82332",
+     "section": "04",
+     "units": 3.0,
+     "days": [
+      "T",
+      "Th"
+     ],
+     "start": "17:30",
+     "end": "18:45",
+     "mode": "Face to Face",
+     "seats_open_at_generation": 12,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "BA 1000",
+     "req_type": "Major",
+     "course": "BA 1000",
+     "title": "Introduction to Business",
+     "class_nbr": "82983",
+     "section": "06",
+     "units": 3.0,
+     "days": [],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 159,
+     "waitlist": 0,
+     "freshman_popularity": "1/91 mined freshmen"
+    },
+    {
+     "requirement": "GE 1A: English Composition",
+     "req_type": "General Education",
+     "course": "ENGL 1109",
+     "title": "Writing and Research",
+     "class_nbr": "82968",
+     "section": "34",
+     "units": 3.0,
+     "days": [],
+     "start": null,
+     "end": null,
+     "mode": "Face to Face",
+     "seats_open_at_generation": 174,
+     "waitlist": 0,
+     "freshman_popularity": "48/91 mined freshmen"
+    }
+   ]
+  }
+ ],
+ "change_log": [
+  {
+   "at": "2026-07-16T17:46:14+00:00",
+   "actor": "generator",
+   "summary": "Generated 8 blocks for BA - Supply Chain Logistics (Fall 2026, snapshot 7/5/2026)"
+  }
+ ]
+}
