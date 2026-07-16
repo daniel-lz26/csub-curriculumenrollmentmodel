@@ -1,5 +1,17 @@
 # CSUB Freshman Course-Mining Methodology
 
+> **Scope note:** this document covers `mining/co_occurrence.py` — the
+> pooled, historical **co-occurrence** methodology (which courses freshmen
+> statistically tend to take together). It powers the local-only Streamlit
+> tool (`frontend/app.py`) and the legacy `bedrock/client.py` Q&A, not the
+> currently-deployed web tool. The tool most people actually use today
+> (https://d29yf6skp53yw4.cloudfront.net) is built on real, section-level
+> Fall 2026 data via `schedule_engine/` instead — see the root
+> [`README.md`](README.md) for how the two relate, and
+> [`schedule_engine/README.md`](schedule_engine/README.md) for that
+> methodology. This document remains accurate for what it describes and is
+> kept as the reproducibility reference for the co-occurrence approach.
+
 ## Purpose and audience
 
 This document describes the reproducible methodology behind the CSU Bakersfield BS Business Administration freshman scheduling tool. It is intended for CSUB staff, another department, or a future developer who needs to repeat the analysis with a different major and a new set of institutional data.
@@ -145,7 +157,7 @@ The reason a course may be absent is important: the current E3/E4 extract is Fal
 
 The current code searches for combinations whose summed units are between 14 and 15 inclusive. It applies that flat target to both Fall and Spring.
 
-This is a tool search target, not a claim that every roadmap term totals 14–15 units. The historical `CHANGES.md` record described an earlier 14–16-unit plan and an earlier period when E3/E4 had not yet arrived. Those statements are historical context; the current implementation is authoritative for the present output: 14–15 units, with E3/E4 now used when available.
+This is a tool search target, not a claim that every roadmap term totals 14–15 units. An earlier working plan (not present in this repo) described a 14–16-unit target from before E3/E4 had arrived; the current implementation is authoritative for the present output: 14–15 units, with E3/E4 now used when available.
 
 ## 4. Tag Major, General Education, and GEM courses
 
@@ -385,7 +397,7 @@ The web calendar and meeting-pattern fields should therefore be described as inf
 
 ## 11. Historical decisions and current implementation
 
-The historical `CHANGES.md` decision record explains why the project adopted this approach. It recorded that the BSBA roadmap was needed to resolve requirement labels, that freshman roadmaps across the ten concentrations were nearly identical, and that E3/E4 meeting data was initially a requested dependency rather than an available input.
+An earlier decision record (not present in this repo) explains why the project adopted this approach: the BSBA roadmap was needed to resolve requirement labels, freshman roadmaps across the ten concentrations were found to be nearly identical, and E3/E4 meeting data was initially a requested dependency rather than an available input.
 
 The current implementation incorporates later decisions and should take precedence when the historical record differs:
 

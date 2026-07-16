@@ -1,212 +1,208 @@
 # BS Business Administration Freshman Scheduling Tool
 
-A department-chair-facing tool that recommends which courses/sections to
-set up each semester for BS Business Administration freshmen at CSU
-Bakersfield, using real historical course-taking patterns plus a
-generative AI layer for explanation and ad hoc Q&A.
+A department-chair-facing decision-support tool for CSU Bakersfield: it
+turns real historical enrollment, degree-roadmap, and section data into
+per-major freshman cohort schedule blocks, and answers "what if" questions
+about failing or swapping a course — grounded in real degree-roadmap data,
+narrated by AWS Bedrock.
 
-Built for a 4-day hackathon. AWS Bedrock, Kiro, and Claude API tokens
-available. See `contextv67/claude-starter-context.md` for the full
-scoping/decision history — this file covers the architecture and how the
-pieces fit together.
+**Live tool:** https://d29yf6skp53yw4.cloudfront.net
+*(This URL is tied to the current deployment and will change if the stack is
+ever recreated under a new name — see [Deploying](#deploying--redeploying)
+for how to look up the current one.)*
+
+Not sure where to start reading? See [`PROJECT_MAP.md`](PROJECT_MAP.md) for
+a plain-English tour of this repo if you're not a developer, or
+[`USER_GUIDE.md`](USER_GUIDE.md) if you just want to know how to use the
+tool itself.
 
 ---
 
 ## What this is (and isn't)
 
-- **Is:** a decision-support tool for department chairs and schedule
-  builders planning course offerings for one major (Business
-  Administration), one class year (freshmen), targeting 14–15 unit
-  schedules per term. Built for a sophisticated, schedule-literate user,
-  not a general staff dashboard.
-- **Isn't:** a predictive ML model, a student-facing planner, an advisor
-  tool, or scoped to any major/class year beyond the above.
+- **Is:** decision support for department chairs and schedule builders
+  planning freshman course offerings for BS Business Administration (all 10
+  concentrations, pooled — see [`PROCESS_WRITEUP.md`](PROCESS_WRITEUP.md) for
+  why) — real, conflict-checked schedule blocks built from actual Fall 2026
+  sections, plus a Q&A assistant for "what if" questions grounded in the
+  real degree roadmap.
+- **Isn't:** a predictive ML model, a student registration system, a
+  general-purpose advisor tool, or scoped to any major beyond BSBA. It never
+  auto-enrolls anyone and never invents a fact the underlying data doesn't
+  support — see [Guiding principle](#guiding-principle-compute-first-llm-explains) below.
 
-## Deliverables
+## Guiding principle: compute first, LLM explains
 
-Three things ship at the end of the hackathon, not just the tool:
+Every number a user sees — course frequency, unit totals, fit scores,
+degree-roadmap term positions, prerequisite links — is computed
+deterministically in Python (pandas / plain dict lookups), never by an LLM.
+The LLM's only job anywhere in this system is to *narrate* an already-computed
+result in plain language, and to say "not in the data" when asked something
+the computed facts don't cover, rather than guess. This shows up in three
+independent places in the codebase:
 
-1. **The tool** — dataset + working demo (architecture below)
-2. **A short user guide** — how a chair actually uses it
-3. **A process write-up** — the methodology we used (mining approach, how
-   GEM courses — ones that satisfy both a major and GE requirement — are
-   identified and tagged, what's assumed vs. real), so CSUB can hand it to
-   psychology or another major and reproduce it with their own data.
-   Deborah asked for this explicitly — it's not optional polish.
+| Layer | Computes | Explains |
+|---|---|---|
+| `schedule_engine/` | beam-search schedule generation + a deterministic validator that rejects any invalid AI-proposed edit | Claude (via `schedule_engine/llm.py`), only inside the counselor chat loop |
+| `advisor/` (deployed) | `advisor/roadmap.py` — real degree-roadmap position, prerequisite links, GE-area equivalence | Bedrock (via `advisor/llm_bedrock.py`) |
+| `mining/` (local tool only) | `mining/co_occurrence.py` — course co-occurrence frequency, candidate 14–15 unit combos | Bedrock/Kiro (via `bedrock/client.py`), local Streamlit tool only |
 
 ---
 
-## Architecture
+## Architecture (as deployed)
 
 ```
-                 ┌────────────────────┐
-                 │   S3 (raw data)    │
-                 │  BA freshmen, CSV  │
-                 └─────────┬──────────┘
-                           │
-                           ▼
-          ┌───────────────────────────────┐
-          │   Lambda — pandas mining      │
-          │  course co-occurrence by term, │
-          │  candidate 14-15 unit combos,  │
-          │  each course tagged Major/GE/  │
-          │  GEM from the roadmap (labels  │
-          │  only, not the unit math) +    │
-          │  informational day/time from   │
-          │  E3/E4 post-census snapshots   │
-          └─────────────┬─────────────────┘
-                         │  (precomputed JSON)
-                         ▼
-          ┌───────────────────────────────┐
-          │   Bedrock — Kiro              │
-          │  explains/ranks combos,        │
-          │  answers staff "what-if" Q&A   │
-          └─────────────┬─────────────────┘
-                         │
-                         ▼
-          ┌───────────────────────────────┐
-          │   API Gateway + Lambda         │
-          │  serves recommendation + Q&A   │
-          │  as JSON                       │
-          └─────────────┬─────────────────┘
-                         │
-                         ▼
-          ┌───────────────────────────────┐
-          │   Streamlit frontend           │
-          │  pick a term → see lineup +    │
-          │  rationale → ask follow-ups    │
-          └───────────────────────────────┘
+                                   ┌──────────────────────────┐
+                                   │   CloudFront             │
+                                   │   (public HTTPS URL)     │
+                                   └────────────┬──────────────┘
+                                                │  origin (private, OAC-only)
+                                                ▼
+                        ┌──────────────────────────────────────┐
+                        │   S3 — FrontendBucket                 │
+                        │   frontend/web/*  (static HTML/JS)    │
+                        │   + schedule_engine's per-major        │
+                        │     artifacts (data/artifacts/*.json)  │
+                        └──────────────────┬─────────────────────┘
+                                           │  browser calls POST /advisor
+                                           ▼
+                        ┌──────────────────────────────────────┐
+                        │   API Gateway  →  AdvisorFunction      │
+                        │   (Lambda, Python)                     │
+                        │   1. advisor/roadmap.py computes real  │
+                        │      degree-roadmap/prerequisite facts │
+                        │   2. advisor/llm_bedrock.py has         │
+                        │      Bedrock narrate them (IAM auth,    │
+                        │      no API key)                       │
+                        └──────────────────┬─────────────────────┘
+                                           │  reads at call time
+                                           ▼
+                        ┌──────────────────────────────────────┐
+                        │   S3 — DataBucket (private)             │
+                        │   roadmap_advisor.json                  │
+                        │   (precomputed by advisor/build_data.py │
+                        │   from BSBAcourse_catalog.xlsx)          │
+                        └──────────────────────────────────────┘
 ```
 
-**Guiding principle:** *compute first, LLM explains.* Frequency counting,
-ranking, and unit-sum filtering are deterministic (pandas). Kiro never
-invents a schedule or does arithmetic — it explains, writes rationale, and
-answers ad hoc questions over data that's already been computed.
+Everything above is created by `infra/template.yaml` and deployed with
+`infra/deploy.sh` — see [Deploying](#deploying--redeploying).
+
+**Not shown above** because they're separate, local-only tools that don't
+touch AWS infrastructure at all:
+- `schedule_engine`'s CLI pipeline (`extract` → `generate` → `chat`) that
+  *produces* the per-major artifacts the frontend serves — see
+  [`schedule_engine/README.md`](schedule_engine/README.md).
+- `frontend/app.py` (Streamlit) + `mining/co_occurrence.py` +
+  `bedrock/client.py` — an earlier, still-functional local tool covering
+  pooled co-occurrence stats instead of real degree-roadmap data. See
+  [`PROCESS_WRITEUP.md`](PROCESS_WRITEUP.md) for its methodology.
 
 ---
 
 ## Components
 
-### 1. Data layer — S3 / `data/raw`
-- `Senior spring 2026.xlsx` — 1,106 students / 51,307 rows across all
-  majors; 169 on the Business Administration concentration path (7,210
-  rows). Primary enrollment source; freshman-year rows (each student's
-  earliest `Course Term`) are isolable for 156 of those 169 students, and
-  match the roadmap closely in spot-checks (see `CHANGES.md` and
-  `contextv67/claude-starter-context.md`).
-- `BSBAcourse_catalog.xlsx` — `Program_Roadmaps` (term-by-term degree map
-  for all 10 BSBA concentrations, 626 rows, with `req_type` flagging GEM
-  courses), plus `BA_Courses` and `GE_Courses`. Used to tag each freshman
-  course as Major / General Education / Major-Gen-Ed (GEM) — an
-  informational label attached to the mining output, not currently used to
-  change the unit-summing arithmetic (which stays a flat 14–15 target for
-  both Fall and Spring; see `contextv67/claude-starter-context.md` §7 for
-  why).
-- `E3E4_Course Offering and Waitlist_daily snapshot for Fall 2025 and
-  2026.csv` — received. Real per-section credit units are used for
-  unit-summing (a course missing from this file falls back to a flagged
-  estimate). Meeting day/time is only populated in snapshots taken on or
-  after 2025-10-20 (the post-Fall-2025-census fix date); where present,
-  it's surfaced as an informational enrichment — the most common current
-  meeting slot(s) per course — not a conflict-checked schedule assignment.
-- `E6_Student_Course_Scheduling_Pattern.xlsx` — used separately by
-  `mining/build_freshman_dataset.py` to build a likely-freshman roster (91
-  of 434 students, via a "≥50% of first-term courses are 1000-level"
-  rule). Not joined into the main co-occurrence pipeline: it shares no
-  student IDs with `Senior spring 2026.xlsx` and has no `Major` column.
-  Open question with Deborah/IRPA on what population it represents.
+### 1. `schedule_engine/` — schedule generation (CLI, not deployed)
+Turns the real Fall 2026 section catalog + degree roadmaps + historical
+freshman course-taking patterns into 4–8 real, conflict-checked JSON
+schedule blocks per major (beam search, scored on commuter-friendly time
+windows, popularity, seat health, and compactness). A counselor chat loop
+lets Claude propose edits in plain English, which a deterministic validator
+(`schedule_engine/validator.py`) either accepts or rejects — nothing invalid
+is ever saved. Output artifacts are copied into
+`frontend/web/data/artifacts/` and uploaded to S3 by `infra/deploy.sh` as
+part of the frontend bundle. Full detail: [`schedule_engine/README.md`](schedule_engine/README.md).
 
-Static for the hackathon — no live sync needed.
+### 2. `advisor/` — the deployed what-if advisor
+- `advisor/build_data.py` — precomputes `roadmap_advisor.json` from
+  `BSBAcourse_catalog.xlsx` (every major's full term-by-term roadmap, GE-area
+  equivalence groups, and whatever prerequisite text the catalog has —
+  honestly partial; see the module's docstring for exactly what is and isn't
+  covered).
+- `advisor/roadmap.py` — pure-Python lookups over that precomputed data: what
+  term is this course normally taken in, does swapping to another course
+  satisfy the same requirement slot, what would be delayed if this course
+  isn't completed. No LLM involved.
+- `advisor/llm_bedrock.py` — has Bedrock narrate the computed findings in
+  plain language. Layered prompt-injection defenses: the question is
+  spotlighted in delimiters with an explicit override-refusal rule,
+  server-side input validation rejects oversized/malformed input before any
+  LLM call, the model is never given tool-use (so a jailbreak can only
+  produce bad text, not take an action), and IAM/S3 permissions are scoped to
+  exactly what's needed.
 
-### 2. Mining layer — Lambda (Python/pandas)
-- Groups students by earliest `Course Term` to isolate freshman-year
-  courses (not `Enroll Term` — see term conventions in
-  `contextv67/claude-starter-context.md`)
-- Counts course co-occurrence per row within a term type (Fall/Spring)
-- Searches combinations of the most frequent courses for ones summing to
-  14–15 units — the same target for both terms
-- Tags each course with its `req_type` (Major / General Education /
-  Major-Gen-Ed) from the roadmap and its most common current meeting
-  slot(s) from E3/E4 — both informational, neither affects ranking or the
-  unit-sum search
-- Outputs a small structured JSON (course, term, frequency, unit count,
-  req_type, meeting patterns) — precomputed once to
-  `data/output/recommendation.json` rather than recomputed on every
-  request, since the dataset doesn't change during the hackathon
+### 3. `api/handlers/advisor.py` — the one deployed endpoint
+`POST /advisor` — takes `{question, major?, course?}`, runs the compute step
+above, has Bedrock narrate it, returns `{question, computed, answer}` (the
+raw computed findings are included alongside the narration, so nothing is
+hidden behind the LLM's phrasing). Authenticates to Bedrock via IAM
+(`bedrock:InvokeModel` on both the inference-profile and foundation-model
+ARNs — some newer Bedrock models are only invokable through a cross-region
+inference profile, not a bare model ID; see the `BedrockModelId` parameter's
+description in `infra/template.yaml` if you change models). No API key to
+manage.
 
-### 3. Reasoning layer — Bedrock (Kiro), local Streamlit tool only
-Two jobs, both grounded strictly in the precomputed JSON — never given raw
-student-level data: recommendation + rationale, and ad hoc Q&A
-("what if we can't offer X?") by re-filtering/re-explaining the same
-computed dataset. `bedrock/client.py` backs `frontend/app.py` (Streamlit)
-in-process, no Lambda involved. Not part of the deployed API (the deployed
-`/advisor` endpoint below also calls Bedrock, but through its own
-`advisor/llm_bedrock.py` grounded in the roadmap data, not this module).
+Two earlier endpoints were dropped along the way: `GET /recommendation` (no
+caller in the current frontend) and `POST /ask` (pooled mining-stats Q&A,
+replaced by `/advisor`'s real degree-roadmap grounding). Their supporting
+code (`api/handlers/recommendation.py`, `bedrock/client.py`) still exists
+for the local Streamlit tool but isn't part of the deployed API.
 
-### 4. API layer — API Gateway + Lambda + S3
-One endpoint: `POST /advisor` — a schedule "what-if" advisor. Takes a
-question (plus optional `major`/`course` context from whatever's on screen),
-computes real degree-roadmap/prerequisite facts deterministically
-(`advisor/roadmap.py`, precomputed from `BSBAcourse_catalog.xlsx` by
-`advisor/build_data.py`), and has Bedrock (`advisor/llm_bedrock.py`) narrate
-them — same compute-first/LLM-explains split as the local Streamlit tool's
-`bedrock/client.py`, just a different model/prompt for a different job. This
-replaced an earlier `POST /ask` (pooled mining-stats Q&A) and `GET
-/recommendation` — neither was specific to the major/block on screen, and
-`/recommendation` had no caller in the current frontend at all.
+### 4. Infrastructure — `infra/template.yaml` (SAM/CloudFormation)
+- **AdvisorFunction** (Lambda) — see above.
+- **DataBucket** (S3, private) — holds `roadmap_advisor.json`; only
+  `AdvisorFunction`'s execution role can read it.
+- **FrontendBucket** (S3, private) — origin for the static site; the only
+  reader is CloudFront, via Origin Access Control. No direct public access.
+- **FrontendDistribution** (CloudFront) — the public HTTPS URL, with an
+  explicit cache policy and a `PriceClass_100` edge footprint (US/Canada/
+  Europe — no reason to pay for global reach for a CSUB-only tool).
+- API Gateway is throttled (5 req/s, burst 10) as cheap defense-in-depth
+  against automated abuse, since every request bills a Bedrock call.
 
-Prompt-injection posture (see `advisor/llm_bedrock.py`'s docstring for
-detail): the student's question is spotlighted in delimiters with an
-explicit refusal rule for override/reveal-prompt attempts, server-side input
-validation rejects oversized/malformed input before any LLM call, the model
-is never given tool-use (so a jailbreak can only produce bad text, not take
-an action), and its IAM (`bedrock:InvokeModel`) and S3 permissions are
-scoped to exactly what it needs.
+`sam build`'s Python builder has no path-exclude mechanism (`.samignore`
+looks like it should provide one but doesn't — verified against SAM CLI
+1.163.0/aws-lambda-builders 1.65.0), so `infra/deploy.sh` prunes
+`data/raw/` (130MB+ of gitignored source xlsx/csv, which would otherwise
+push the Lambda past its 250MB unzipped limit) and test directories from the
+build output before deploying.
 
-Two S3 buckets, both created by `infra/template.yaml`:
-- **DataBucket** — private. Holds the precomputed roadmap-advisor cache
-  (`roadmap_advisor.json`) and, for the local Streamlit tool's benefit, the
-  mining cache (`recommendation.json`). `AdvisorFunction` reads the former
-  from S3 at call time (see `api/handlers/_data.py`) rather than bundling it
-  into the Lambda zip, so a stale/missing local file can't silently break a
-  deploy.
-- **FrontendBucket** — private. Serves `frontend/web/` (the
-  schedule_engine-driven UI — see below) through a CloudFront distribution
-  (`FrontendDistribution`) for a clean HTTPS URL; the bucket itself has no
-  public access at all, only readable via Origin Access Control from that
-  one distribution.
+### 5. Frontend — `frontend/web/`
+Static HTML/CSS/JS, no build step or framework. Loads
+`schedule_engine`'s generated artifacts client-side for the major/block
+picker, week-view calendar, and comparison view (all real data, computed
+client-side rationale, no network dependency); the "What-if advisor" box at
+the bottom calls `POST /advisor`. Full detail, including how to run it
+locally without any AWS deployment: [`frontend/web/README.md`](frontend/web/README.md).
 
-No API key to manage: `AdvisorFunction` authenticates to Bedrock via IAM
-(`bedrock:InvokeModel`, see `infra/template.yaml`), the same pattern
-`bedrock/client.py` already used for the local Streamlit tool.
+---
 
-Deploy with `infra/deploy.sh` (wraps `sam build`/`sam deploy`, then uploads
-`roadmap_advisor.json` to DataBucket, syncs `frontend/web/` to
-FrontendBucket, and invalidates the CloudFront cache so the sync is visible
-immediately) rather than calling `sam`/`aws s3`/`aws cloudfront` directly.
-`CodeUri` is the
-repo root so the Lambda can import the sibling `advisor`/`mining` packages,
-but `sam build`'s Python builder has no path-exclude mechanism —
-`.samignore` looks like it should provide one but doesn't (verified against
-SAM CLI 1.163.0 / aws-lambda-builders 1.65.0: neither references
-"samignore"; it only ever applied to a legacy zip-packaging flow this
-project doesn't use). Without pruning, the build pulls in the full
-`data/raw/` (130MB+ of source xlsx/csv) and test directories, which alone
-pushes the function past Lambda's 250MB unzipped limit — `deploy.sh` strips
-those paths from the build output before deploying. The Lambda's execution
-role has inline `bedrock:InvokeModel` and DataBucket-read policies (see
-`infra/template.yaml`), each scoped to exactly the resources it needs.
+## Deploying / redeploying
 
-### 5. Frontend
-Two frontends exist:
-- **`frontend/web/`** (current, deployed to FrontendBucket) — a static
-  HTML/JS site driven by `schedule_engine`'s generated per-major schedule
-  blocks (see `schedule_engine/README.md` and `frontend/web/README.md`),
-  with the `/advisor` what-if box wired to the API above.
-- **`frontend/app.py`** (Streamlit, local-only, not deployed) — the original
-  chair-facing tool: pick a term, see the recommended lineup and rationale
-  up front, with a Q&A box underneath. Calls `bedrock/client.py` and
-  `mining/co_occurrence.py` in-process, no API Gateway involved.
+```bash
+cd infra
+./deploy.sh --guided   # first time only -- walks through stack name/region
+./deploy.sh            # every time after
+```
+
+This builds and deploys the CloudFormation stack, regenerates and uploads
+`roadmap_advisor.json`, syncs `frontend/web/` to S3 (patching the live API
+URL into `config.js` automatically), and invalidates the CloudFront cache so
+changes show up immediately. No manual key setup needed — Bedrock auth is
+IAM-based.
+
+To find the **current** live URLs at any time (they're stack outputs, so
+they'll change if the stack is ever recreated under a different name):
+
+```bash
+aws cloudformation describe-stacks --stack-name csub-scheduling-tool \
+  --query "Stacks[0].Outputs" --output table
+```
+
+Requires AWS credentials with permission to manage Lambda, API Gateway, S3,
+CloudFront, and IAM roles, plus Bedrock model access enabled (console →
+Bedrock → Model access) for whatever model `BedrockModelId` points at, in
+the deploy region.
 
 ---
 
@@ -214,51 +210,65 @@ Two frontends exist:
 
 ```
 .
-├── README.md
-├── CHANGES.md                      # data feasibility findings, open questions
+├── README.md                # this file
+├── PROJECT_MAP.md            # plain-English repo tour for non-developers
+├── USER_GUIDE.md             # how to use the deployed tool (chairs/staff)
+├── PROCESS_WRITEUP.md        # mining/co_occurrence methodology + reproduction guide
+├── challenge_overview.md     # original hackathon problem statement
 ├── contextv67/
-│   └── claude-starter-context.md   # full scoping/decision history
-├── data/
-│   ├── raw/                        # gitignored — source xlsx/csv files
-│   └── output/                     # gitignored — precomputed mining JSON + freshman dataset CSVs
-├── mining/
-│   ├── co_occurrence.py            # pandas mining logic, unit tested against
-│   │                                # known first-term numbers (see contextv67)
-│   ├── build_freshman_dataset.py   # separate E6-based freshman roster builder
-│   ├── FRESHMAN_DATASET.md
+│   └── claude-starter-context.md   # scoping/decision history from the hackathon
+│
+├── advisor/                  # DEPLOYED: what-if advisor (roadmap engine + Bedrock)
+│   ├── build_data.py          # precomputes roadmap_advisor.json from the catalog xlsx
+│   ├── roadmap.py              # deterministic lookups (no LLM)
+│   ├── llm_bedrock.py          # Bedrock narration + prompt-injection defenses
 │   └── tests/
-├── bedrock/
-│   ├── prompts/
-│   │   ├── recommendation.md
-│   │   └── qa.md
-│   └── client.py
-├── api/
-│   ├── handlers/
-│   │   ├── recommendation.py
-│   │   └── ask.py
-│   └── tests/
+├── api/handlers/
+│   ├── advisor.py             # DEPLOYED: POST /advisor
+│   ├── _data.py                # S3-backed precomputed-data loaders
+│   └── recommendation.py      # not deployed -- local Streamlit tool only
 ├── infra/
-│   ├── template.yaml                # SAM template (API Gateway + Lambda)
-│   └── deploy.sh                    # build + prune + deploy — see note below
-└── frontend/
-    ├── app.py                       # Streamlit
-    ├── requirements.txt             # frontend-only deps (streamlit); not
-    │                                 # bundled into the Lambda package
-    └── FRONTEND_SPEC.md             # feature/design notes for the UI
+│   ├── template.yaml           # SAM/CloudFormation: Lambda, API Gateway, S3, CloudFront
+│   └── deploy.sh                # build + prune + deploy + publish data/frontend
+│
+├── schedule_engine/           # CLI pipeline: real sections -> per-major schedule blocks
+│   ├── generator.py / validator.py / chat.py / catalog.py
+│   └── README.md
+├── frontend/
+│   ├── web/                    # DEPLOYED: the static site (S3 + CloudFront)
+│   │   ├── index.html / app.js / config.js
+│   │   ├── data/artifacts/     # bundled copies of schedule_engine's output
+│   │   └── README.md
+│   └── app.py                  # Streamlit, local-only, not deployed
+│
+├── mining/                    # local-only: pooled co-occurrence stats (see PROCESS_WRITEUP.md)
+│   ├── co_occurrence.py
+│   └── FRESHMAN_DATASET.md
+├── bedrock/
+│   └── client.py               # backs the local Streamlit tool only
+│
+├── data/
+│   ├── raw/                    # gitignored -- source xlsx/csv (not in git)
+│   └── output/                 # gitignored -- precomputed JSON caches
+└── artifacts/                  # schedule_engine's generated per-major schedules
 ```
 
 ---
 
 ## Data handling
 
-CSU Bakersfield is a Hispanic-Serving Institution. All data in this repo
-uses randomly assigned, non-reversible student IDs. Do not attempt to
-re-identify students or join against any external roster.
+CSU Bakersfield is a Hispanic-Serving Institution. All student-level data
+used anywhere in this repo uses randomly assigned, non-reversible IDs. Do
+not attempt to re-identify students or join against any external roster.
+Source data files (`data/raw/*.xlsx`, `*.csv`) are gitignored and never
+committed — they exist only on machines that have been given the real
+extracts directly.
 
 ---
 
-## Team
+## Origin
 
-4 backend developers. See `contextv67/claude-starter-context.md` for the
-scoping/decision history; day-by-day task assignments aren't tracked in
-this repo.
+Built for a 4-day hackathon (see [`challenge_overview.md`](challenge_overview.md)
+for the original problem statement and [`contextv67/claude-starter-context.md`](contextv67/claude-starter-context.md)
+for the full scoping/decision history). AWS Bedrock, Kiro, and Claude API
+tokens were available for the build.

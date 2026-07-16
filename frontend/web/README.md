@@ -102,9 +102,11 @@ add/remove a filename there (and make sure the matching file exists in
 
 ## Deploying as a real static site
 
-`infra/deploy.sh` provisions an S3 bucket (`FrontendBucket`, static website
-hosting) and syncs this whole folder to it, patching `API_BASE_URL` along
-the way (see above) — just run it from `infra/`. Any other static host works
-too (CloudFront in front of the same bucket, GitHub Pages, Netlify); upload
-`index.html`, `styles.css`, `config.js`, `app.js`, and `data/` as-is and set
+`infra/deploy.sh` provisions a private S3 bucket (`FrontendBucket`) behind a
+CloudFront distribution (public HTTPS URL, `FrontendUrl` stack output) and
+syncs this whole folder to it, patching `API_BASE_URL` along the way (see
+above) — just run it from `infra/`. The bucket itself has no public access;
+CloudFront reads it via Origin Access Control. Any other static host works
+too (GitHub Pages, Netlify, a plain public S3 bucket); upload `index.html`,
+`styles.css`, `config.js`, `app.js`, and `data/` as-is and set
 `API_BASE_URL` in `config.js` first if you want the live advisor.

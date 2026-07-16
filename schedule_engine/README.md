@@ -1,6 +1,6 @@
 # schedule_engine — CSUB freshman block-schedule engine
 
-Turns real CSUB data into **5–10 JSON cohort schedule blocks** per major, then
+Turns real CSUB data into **4–8 JSON cohort schedule blocks** per major, then
 lets a counselor reshape them (whole cohort or one student) through a chat
 loop where Claude edits the JSON and a deterministic validator guarantees
 every result is real, conflict-free, and requirement-complete.
