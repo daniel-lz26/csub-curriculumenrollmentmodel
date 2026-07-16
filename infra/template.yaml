@@ -15,10 +15,13 @@ Description: >
 Parameters:
   BedrockModelId:
     Type: String
-    Default: anthropic.claude-haiku-4-5-20251001-v1:0
+    Default: us.anthropic.claude-haiku-4-5-20251001-v1:0
     Description: >
-      Bedrock model ID invoked by advisor/llm_bedrock.py. Overridable
-      per-stage without a redeploy of application code.
+      Bedrock model/inference-profile ID invoked by advisor/llm_bedrock.py.
+      Newer models are often only invokable via a cross-region inference
+      profile ID (the "us." prefix), not the bare model ID -- run `aws
+      bedrock list-inference-profiles` to find the right one if you change
+      this. Overridable per-stage without a redeploy of application code.
 
 Globals:
   Function:
@@ -151,11 +154,18 @@ Resources:
           BEDROCK_MODEL_ID: !Ref BedrockModelId
           DATA_BUCKET: !Ref DataBucket
       Policies:
+        # Cross-region inference profiles (the "us." prefix in
+        # BedrockModelId's default) need InvokeModel on both the profile
+        # itself and the underlying foundation models it can fan out to,
+        # which may be in other US regions -- see AWS's cross-region
+        # inference IAM docs. A plain non-profile model ID only ever needs
+        # the foundation-model grant, so this covers both cases.
         - Statement:
             - Effect: Allow
               Action: bedrock:InvokeModel
               Resource:
-                - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/*"
+                - "arn:aws:bedrock:*::foundation-model/*"
+                - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/*"
         - Statement:
             - Effect: Allow
               Action: s3:GetObject

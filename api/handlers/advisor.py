@@ -32,7 +32,7 @@ MAX_CONTEXT_FIELD_LENGTH = 100
 # input. Newline/tab/carriage-return are still allowed for readability.
 _DISALLOWED_CONTROL_CHARS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 
-DEFAULT_MODEL = os.environ.get("BEDROCK_MODEL_ID", "anthropic.claude-haiku-4-5-20251001-v1:0")
+DEFAULT_MODEL = os.environ.get("BEDROCK_MODEL_ID", "us.anthropic.claude-haiku-4-5-20251001-v1:0")
 
 
 def _validate_question(question: str) -> str | None:
