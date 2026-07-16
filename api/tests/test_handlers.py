@@ -1,10 +1,13 @@
-"""Contract tests for the API Gateway-shaped Lambda handlers.
+"""Contract tests for the recommendation Lambda handler (event/context shape
+matching API Gateway's REST API (v1) Lambda proxy integration -- see
+infra/template.yaml). Not currently deployed (see api/handlers/advisor.py's
+docstring / infra/template.yaml -- nothing calls GET /recommendation), kept
+for the local Streamlit tool (frontend/app.py) which still calls
+bedrock/client.py's generate_recommendation directly.
 
-Builds the same event shape API Gateway's REST API (v1) Lambda proxy
-integration sends (see infra/template.yaml) and asserts on statusCode/body.
-generate_recommendation/answer_question are monkeypatched so these run
-without network access, an ANTHROPIC_API_KEY, or a precomputed
-data/output/recommendation.json on disk.
+generate_recommendation is monkeypatched so this runs without network access,
+an ANTHROPIC_API_KEY, or a precomputed data/output/recommendation.json on
+disk. See api/tests/test_advisor_handler.py for the deployed /advisor endpoint.
 """
 from __future__ import annotations
 
@@ -12,7 +15,7 @@ import json
 
 import pytest
 
-from api.handlers import ask, recommendation
+from api.handlers import recommendation
 
 FAKE_MINED_DATA = {
     "major": "Business Administration",
@@ -46,7 +49,6 @@ FAKE_MINED_DATA = {
 @pytest.fixture(autouse=True)
 def _mock_mined_data(monkeypatch):
     monkeypatch.setattr(recommendation, "load_mined_data", lambda: FAKE_MINED_DATA)
-    monkeypatch.setattr(ask, "load_mined_data", lambda: FAKE_MINED_DATA)
 
 
 class TestRecommendationHandler:
@@ -93,34 +95,3 @@ class TestRecommendationHandler:
         body = json.loads(resp["body"])
         assert body["rationale"] is None
         assert not called
-
-
-class TestAskHandler:
-    def test_returns_200_with_answer_for_json_string_body(self, monkeypatch):
-        monkeypatch.setattr(ask, "answer_question", lambda q, data: "42 sections.")
-        event = {"body": json.dumps({"question": "How many sections?"})}
-        resp = ask.handler(event)
-        assert resp["statusCode"] == 200
-        body = json.loads(resp["body"])
-        assert body["answer"] == "42 sections."
-
-    def test_returns_200_with_already_parsed_dict_body(self, monkeypatch):
-        monkeypatch.setattr(ask, "answer_question", lambda q, data: "ok")
-        resp = ask.handler({"body": {"question": "What if?"}})
-        assert resp["statusCode"] == 200
-
-    def test_returns_400_for_missing_question(self):
-        resp = ask.handler({"body": json.dumps({})})
-        assert resp["statusCode"] == 400
-
-    def test_returns_400_for_blank_question(self):
-        resp = ask.handler({"body": json.dumps({"question": "   "})})
-        assert resp["statusCode"] == 400
-
-    def test_returns_503_when_llm_unavailable(self, monkeypatch):
-        def _raise(q, data):
-            raise RuntimeError("ANTHROPIC_API_KEY is not set")
-
-        monkeypatch.setattr(ask, "answer_question", _raise)
-        resp = ask.handler({"body": json.dumps({"question": "Why?"})})
-        assert resp["statusCode"] == 503

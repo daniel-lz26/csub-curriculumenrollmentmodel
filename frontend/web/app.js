@@ -494,7 +494,9 @@ function renderComparison() {
 }
 
 /* ============================================================
-   Rendering — Q&A (legacy /ask endpoint, pooled mining dataset)
+   Rendering — schedule advisor (/advisor endpoint: what-if/prerequisite
+   questions grounded in the real degree-roadmap data, not the pooled
+   mining dataset the old /ask endpoint used)
    ============================================================ */
 function renderQaThread() {
   if (!state.qaThread.length) {
@@ -515,8 +517,8 @@ function renderQaThread() {
 
 function classifyError(msg) {
   const lower = (msg || "").toLowerCase();
-  if (/credential|access.?denied|not set|unrecognizedclient|forbidden/.test(lower)) {
-    return `Bedrock access isn't configured for this environment (${msg}). Contact whoever owns AWS deployment.`;
+  if (/credential|access.?denied|not set|openai|secret|forbidden/.test(lower)) {
+    return `The advisor isn't configured for this environment (${msg}). Contact whoever owns AWS deployment.`;
   }
   if (/throttl|timeout|rate|temporar|503|529/.test(lower)) {
     return "This is taking longer than usual — try again in a moment.";
@@ -530,7 +532,7 @@ async function submitQuestion() {
 
   if (!API_BASE_URL) {
     state.qaThread.push({ role: "q", text: question });
-    state.qaThread.push({ role: "a", text: "Live Q&A requires a deployed API — set API_BASE_URL in config.js. In demo mode this assistant can't answer questions.", error: true });
+    state.qaThread.push({ role: "a", text: "Live advisor requires a deployed API — set API_BASE_URL in config.js. In demo mode this assistant can't answer questions.", error: true });
     el.qaInput.value = "";
     renderQaThread();
     return;
@@ -543,10 +545,13 @@ async function submitQuestion() {
   el.qaInput.value = "";
 
   try {
-    const resp = await fetch(`${API_BASE_URL.replace(/\/$/, "")}/ask`, {
+    const resp = await fetch(`${API_BASE_URL.replace(/\/$/, "")}/advisor`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question }),
+      // `major` is whatever's currently on screen -- the advisor also
+      // regex-extracts a course code from the question text itself, so
+      // this is a hint, not a requirement.
+      body: JSON.stringify({ question, major: state.artifact ? state.artifact.major : undefined }),
     });
     const body = await resp.json().catch(() => ({}));
     if (!resp.ok) throw new Error(body.error || `API returned ${resp.status}`);

@@ -30,11 +30,13 @@ const MAJOR_ARTIFACTS = [
 // Regenerate + re-copy into data/artifacts/ to refresh; there's nothing to
 // point at a deployed URL for here yet.
 
-// ---- Legacy Q&A endpoint (mining/co_occurrence.py + bedrock/client.py) ----
-// The free-text "Ask a question" box still calls the older recommendation
-// API (api/handlers/ask.py), which answers over the pooled, all-concentration
-// mining dataset — not the specific major/block currently on screen. Leave
-// API_BASE_URL "" to run it in offline/demo mode (Q&A disabled, since there's
-// no Bedrock call to make without a deployed API); set it to the "ApiUrl"
-// output from `infra/deploy.sh` to enable live Q&A.
+// ---- What-if advisor endpoint (advisor/roadmap.py + advisor/llm_openai.py) ----
+// The "What-if advisor" box calls POST /advisor (api/handlers/advisor.py),
+// which computes real degree-roadmap/prerequisite facts for the major
+// currently on screen and has OpenAI narrate them -- not the pooled,
+// all-concentration mining dataset the old /ask endpoint used. Leave
+// API_BASE_URL "" to run it in offline/demo mode (advisor disabled, since
+// there's no API to call without a deployment); infra/deploy.sh sets this
+// automatically in the copy of config.js it uploads to FrontendBucket, so
+// this stays blank here on purpose for local `python -m http.server` runs.
 const API_BASE_URL = "";

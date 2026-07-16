@@ -15,6 +15,7 @@ __pycache__/
 *.pyc
 frontend/
 mining/tests/
+advisor/tests/
 api/tests/
 infra/
 data/raw/

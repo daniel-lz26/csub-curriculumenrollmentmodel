@@ -1,19 +1,20 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  API Gateway + Lambda + S3 for the BSBA Freshman Scheduling Tool. AskFunction
-  serves the legacy Q&A endpoint over the precomputed mining output (stored in
-  DataBucket, not bundled -- see api/handlers/_data.py). FrontendBucket hosts
-  the static site in frontend/web/ (schedule_engine artifacts + the Q&A UI).
-  CodeUri is the repo root so the Lambda can import the sibling `mining` and
-  `bedrock` packages unchanged.
+  API Gateway + Lambda + S3 for the BSBA Freshman Scheduling Tool.
+  AdvisorFunction serves the schedule "what-if" advisor (OpenAI-backed,
+  grounded in a precomputed degree-roadmap/prerequisite dataset stored in
+  DataBucket -- see api/handlers/advisor.py and advisor/roadmap.py).
+  FrontendBucket hosts the static site in frontend/web/ (schedule_engine
+  artifacts + the advisor UI). CodeUri is the repo root so the Lambda can
+  import the sibling `advisor`/`mining` packages unchanged.
 
 Parameters:
-  BedrockModelId:
+  OpenAIModel:
     Type: String
-    Default: anthropic.claude-3-haiku-20240307-v1:0
+    Default: gpt-4o-mini
     Description: >
-      Bedrock model ID invoked by bedrock/client.py. Overridable per-stage
+      OpenAI model invoked by advisor/llm_openai.py. Overridable per-stage
       without a redeploy of application code.
 
 Globals:
@@ -28,23 +29,32 @@ Globals:
     # endpoint. The actual GET/POST responses still need
     # Access-Control-Allow-Origin set by the Lambda itself (Lambda proxy
     # integration doesn't inject headers into non-preflight responses) — see
-    # CORS_HEADERS in api/handlers/ask.py.
+    # CORS_HEADERS in api/handlers/advisor.py.
     Cors:
       AllowOrigin: "'*'"
       AllowHeaders: "'Content-Type'"
       AllowMethods: "'GET,POST,OPTIONS'"
+    # Cheap defense-in-depth against automated prompt-injection probing or
+    # runaway cost (each request calls the OpenAI API, which is billed):
+    # caps the whole stage well above normal interactive use.
+    MethodSettings:
+      - ResourcePath: "/*"
+        HttpMethod: "*"
+        ThrottlingRateLimit: 5
+        ThrottlingBurstLimit: 10
 
 Resources:
-  # Precomputed mining cache (recommendation.json) that AskFunction reads at
-  # call time via boto3 (see api/handlers/_data.py) instead of bundling it
-  # into the Lambda zip. Private -- only the Lambda's execution role can read
-  # it. Populated/refreshed by infra/deploy.sh, not by application code.
+  # Precomputed data AdvisorFunction reads at call time via boto3 (see
+  # api/handlers/_data.py) instead of bundling it into the Lambda zip:
+  # roadmap_advisor.json (advisor/build_data.py) and, for the local-only
+  # Streamlit tool's benefit, recommendation.json (mining/co_occurrence.py).
+  # Private -- only the Lambda's execution role can read it.
   DataBucket:
     Type: AWS::S3::Bucket
 
-  # Static hosting for frontend/web/ (schedule_engine artifacts + the Q&A
-  # UI). Public read + website hosting since this is a public-facing staff
-  # tool with no auth in front of it yet (see template's CORS note above).
+  # Static hosting for frontend/web/ (schedule_engine artifacts + the
+  # advisor UI). Public read + website hosting since this is a public-facing
+  # staff/student tool with no auth in front of it yet (see CORS note above).
   FrontendBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -68,29 +78,41 @@ Resources:
             Action: s3:GetObject
             Resource: !Sub "${FrontendBucket.Arn}/*"
 
-  AskFunction:
+  # Holds the OpenAI API key. Created with a placeholder value -- the real
+  # key is never a CloudFormation parameter (which would persist it in the
+  # stack's parameter history). Populate it once, out-of-band, with
+  # infra/set_openai_key.sh after the first deploy.
+  OpenAIApiKeySecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: >
+        OpenAI API key for AdvisorFunction. Populate with
+        infra/set_openai_key.sh -- never put the real key in this template.
+      SecretString: '{"OPENAI_API_KEY":"REPLACE_ME"}'
+
+  AdvisorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: api.handlers.ask.handler
+      Handler: api.handlers.advisor.handler
       Environment:
         Variables:
-          BEDROCK_MODEL_ID: !Ref BedrockModelId
+          OPENAI_MODEL: !Ref OpenAIModel
+          OPENAI_SECRET_ARN: !Ref OpenAIApiKeySecret
           DATA_BUCKET: !Ref DataBucket
       Policies:
         - Statement:
             - Effect: Allow
-              Action: bedrock:InvokeModel
-              Resource:
-                - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/*"
+              Action: secretsmanager:GetSecretValue
+              Resource: !Ref OpenAIApiKeySecret
         - Statement:
             - Effect: Allow
               Action: s3:GetObject
               Resource: !Sub "${DataBucket.Arn}/*"
       Events:
-        PostAsk:
+        PostAdvisor:
           Type: Api
           Properties:
-            Path: /ask
+            Path: /advisor
             Method: post
 
 Outputs:
@@ -99,8 +121,9 @@ Outputs:
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
   DataBucketName:
     Description: >
-      S3 bucket holding the precomputed mining cache (recommendation.json)
-      that AskFunction reads at runtime. infra/deploy.sh uploads it here.
+      S3 bucket holding precomputed data (roadmap_advisor.json,
+      recommendation.json) that AdvisorFunction/local tools read.
+      infra/deploy.sh uploads to it.
     Value: !Ref DataBucket
   FrontendBucketName:
     Description: S3 bucket for the static frontend. infra/deploy.sh syncs frontend/web/ here.
@@ -108,3 +131,8 @@ Outputs:
   FrontendWebsiteUrl:
     Description: Static website endpoint for the frontend -- open this URL to use the tool.
     Value: !GetAtt FrontendBucket.WebsiteURL
+  OpenAIApiKeySecretArn:
+    Description: >
+      Secrets Manager secret ARN for the OpenAI key -- pass to
+      infra/set_openai_key.sh (or populate via the console/CLI directly).
+    Value: !Ref OpenAIApiKeySecret

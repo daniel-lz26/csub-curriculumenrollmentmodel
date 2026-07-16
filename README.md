@@ -134,33 +134,53 @@ Static for the hackathon — no live sync needed.
   `data/output/recommendation.json` rather than recomputed on every
   request, since the dataset doesn't change during the hackathon
 
-### 3. Reasoning layer — Bedrock (Kiro)
+### 3. Reasoning layer — Bedrock (Kiro), local Streamlit tool only
 Two jobs, both grounded strictly in the precomputed JSON — never given raw
-student-level data:
-- **Recommendation + rationale:** turns the top-ranked combo into a
-  staff-readable explanation with a percentage basis and a runner-up option
-- **Ad hoc Q&A:** answers staff follow-up questions ("what if we can't
-  offer X?") by re-filtering/re-explaining the same computed dataset
+student-level data: recommendation + rationale, and ad hoc Q&A
+("what if we can't offer X?") by re-filtering/re-explaining the same
+computed dataset. `bedrock/client.py` backs `frontend/app.py` (Streamlit)
+in-process, no Lambda involved. Not part of the deployed API — see below.
 
 ### 4. API layer — API Gateway + Lambda + S3
-One endpoint: `POST /ask` — takes a staff question, returns Kiro's answer
-grounded in the computed data. (An earlier `GET /recommendation` endpoint
-was dropped — nothing in the current frontend called it; `bedrock/client.py`'s
-`generate_recommendation` still backs the Streamlit tool below directly,
-in-process, with no Lambda involved.)
+One endpoint: `POST /advisor` — a schedule "what-if" advisor. Takes a
+question (plus optional `major`/`course` context from whatever's on screen),
+computes real degree-roadmap/prerequisite facts deterministically
+(`advisor/roadmap.py`, precomputed from `BSBAcourse_catalog.xlsx` by
+`advisor/build_data.py`), and has OpenAI (`advisor/llm_openai.py`) narrate
+them — same compute-first/LLM-explains split as the Bedrock/Kiro layer
+above, different provider. This replaced an earlier `POST /ask` (pooled
+mining-stats Q&A over Bedrock) and `GET /recommendation` — neither was
+specific to the major/block on screen, and `/recommendation` had no caller
+in the current frontend at all.
+
+Prompt-injection posture (see `advisor/llm_openai.py`'s docstring for
+detail): the student's question is spotlighted in delimiters with an
+explicit refusal rule for override/reveal-prompt attempts, server-side input
+validation rejects oversized/malformed input before any LLM call, the model
+is never given tool-use (so a jailbreak can only produce bad text, not take
+an action), and both its Secrets Manager and S3 permissions are scoped to
+exactly the one secret/bucket it needs.
 
 Two S3 buckets, both created by `infra/template.yaml`:
-- **DataBucket** — private. Holds the precomputed mining cache
-  (`recommendation.json`). `AskFunction` reads it from S3 at call time (see
-  `api/handlers/_data.py`) rather than bundling it into the Lambda zip, so a
-  stale/missing local file can't silently break a deploy.
+- **DataBucket** — private. Holds the precomputed roadmap-advisor cache
+  (`roadmap_advisor.json`) and, for the local Streamlit tool's benefit, the
+  mining cache (`recommendation.json`). `AdvisorFunction` reads the former
+  from S3 at call time (see `api/handlers/_data.py`) rather than bundling it
+  into the Lambda zip, so a stale/missing local file can't silently break a
+  deploy.
 - **FrontendBucket** — public, static website hosting. Serves
   `frontend/web/` (the schedule_engine-driven UI — see below).
 
+The OpenAI API key lives in Secrets Manager (`OpenAIApiKeySecret`), created
+with a placeholder value by `template.yaml` — the real key is never a
+CloudFormation parameter (which would persist it in stack history). Run
+`infra/set_openai_key.sh` once after the first deploy to store it (prompts
+for the key, never echoes it or puts it in shell history).
+
 Deploy with `infra/deploy.sh` (wraps `sam build`/`sam deploy`, then uploads
-`recommendation.json` to DataBucket and syncs `frontend/web/` to
+`roadmap_advisor.json` to DataBucket and syncs `frontend/web/` to
 FrontendBucket) rather than calling `sam`/`aws s3` directly. `CodeUri` is the
-repo root so the Lambda can import the sibling `mining`/`bedrock` packages,
+repo root so the Lambda can import the sibling `advisor`/`mining` packages,
 but `sam build`'s Python builder has no path-exclude mechanism —
 `.samignore` looks like it should provide one but doesn't (verified against
 SAM CLI 1.163.0 / aws-lambda-builders 1.65.0: neither references
@@ -169,16 +189,15 @@ project doesn't use). Without pruning, the build pulls in the full
 `data/raw/` (130MB+ of source xlsx/csv) and test directories, which alone
 pushes the function past Lambda's 250MB unzipped limit — `deploy.sh` strips
 those paths from the build output before deploying. The Lambda's execution
-role has inline `bedrock:InvokeModel` and DataBucket-read policies (see
-`infra/template.yaml`); Bedrock access needed since `bedrock/client.py`
-calls Bedrock Runtime directly via IAM, not an API key.
+role has inline `secretsmanager:GetSecretValue` and DataBucket-read policies
+(see `infra/template.yaml`), each scoped to exactly the one resource it needs.
 
 ### 5. Frontend
 Two frontends exist:
 - **`frontend/web/`** (current, deployed to FrontendBucket) — a static
   HTML/JS site driven by `schedule_engine`'s generated per-major schedule
   blocks (see `schedule_engine/README.md` and `frontend/web/README.md`),
-  with the `/ask` Q&A box wired to the API above.
+  with the `/advisor` what-if box wired to the API above.
 - **`frontend/app.py`** (Streamlit, local-only, not deployed) — the original
   chair-facing tool: pick a term, see the recommended lineup and rationale
   up front, with a Q&A box underneath. Calls `bedrock/client.py` and

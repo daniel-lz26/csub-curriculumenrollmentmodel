@@ -44,27 +44,36 @@ opened as a file."
   sections) is excluded from the grid and explicitly listed underneath it
   instead of being silently dropped.
 
-## The Q&A box is separate and legacy
+## The what-if advisor box
 
-"Ask a question" at the bottom still calls the older `/ask` API
-(`api/handlers/ask.py` → `bedrock/client.py`), grounded in the pooled,
-all-concentration `mining/co_occurrence.py` output — general historical
-background, not specific to whatever block/major is currently on screen.
-It needs a deployed API to do anything (see below); with `API_BASE_URL`
-left blank it says so rather than pretending to answer.
+"What-if advisor" at the bottom calls `POST /advisor`
+(`api/handlers/advisor.py`), which computes real degree-roadmap and
+prerequisite facts for the major currently on screen
+(`advisor/roadmap.py`, precomputed from `BSBAcourse_catalog.xlsx` — see
+`advisor/build_data.py`) and has OpenAI (`advisor/llm_openai.py`) narrate
+them. It's grounded in the *specific* major on screen (sent as request
+context), unlike the older `/ask` endpoint it replaced, which only answered
+over pooled all-concentration mining stats. Where the catalog doesn't list a
+prerequisite or GE-area equivalency, the advisor says so explicitly rather
+than guessing — see `advisor/roadmap.py`'s docstring for exactly what is and
+isn't covered. It needs a deployed API to do anything (see below); with
+`API_BASE_URL` left blank it says so rather than pretending to answer.
 
-## Point Q&A at the real AWS API
+## Point the advisor at the real AWS API
 
 `infra/deploy.sh` does this for you automatically when you run it: it reads
 the deployed `ApiUrl` stack output and patches it into the copy of
-`config.js` it uploads to FrontendBucket, so the live site always has Q&A
-enabled without editing this repo. The repo's own `config.js` stays blank on
-purpose, so local `python -m http.server` runs stay in offline/demo mode.
+`config.js` it uploads to FrontendBucket, so the live site always has the
+advisor enabled without editing this repo. The repo's own `config.js` stays
+blank on purpose, so local `python -m http.server` runs stay in offline/demo
+mode. You also need to run `infra/set_openai_key.sh` once after the first
+deploy — the stack creates the OpenAI secret with a placeholder value, so
+`/advisor` returns a 503 until the real key is stored.
 
-If you want live Q&A while developing locally too, set `API_BASE_URL` in
-your local `config.js` to the stack's `ApiUrl` output (no trailing slash
-needed) — just don't commit that change. The status ribbon at the top
-reflects whether Q&A is live or offline either way.
+If you want the live advisor while developing locally too, set
+`API_BASE_URL` in your local `config.js` to the stack's `ApiUrl` output (no
+trailing slash needed) — just don't commit that change. The status ribbon at
+the top reflects whether it's live or offline either way.
 
 There is no deployed endpoint for the schedule_engine artifacts themselves —
 that's still a CLI-only pipeline (see `schedule_engine/README.md`); the
@@ -99,4 +108,4 @@ hosting) and syncs this whole folder to it, patching `API_BASE_URL` along
 the way (see above) — just run it from `infra/`. Any other static host works
 too (CloudFront in front of the same bucket, GitHub Pages, Netlify); upload
 `index.html`, `styles.css`, `config.js`, `app.js`, and `data/` as-is and set
-`API_BASE_URL` in `config.js` first if you want live Q&A.
+`API_BASE_URL` in `config.js` first if you want the live advisor.
