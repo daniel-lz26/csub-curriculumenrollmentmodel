@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSBA Freshman Scheduling Recommendation — CSUB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   TOKENS — CSUB brand blue/gold + tokens the pasted site CSS
+   references but doesn't define in this excerpt.
+   ============================================================ */
+:root{
+  --color-primary: #003594;         /* CSUB blue, PMS 661 */
+  --color-primary-deep: #001F4D;
+  --color-gold: #FFC72C;            /* CSUB gold, PMS 123 */
+  --color-gold-deep: #B9860A;
+
+  --font-family: 'Inter', -apple-system, "Helvetica Neue", sans-serif;
+  --font-family-headings: 'Newsreader', Georgia, serif;
+  --font-family-mono: 'IBM Plex Mono', "Roboto Mono", monospace;
+
+  --border-radius: 10px;
+  --border-radius-button: 6px;
+  --box-shadow: 4px;
+  --box-shadow-blur: 20px;
+  --box-shadow-usability: 2px;
+
+  --color-term-element-major: var(--color-primary);
+  --color-term-element-general-education: #5B6472;
+  --color-term-element-elective: var(--color-gold-deep);
+  --color-term-element-todo: #9CA3AF;
+  --color-term-element-unknown: #B23A2E;
+
+  --banner-offset: 0px;
+}
+
+/* ============================================================
+   PASTE OF THE CSUB SITE CSS (as supplied), unmodified.
+   ============================================================ */
+:root{--gap: 2.5vw}@supports(font-size: clamp(1em, 2.5vw, 2em)){:root{--gap: clamp(1rem, 2.5vw, 2rem)}}:root{--color-border-gray-dark: #656565;--color-border-gray: #ccc;--color-border-gray-light: #eee;--color-text-gray: #666;--color-universal-background-gray: #f6f6f6;--color-sticky-note: #ff9;--color-shadow: rgba(0,0,0,.1);--color-alt-table-rows: #fcfcfc;--color-info: var(--color-universal-background-gray);--color-success: #1F7F35;--color-warning: #ffc107;--color-error: #CD402D;--color-info-top-banner: #ffee00;--text-decoration-thickness: 1px;--vertical-spacing-clamp: 2.5vw}@supports(font-size: clamp(1.5em, 6cqw, 6em)){:root{--vertical-spacing-clamp: clamp(1.5em, 6cqw, 6em)}}:root{--icon-size: 3rem;--icon-size-M: calc(var(--icon-size)/2);--icon-size-S: calc(var(--icon-size)/3);--branded-border-width: 6px;--border-radius-ui: 4px;--button-padding: .75em 1.5em;--backdrop-filter: saturate(200%) blur(var(--gap))}*{margin:0;padding:0;box-sizing:border-box}html{font:100%/1.5 var(--font-family),"Helvetica Neue",sans-serif;scroll-behavior:smooth}h1,.h1,h2,h3,dt,h4,h5,h6{font-weight:bold;font-family:var(--font-family-headings),"Helvetica Neue",Arial,sans-serif}body{min-height:100vh;position:relative;color:#1a1a1a;background:#fff}
+a{color:var(--color-primary);text-decoration:underline;text-decoration-color:var(--color-primary);text-underline-position:under;transition:all .2s ease}
+a:hover{text-decoration-color:rgba(0,0,0,0)}
+h1,*.h1{font-size:2.75rem;font-size:clamp(1.9rem,4cqw,2.75rem);line-height:1.15}
+h2,*.h2{font-size:1.9rem;font-size:clamp(1.35rem,3.2cqw,1.9rem);line-height:1.25}
+h2+p,*.h2+p{margin-top:.75em}
+h3,*.h3{font-size:1.25rem;font-size:clamp(1.05rem,2.6cqw,1.25rem);line-height:1.4}
+h3+p,*.h3+p{margin-top:.6em}
+p{margin-bottom:1.25em}
+p.intro{font-size:1.15rem;line-height:1.55;color:var(--color-text-gray);max-width:52em}
+li{margin-bottom:.6em}
+.grid{max-width:1280px;margin:0 auto}
+header,.page-header,.section{padding-left:var(--gap) !important;padding-right:var(--gap) !important}
+button{font:.875rem/1.5 var(--font-family),sans-serif;appearance:none;background:none;border:none;display:inline;outline:none;cursor:pointer;padding:0;white-space:nowrap;color:inherit}
+.button{display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:.6em;padding:.7em 1.4em;color:#fff;background:var(--color-primary);text-decoration:none;text-align:center;border-radius:var(--border-radius-button);font-weight:600;font-size:.9rem;border:1px solid var(--color-primary)}
+.button:hover{background:var(--color-primary-deep);border-color:var(--color-primary-deep)}
+.button.button-secondary{color:var(--color-primary);background:#fff;border:1px solid var(--color-border-gray-dark)}
+.button.button-secondary:hover{background:var(--color-universal-background-gray)}
+.button:focus{outline:2px solid #000;outline-offset:2px}
+.tag{display:inline-flex;align-items:center;padding:.3em .8em;border-radius:999px;font-size:.75rem;font-weight:600;letter-spacing:.02em}
+.section{clear:both;background:#fff}
+.section .grid{padding-bottom:var(--vertical-spacing-clamp);display:flex;flex-direction:column;gap:var(--gap)}
+.section-header{padding-top:calc(var(--vertical-spacing-clamp)*.6);display:flex;flex-direction:column;align-items:flex-start;gap:calc(var(--gap)/2)}
+.info-notice{padding:1.25em 1.5em;background:var(--color-universal-background-gray);border:1px solid var(--color-border-gray);border-radius:var(--border-radius)}
+.notification-banner{border-radius:var(--border-radius);padding:0}
+.notification-banner .grid{padding:.85em 1.1em;display:flex;flex-direction:row;align-items:center;gap:.75em;max-width:none;margin:0}
+.notification-info{color:#000 !important;background-color:var(--color-info) !important;border:1px solid var(--color-border-gray)}
+.notification-success{color:#fff !important;background-color:var(--color-success) !important}
+.notification-warning{color:#000 !important;background-color:var(--color-warning) !important}
+.notification-error{color:#fff !important;background-color:var(--color-error) !important}
+.tip{font-size:.875em;line-height:1.5;display:flex;flex-direction:column;align-items:flex-start;gap:.6em;padding:1.25em 1.5em;background:var(--color-universal-background-gray);border-radius:var(--border-radius);border:1px solid var(--color-border-gray)}
+.tip strong:first-child{display:block;font-size:1rem;margin-bottom:.15em}
+@media(min-width: 640px){.tip{flex-direction:row;align-items:flex-start}}
+.tip:before{content:"";display:block;width:2.25rem;height:2.25rem;flex-shrink:0;border-radius:100%;background:var(--color-primary);background-image:url(data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z'/></svg>);background-repeat:no-repeat;background-position:center;background-size:1.1rem}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--color-border-gray)}
+table th,table td{text-align:left;padding:.9em 1em;border-top:1px solid var(--color-border-gray-light);vertical-align:top}
+table thead th{background:var(--color-universal-background-gray);border-width:3px 0 1px !important;border-top-color:var(--color-primary);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;color:var(--color-text-gray)}
+table.table-zebra tbody tr:nth-child(even){background:var(--color-alt-table-rows)}
+table tbody tr:hover td{background-color:#fff9e6}
+.table-wrapper{width:100%;overflow:auto;border-radius:var(--border-radius)}
+.infobar-graph{display:inline-block;position:relative;text-align:right;width:90px;margin:0 .6em 0 0;height:9px;vertical-align:middle}
+.infobar-graph .bar{content:"";display:block;height:100%;background:var(--color-primary) !important;border-radius:5px;transition:all .2s ease-in-out;position:absolute;bottom:0;right:0}
+.infobar-value{display:inline-block;text-align:right;color:var(--color-text-gray)}
+</style>
+<style>
+/* ============================================================
+   NEW COMPONENTS FOR THIS TOOL
+   ============================================================ */
+
+.mock-ribbon{
+  background: repeating-linear-gradient(135deg, var(--color-gold), var(--color-gold) 10px, #fff3cf 10px, #fff3cf 20px);
+  border-bottom: 1px solid var(--color-gold-deep);
+  text-align: center;
+  font-family: var(--font-family-mono);
+  font-size: .78rem;
+  letter-spacing: .04em;
+  padding: .5em 1em;
+  color: #4a3800;
+}
+
+/* ---- masthead ---- */
+.app-header{background:var(--color-primary-deep);color:#fff;border-bottom:5px solid var(--color-gold)}
+.app-header .grid{padding:1.1em var(--gap);display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:1.5em;flex-wrap:wrap}
+.app-header .brand{display:flex;align-items:center;gap:.9em}
+.app-header .brand .mark{width:2.6rem;height:2.6rem;border-radius:8px;background:var(--color-gold);color:var(--color-primary-deep);display:flex;align-items:center;justify-content:center;font-family:var(--font-family-headings);font-weight:600;font-size:1.2rem}
+.app-header .brand .name{font-family:var(--font-family-headings);font-weight:600;font-size:1.15rem;line-height:1.2}
+.app-header .brand .sub{font-size:.75rem;color:#c9d6f0;letter-spacing:.03em}
+.app-header .term-picker{display:flex;align-items:center;gap:.6em;background:rgba(255,255,255,.08);padding:.4em .5em;border-radius:var(--border-radius-button);border:1px solid rgba(255,255,255,.25)}
+.app-header select{font:inherit;background:transparent;color:#fff;border:none;padding:.35em .5em;font-weight:600}
+.app-header select option{color:#000}
+.app-header .cohort-chip{font-family:var(--font-family-mono);font-size:.78rem;background:rgba(255,255,255,.12);padding:.3em .7em;border-radius:999px}
+
+/* ---- page header ---- */
+.page-header{background:#fff}
+.page-header .grid{padding:2.4em var(--gap) 1.6em;display:flex;flex-direction:column;gap:.6em;max-width:1280px}
+.page-header .eyebrow{font-family:var(--font-family-mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--color-primary);font-weight:600}
+.page-header h1{color:var(--color-primary-deep);max-width:22ch}
+.page-header .scope-row{display:flex;flex-wrap:wrap;gap:.5em;margin-top:.4em}
+.scope-tag{background:var(--color-universal-background-gray);border:1px solid var(--color-border-gray);color:#333}
+
+/* ---- assumptions panel: always visible, top priority ---- */
+.assumptions-panel{border:1.5px solid var(--color-primary);border-left-width:6px;border-radius:var(--border-radius);padding:1.4em 1.6em;background:#f4f7fc}
+.assumptions-panel h2{font-size:1.05rem;color:var(--color-primary-deep);display:flex;align-items:center;gap:.5em;margin-bottom:.7em}
+.assumptions-panel h2:before{content:"";width:1.4rem;height:1.4rem;flex-shrink:0;background:var(--color-primary);border-radius:100%;background-image:url(data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M12 2 1 21h22L12 2zm0 5.5 6.9 12H5.1L12 7.5zM11 10v5h2v-5h-2zm0 6.5v2h2v-2h-2z'/></svg>);background-repeat:no-repeat;background-position:center;background-size:.85rem}
+.assumptions-panel dl{display:flex;flex-direction:column;gap:.8em;font-size:.9rem}
+.assumptions-panel dt{font-weight:700;color:var(--color-primary-deep);font-family:var(--font-family);margin-bottom:.15em}
+.assumptions-panel dd{color:#333;max-width:70ch}
+
+/* ---- top pick card ---- */
+.top-pick{border:2px solid var(--color-gold-deep);border-radius:var(--border-radius);overflow:hidden;box-shadow:0 var(--box-shadow) var(--box-shadow-blur) rgba(0,0,0,.08)}
+.top-pick-head{background:var(--color-primary);color:#fff;padding:1em 1.4em;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.6em}
+.top-pick-head .title{font-family:var(--font-family-headings);font-size:1.15rem}
+.top-pick-head .support{font-family:var(--font-family-mono);font-size:.82rem;background:rgba(255,255,255,.15);padding:.35em .75em;border-radius:999px}
+.top-pick-badge{background:var(--color-gold);color:#4a3800;font-weight:700;font-size:.72rem;padding:.25em .6em;border-radius:4px;letter-spacing:.03em;text-transform:uppercase}
+
+.req-tag{display:inline-flex;align-items:center;gap:.4em;font-size:.75rem;font-weight:600;padding:.25em .65em;border-radius:999px;white-space:nowrap}
+.req-tag:before{content:"";width:.5rem;height:.5rem;border-radius:100%;flex-shrink:0}
+.req-tag.major{background:#e8edf9;color:var(--color-term-element-major)}
+.req-tag.major:before{background:var(--color-term-element-major)}
+.req-tag.gened{background:#eef0f2;color:var(--color-term-element-general-education)}
+.req-tag.gened:before{background:var(--color-term-element-general-education)}
+.req-tag.elective{background:#fdf3dc;color:var(--color-term-element-elective)}
+.req-tag.elective:before{background:var(--color-term-element-elective)}
+.req-tag.unknown{background:#fff;color:var(--color-term-element-unknown);border:1px dashed var(--color-term-element-unknown)}
+.req-tag.unknown:before{background:var(--color-term-element-unknown)}
+
+.uncertain-flag{font-size:.72rem;color:var(--color-term-element-unknown);font-style:italic}
+.units-clean{font-family:var(--font-family-mono)}
+.units-estimated{font-family:var(--font-family-mono);color:var(--color-term-element-unknown)}
+.units-ambiguous{font-family:var(--font-family-mono);text-decoration:underline dotted;text-decoration-color:var(--color-gold-deep);cursor:help}
+
+.meeting-cell{font-size:.85rem}
+.meeting-cell .caveat{display:block;font-size:.72rem;color:var(--color-text-gray);font-style:italic;margin-top:.2em}
+.meeting-cell .no-data{color:var(--color-text-gray);font-style:italic}
+
+.pct-cell{white-space:nowrap}
+.pct-cell .n{font-size:.75rem;color:var(--color-text-gray);margin-left:.4em;font-family:var(--font-family-mono)}
+
+/* ---- rationale / bedrock box ---- */
+.rationale-box{margin-top:0}
+.rationale-box .quote{font-family:var(--font-family-headings);font-style:italic;font-size:1.02rem;line-height:1.5;color:#1a1a1a}
+.rationale-box .meta-line{font-size:.78rem;color:var(--color-text-gray);margin-top:.5em;font-family:var(--font-family-mono)}
+
+/* ---- comparison / candidate list ---- */
+.candidate-alt{border:1px solid var(--color-border-gray);border-radius:var(--border-radius);overflow:hidden}
+.candidate-alt summary{cursor:pointer;padding:1em 1.4em;display:flex;justify-content:space-between;align-items:center;gap:1em;flex-wrap:wrap;list-style:none;background:var(--color-universal-background-gray)}
+.candidate-alt summary::-webkit-details-marker{display:none}
+.candidate-alt summary:after{content:"View courses \25BE";font-size:.78rem;color:var(--color-primary);font-weight:600}
+.candidate-alt[open] summary:after{content:"Hide courses \25B4"}
+.candidate-alt .rank{font-family:var(--font-family-mono);font-size:.78rem;background:#fff;border:1px solid var(--color-border-gray);padding:.25em .6em;border-radius:999px}
+.candidate-alt .alt-body{padding:0 1.4em 1.2em}
+
+/* ---- error state demo strip ---- */
+.state-demo-grid{display:flex;flex-direction:column;gap:.75em}
+.state-demo-grid .notification-banner .grid{border-radius:var(--border-radius)}
+.state-label{font-family:var(--font-family-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--color-text-gray);margin-bottom:.3em;display:block}
+
+/* ---- Q&A ---- */
+.qa-box{border:1px solid var(--color-border-gray);border-radius:var(--border-radius);overflow:hidden;background:#fff}
+.qa-thread{padding:1.4em;display:flex;flex-direction:column;gap:1em;background:var(--color-universal-background-gray)}
+.qa-turn{max-width:80%;padding:.8em 1.05em;border-radius:12px;font-size:.92rem;line-height:1.45}
+.qa-turn.q{align-self:flex-end;background:var(--color-primary);color:#fff;border-bottom-right-radius:2px}
+.qa-turn.a{align-self:flex-start;background:#fff;border:1px solid var(--color-border-gray);border-bottom-left-radius:2px}
+.qa-turn.a .guardrail{display:block;margin-top:.5em;font-size:.75rem;color:var(--color-text-gray);font-style:italic;border-top:1px solid var(--color-border-gray-light);padding-top:.5em}
+.qa-input-row{display:flex;gap:.6em;padding:1em 1.2em;border-top:1px solid var(--color-border-gray)}
+.qa-input-row input{flex:1;padding:.7em 1em;border:1px solid var(--color-border-gray-dark);border-radius:var(--border-radius-button);font:inherit}
+.qa-input-row input:focus{outline:2px solid var(--color-primary);outline-offset:1px}
+
+/* ---- section titles reused ---- */
+.section-title-row{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.5em;width:100%}
+.section-title-row .step-no{font-family:var(--font-family-mono);color:var(--color-primary);font-size:.85rem;margin-right:.5em}
+footer.app-footer{background:var(--color-primary-deep);color:#c9d6f0;padding:2em var(--gap);text-align:center;font-size:.8rem}
+footer.app-footer a{color:#fff}
+
+@media (max-width: 720px){
+  .top-pick-head{flex-direction:column;align-items:flex-start}
+  table th, table td{font-size:.82rem;padding:.7em .6em}
+}
+</style>
+</head>
+<body>
+
+<div class="mock-ribbon">MOCKUP — sample / synthesized data for wireframe review only, not connected to live PeopleSoft or Bedrock</div>
+
+<header class="app-header">
+  <div class="grid">
+    <div class="brand">
+      <div class="mark">CB</div>
+      <div>
+        <div class="name">CSUB Scheduling Assistant</div>
+        <div class="sub">Business &amp; Public Administration · Freshman planning</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:1em;flex-wrap:wrap">
+      <div class="term-picker">
+        <label for="term" style="font-size:.78rem;color:#c9d6f0">Term</label>
+        <select id="term">
+          <option>Fall 2026</option>
+          <option>Spring 2027</option>
+        </select>
+      </div>
+      <span class="cohort-chip">Cohort: 138 incoming BSBA freshmen</span>
+    </div>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="grid">
+    <span class="eyebrow">Decision support · not a scheduling engine</span>
+    <h1 class="h1">Recommended Fall 2026 freshman block</h1>
+    <p class="intro">A candidate 15-unit schedule for incoming BS Business Administration freshmen, generated from historical course-taking patterns and explained by a generative-AI reasoning layer. For the department chair to review, adjust, and approve — not to auto-publish.</p>
+    <div class="scope-row">
+      <span class="tag scope-tag">Major: Business Administration (BSBA)</span>
+      <span class="tag scope-tag">Class year: Freshman</span>
+      <span class="tag scope-tag">Target load: 14–15 units</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="grid">
+
+    <!-- ============ ASSUMPTIONS PANEL — always visible ============ -->
+    <div class="assumptions-panel">
+      <h2>Assumptions &amp; methodology</h2>
+      <dl>
+        <div>
+          <dt>Requirement type (GEM classification)</dt>
+          <dd>Course requirement labels (major / gen-ed / elective) pool all 10 BSBA concentrations together. A course required in one concentration but not another is still labeled by its most common role across the whole freshman cohort — this view does not distinguish between concentrations.</dd>
+        </div>
+        <div>
+          <dt>Meeting time patterns</dt>
+          <dd>Meeting times reflect the most common post-census (after 2025-10-20) section pattern from historical terms. They are informational only and have <strong>not</strong> been checked for time conflicts against each other.</dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- ============ TOP PICK ============ -->
+    <div>
+      <div class="section-title-row" style="margin-bottom:.9em">
+        <h2><span class="step-no">01</span>Top candidate schedule</h2>
+      </div>
+
+      <div class="top-pick">
+        <div class="top-pick-head">
+          <div>
+            <span class="top-pick-badge">Top pick</span>
+            <div class="title" style="margin-top:.3em">15 units · 5 courses</div>
+          </div>
+          <span class="support">support score 0.71</span>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="table-zebra">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Units</th>
+                <th>% of cohort</th>
+                <th>Requirement</th>
+                <th>Typical meeting pattern</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>MATH&nbsp;1508</strong><br><span style="color:var(--color-text-gray);font-size:.82rem">College Algebra for Business</span></td>
+                <td class="units-clean">3</td>
+                <td class="pct-cell">
+                  <span class="infobar-graph"><span class="bar" style="width:82%"></span></span>
+                  <span class="infobar-value">82%</span><span class="n">(113/138)</span>
+                </td>
+                <td><span class="req-tag major">Major</span></td>
+                <td class="meeting-cell">MWF · 9:00–9:50am<span class="caveat">informational, not conflict-checked</span></td>
+              </tr>
+              <tr>
+                <td><strong>ENGL&nbsp;1301</strong><br><span style="color:var(--color-text-gray);font-size:.82rem">Composition I</span></td>
+                <td class="units-clean">3</td>
+                <td class="pct-cell">
+                  <span class="infobar-graph"><span class="bar" style="width:91%"></span></span>
+                  <span class="infobar-value">91%</span><span class="n">(126/138)</span>
+                </td>
+                <td><span class="req-tag gened">Gen ed</span></td>
+                <td class="meeting-cell">TTh · 11:00–12:15pm<span class="caveat">informational, not conflict-checked</span></td>
+              </tr>
+              <tr>
+                <td><strong>BUS&nbsp;1000</strong><br><span style="color:var(--color-text-gray);font-size:.82rem">Introduction to Business</span></td>
+                <td class="units-estimated" title="Not found in the E3E4 offering catalog; units defaulted to 3">3 <span class="uncertain-flag">(uncertain)</span></td>
+                <td class="pct-cell">
+                  <span class="infobar-graph"><span class="bar" style="width:76%"></span></span>
+                  <span class="infobar-value">76%</span><span class="n">(105/138)</span>
+                </td>
+                <td><span class="req-tag major">Major</span></td>
+                <td class="meeting-cell">MW · 2:00–3:15pm<span class="caveat">informational, not conflict-checked</span></td>
+              </tr>
+              <tr>
+                <td><strong>COMM&nbsp;1002</strong><br><span style="color:var(--color-text-gray);font-size:.82rem">Public Speaking</span></td>
+                <td class="units-ambiguous" title="Near-even split between 3-unit lecture and 4-unit lecture+lab in the catalog — resolved to the higher value">3</td>
+                <td class="pct-cell">
+                  <span class="infobar-graph"><span class="bar" style="width:58%"></span></span>
+                  <span class="infobar-value">58%</span><span class="n">(80/138)</span>
+                </td>
+                <td><span class="req-tag gened">Gen ed</span></td>
+                <td class="meeting-cell"><span class="no-data">no post-census meeting data</span></td>
+              </tr>
+              <tr>
+                <td><strong>KINS&nbsp;1101</strong><br><span style="color:var(--color-text-gray);font-size:.82rem">Fitness for Life</span></td>
+                <td class="units-clean">3</td>
+                <td class="pct-cell">
+                  <span class="infobar-graph"><span class="bar" style="width:34%"></span></span>
+                  <span class="infobar-value">34%</span><span class="n">(47/138)</span>
+                </td>
+                <td><span class="req-tag unknown">Not in freshman roadmap</span></td>
+                <td class="meeting-cell">Daily · 7:00–7:50am<span class="caveat">informational, not conflict-checked</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ RATIONALE ============ -->
+    <div class="rationale-box tip">
+      <div>
+        <strong>Bedrock rationale</strong>
+        <p class="quote">"This block pairs the two highest-support gen-ed courses with the most common major on-ramp, MATH 1508 and ENGL 1301 anchor the load at over 80% historical adoption, and BUS 1000 is the standard major entry point for this cohort. One caveat: KINS 1101 shows up for only about a third of freshmen and reads more like an early-morning outlier than a core pick — Alternative #2 below swaps it for PSYC 1000, which has broader support and no morning conflict risk."</p>
+        <div class="meta-line">generated · claude on bedrock · fall 2026 · business administration freshman cohort</div>
+      </div>
+    </div>
+
+    <!-- ============ COMPARISON VIEW ============ -->
+    <div>
+      <div class="section-title-row" style="margin-bottom:.9em">
+        <h2><span class="step-no">02</span>Compare candidate schedules</h2>
+      </div>
+      <p style="margin-top:-.6em;color:var(--color-text-gray);font-size:.92rem">The top pick above, plus every other candidate block considered — so a runner-up mentioned in the rationale can be inspected course-by-course, not just taken on faith.</p>
+
+      <div style="display:flex;flex-direction:column;gap:.9em">
+        <details class="candidate-alt">
+          <summary>
+            <span><span class="rank">Alt #2</span> &nbsp;MATH 1508 · ENGL 1301 · BUS 1000 · <strong>PSYC 1000</strong> · COMM 1002 — 15 units</span>
+            <span class="support">support score 0.69</span>
+          </summary>
+          <div class="alt-body">
+            <div class="table-wrapper">
+              <table class="table-zebra">
+                <thead><tr><th>Course</th><th>Units</th><th>% of cohort</th><th>Requirement</th><th>Typical meeting pattern</th></tr></thead>
+                <tbody>
+                  <tr><td>MATH 1508</td><td class="units-clean">3</td><td class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:82%"></span></span><span class="infobar-value">82%</span><span class="n">(113/138)</span></td><td><span class="req-tag major">Major</span></td><td class="meeting-cell">MWF · 9:00–9:50am</td></tr>
+                  <tr><td>ENGL 1301</td><td class="units-clean">3</td><td class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:91%"></span></span><span class="infobar-value">91%</span><span class="n">(126/138)</span></td><td><span class="req-tag gened">Gen ed</span></td><td class="meeting-cell">TTh · 11:00–12:15pm</td></tr>
+                  <tr><td>BUS 1000</td><td class="units-estimated">3 <span class="uncertain-flag">(uncertain)</span></td><td class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:76%"></span></span><span class="infobar-value">76%</span><span class="n">(105/138)</span></td><td><span class="req-tag major">Major</span></td><td class="meeting-cell">MW · 2:00–3:15pm</td></tr>
+                  <tr><td>PSYC 1000</td><td class="units-clean">3</td><td class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:63%"></span></span><span class="infobar-value">63%</span><span class="n">(87/138)</span></td><td><span class="req-tag gened">Gen ed</span></td><td class="meeting-cell">TTh · 9:30–10:45am</td></tr>
+                  <tr><td>COMM 1002</td><td class="units-ambiguous">3</td><td class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:58%"></span></span><span class="infobar-value">58%</span><span class="n">(80/138)</span></td><td><span class="req-tag gened">Gen ed</span></td><td class="meeting-cell"><span class="no-data">no post-census meeting data</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+
+        <details class="candidate-alt">
+          <summary>
+            <span><span class="rank">Alt #3</span> &nbsp;MATH 1508 · ENGL 1301 · ACCT 2001 · COMM 1002 · KINS 1101 — 15 units</span>
+            <span class="support">support score 0.64</span>
+          </summary>
+          <div class="alt-body">
+            <div class="table-wrapper">
+              <table class="table-zebra">
+                <thead><tr><th>Course</th><th>Units</th><th>% of cohort</th><th>Requirement</th><th>Typical meeting pattern</th></tr></thead>
+                <tbody>
+                  <tr><td>MATH 1508</td><td class="units-clean">3</td><td class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:82%"></span></span><span class="infobar-value">82%</span><span class="n">(113/138)</span></td><td><span class="req-tag major">Major</span></td><td class="meeting-cell">MWF · 9:00–9:50am</td></tr>
+                  <tr><td>ENGL 1301</td><td class="units-clean">3</td><td class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:91%"></span></span><span class="infobar-value">91%</span><span class="n">(126/138)</span></td><td><span class="req-tag gened">Gen ed</span></td><td class="meeting-cell">TTh · 11:00–12:15pm</td></tr>
+                  <tr><td>ACCT 2001</td><td class="units-clean">3</td><td class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:41%"></span></span><span class="infobar-value">41%</span><span class="n">(57/138)</span></td><td><span class="req-tag major">Major</span></td><td class="meeting-cell">MWF · 1:00–1:50pm</td></tr>
+                  <tr><td>COMM 1002</td><td class="units-ambiguous">3</td><td class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:58%"></span></span><span class="infobar-value">58%</span><span class="n">(80/138)</span></td><td><span class="req-tag gened">Gen ed</span></td><td class="meeting-cell"><span class="no-data">no post-census meeting data</span></td></tr>
+                  <tr><td>KINS 1101</td><td class="units-clean">3</td><td class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:34%"></span></span><span class="infobar-value">34%</span><span class="n">(47/138)</span></td><td><span class="req-tag unknown">Not in freshman roadmap</span></td><td class="meeting-cell">Daily · 7:00–7:50am</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- ============ ERROR / EMPTY STATE DEMO ============ -->
+    <div>
+      <div class="section-title-row" style="margin-bottom:.9em">
+        <h2><span class="step-no">03</span>How different "nothing to show" states read</h2>
+      </div>
+      <p style="margin-top:-.6em;color:var(--color-text-gray);font-size:.92rem">Three situations that all currently render as a single generic message — this mock shows them told apart, so a chair isn't left guessing whether it's an outage, a config gap, or genuinely no data.</p>
+
+      <div class="state-demo-grid">
+        <div>
+          <span class="state-label">No data for term</span>
+          <div class="notification-banner notification-info"><div class="grid"><p>Spring 2027 doesn't have enough historical enrollment yet to generate a recommendation. Try Fall 2026, or check back once add/drop closes.</p></div></div>
+        </div>
+        <div>
+          <span class="state-label">Bedrock not configured (deploy problem)</span>
+          <div class="notification-banner notification-error"><div class="grid"><p>The AI rationale couldn't be generated — Bedrock access isn't configured for this environment. The course table above is still accurate; only the written explanation is unavailable. Contact IT.</p></div></div>
+        </div>
+        <div>
+          <span class="state-label">Bedrock throttled (transient)</span>
+          <div class="notification-banner notification-warning"><div class="grid"><p>The AI rationale is taking longer than usual to generate. This is temporary — try again in a moment. The course table above is unaffected.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ Q&A ============ -->
+    <div>
+      <div class="section-title-row" style="margin-bottom:.9em">
+        <h2><span class="step-no">04</span>Ask a question</h2>
+      </div>
+      <div class="qa-box">
+        <div class="qa-thread">
+          <div class="qa-turn q">Why isn't ACCT 2001 in the top pick?</div>
+          <div class="qa-turn a">
+            ACCT 2001 shows up for only 41% of the Fall 2026 freshman cohort (57 of 138 students) — well below MATH 1508, ENGL 1301, and BUS 1000, which is why the top pick favors those instead. It does appear in Alternative #3 if you want a version that includes it.
+            <span class="guardrail">If a question can't be answered from this data, this assistant says so rather than guessing.</span>
+          </div>
+        </div>
+        <div class="qa-input-row">
+          <input type="text" placeholder="e.g. What changes if I need a 4th major course instead of a gen-ed?" />
+          <button class="button">Ask</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="app-footer">
+  Mockup for internal review · CSU Bakersfield College of Business &amp; Public Administration · not connected to PeopleSoft or live Bedrock
+</footer>
+
+</body>
+</html>

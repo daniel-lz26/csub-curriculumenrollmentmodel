@@ -18,6 +18,10 @@ FAKE_MINED_DATA = {
     "major": "Business Administration",
     "class_year": "Freshman",
     "unit_target": [14, 15],
+    "assumptions": {
+        "req_type": "GEM classification pools all 10 BSBA concentrations.",
+        "meeting_patterns": "Meeting time is informational, not conflict-checked.",
+    },
     "terms": {
         "Fall": {
             "cohort_size": 121,
@@ -54,6 +58,8 @@ class TestRecommendationHandler:
         assert body["term"] == "Fall"
         assert body["cohort_size"] == 121
         assert body["rationale"] == "Recommend ENGL 1109."
+        assert body["rationale_error"] is None
+        assert body["assumptions"] == FAKE_MINED_DATA["assumptions"]
 
     def test_defaults_to_fall_when_no_query_params(self, monkeypatch):
         monkeypatch.setattr(recommendation, "generate_recommendation", lambda term, data: "ok")
@@ -66,13 +72,27 @@ class TestRecommendationHandler:
         assert resp["statusCode"] == 400
         assert "Winter" in json.loads(resp["body"])["error"]
 
-    def test_returns_503_when_llm_unavailable(self, monkeypatch):
+    def test_returns_200_with_null_rationale_when_llm_unavailable(self, monkeypatch):
         def _raise(term, data):
             raise RuntimeError("ANTHROPIC_API_KEY is not set")
 
         monkeypatch.setattr(recommendation, "generate_recommendation", _raise)
         resp = recommendation.handler({"queryStringParameters": {"term": "Fall"}})
-        assert resp["statusCode"] == 503
+        assert resp["statusCode"] == 200
+        body = json.loads(resp["body"])
+        assert body["rationale"] is None
+        assert body["rationale_error"] == "ANTHROPIC_API_KEY is not set"
+        assert body["cohort_size"] == 121
+        assert body["candidate_schedules"] == FAKE_MINED_DATA["terms"]["Fall"]["candidate_schedules"]
+
+    def test_skips_llm_call_for_term_with_no_course_frequency(self, monkeypatch):
+        called = []
+        monkeypatch.setattr(recommendation, "generate_recommendation", lambda term, data: called.append(1))
+        resp = recommendation.handler({"queryStringParameters": {"term": "Spring"}})
+        assert resp["statusCode"] == 200
+        body = json.loads(resp["body"])
+        assert body["rationale"] is None
+        assert not called
 
 
 class TestAskHandler:

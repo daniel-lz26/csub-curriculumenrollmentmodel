@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSBA Freshman Scheduling Recommendation — CSUB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="status-ribbon mode-demo" id="statusRibbon">Loading…</div>
+
+<header class="app-header">
+  <div class="grid">
+    <div class="brand">
+      <div class="mark">CB</div>
+      <div>
+        <div class="name">CSUB Scheduling Assistant</div>
+        <div class="sub">Business &amp; Public Administration &middot; Freshman planning</div>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="picker">
+        <label for="concentrationSelect">Concentration</label>
+        <select id="concentrationSelect"></select>
+      </div>
+      <div class="picker">
+        <label for="termSelect">Term</label>
+        <select id="termSelect"></select>
+      </div>
+      <span class="cohort-chip" id="cohortChip">Cohort: —</span>
+    </div>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="grid">
+    <span class="eyebrow">Decision support &middot; not a scheduling engine</span>
+    <h1 class="h1" id="pageTitle">Recommended freshman block</h1>
+    <p class="intro">A candidate 14&ndash;15 unit schedule for incoming BS Business Administration freshmen, generated from historical course-taking patterns and explained by a generative-AI reasoning layer. For the department chair to review, adjust, and approve &mdash; not to auto-publish.</p>
+    <div class="scope-row" id="scopeRow"></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="grid">
+
+    <!-- ============ ASSUMPTIONS PANEL — always visible ============ -->
+    <div class="assumptions-panel" id="assumptionsPanel" hidden>
+      <h2>Assumptions &amp; methodology</h2>
+      <dl id="assumptionsList"></dl>
+    </div>
+
+    <!-- ============ STATE BANNER (errors / empty states) ============ -->
+    <div id="stateBannerHost"></div>
+
+    <!-- ============ TOP PICK ============ -->
+    <div id="topPickSection" hidden>
+      <div class="section-title-row" style="margin-bottom:.9em">
+        <h2><span class="step-no">01</span>Top candidate schedule</h2>
+      </div>
+      <div class="top-pick">
+        <div class="top-pick-head">
+          <div>
+            <span class="top-pick-badge">Top pick</span>
+            <div class="title" id="topPickTitle" style="margin-top:.3em"></div>
+          </div>
+          <span class="support" id="topPickSupport"></span>
+        </div>
+        <div class="table-wrapper">
+          <table class="table-zebra">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Units</th>
+                <th>% of cohort</th>
+                <th>Requirement</th>
+                <th>Typical meeting pattern</th>
+              </tr>
+            </thead>
+            <tbody id="topPickBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ WEEKLY CALENDAR ============ -->
+    <div id="calendarWrap" hidden>
+      <div class="section-title-row" style="margin-bottom:.9em">
+        <h2><span class="step-no">02</span>Week view</h2>
+      </div>
+      <p class="calendar-caption">Monday&ndash;Sunday layout of <span class="calendar-source" id="calendarSourceLabel">the top pick</span>'s most common current meeting slots. Informational only &mdash; not checked for conflicts across courses.</p>
+      <div class="calendar-wrapper">
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="calendar-legend" id="calendarLegend"></div>
+        <div class="calendar-unplottable" id="calendarUnplottable" hidden></div>
+      </div>
+    </div>
+
+    <!-- ============ RATIONALE ============ -->
+    <div class="rationale-box tip" id="rationaleBox" hidden>
+      <div>
+        <strong>Bedrock rationale</strong>
+        <p class="quote" id="rationaleText"></p>
+        <div class="meta-line" id="rationaleMeta"></div>
+      </div>
+    </div>
+
+    <!-- ============ COMPARISON VIEW ============ -->
+    <div id="comparisonSection" hidden>
+      <div class="section-title-row" style="margin-bottom:.9em">
+        <h2><span class="step-no">03</span>Compare candidate schedules</h2>
+      </div>
+      <p style="margin-top:-.6em;color:var(--color-text-gray);font-size:.92rem">Every other candidate block considered, so a runner-up mentioned in the rationale can be inspected course-by-course, not just taken on faith. Use "View on calendar" to swap the week view above to that schedule.</p>
+      <div style="display:flex;flex-direction:column;gap:.9em" id="comparisonList"></div>
+    </div>
+
+    <!-- ============ Q&A ============ -->
+    <div>
+      <div class="section-title-row" style="margin-bottom:.9em">
+        <h2><span class="step-no">04</span>Ask a question</h2>
+      </div>
+      <div class="qa-box">
+        <div class="qa-thread" id="qaThread">
+          <div class="qa-empty" id="qaEmptyState">Ask a follow-up about this term's data, e.g. "What if we can only run one section of ACCT 2200?"</div>
+        </div>
+        <div class="qa-input-row">
+          <input type="text" id="qaInput" placeholder="e.g. What changes if I need a 4th major course instead of a gen-ed?" />
+          <button class="button" id="qaSubmit">Ask</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="app-footer" id="appFooter">
+  CSU Bakersfield College of Business &amp; Public Administration
+</footer>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

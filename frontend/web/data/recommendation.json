@@ -1,0 +1,5410 @@
+{
+  "major": "Business Administration",
+  "class_year": "Freshman",
+  "unit_target": [
+    14,
+    15
+  ],
+  "assumptions": {
+    "req_type": "Major / General Education / Major-Gen-Ed(GEM) classification is sourced from BSBAcourse_catalog.xlsx Program_Roadmaps, pooling freshman-year (term 1-2) rows across all 10 BSBA concentrations since they're near-identical in freshman year. null means the course isn't in that roadmap slice.",
+    "meeting_patterns": "Section day/time is sourced from E3E4 snapshots on/after 2025-10-20 (meeting data is blank before Fall 2025 census). Informational only: shows the most common current meeting slots for a course, does not resolve a specific section or check for time conflicts between courses in the same candidate schedule. An empty list means no post-census meeting data was found for that course."
+  },
+  "terms": {
+    "Fall": {
+      "cohort_size": 121,
+      "course_frequency": [
+        {
+          "course": "ENGL 1109",
+          "count": 76,
+          "pct_of_cohort": 0.6281,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 3
+            },
+            {
+              "days": "MF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 100F (Lecture Room)), W (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 2
+            },
+            {
+              "days": "MW (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: HUM 1108 (Lecture Room)), F (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "WF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 103G (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "Th",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "CSUB 1029",
+          "count": 65,
+          "pct_of_cohort": 0.5372,
+          "units": 2,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 5
+            },
+            {
+              "days": "T,Th",
+              "start": "12:00:00",
+              "end": "12:50:00",
+              "note": null,
+              "sections": 5
+            },
+            {
+              "days": "T,Th",
+              "start": "16:00:00",
+              "end": "16:50:00",
+              "note": null,
+              "sections": 4
+            },
+            {
+              "days": "T,Th",
+              "start": "08:30:00",
+              "end": "09:20:00",
+              "note": null,
+              "sections": 4
+            },
+            {
+              "days": "M,W",
+              "start": "12:00:00",
+              "end": "12:50:00",
+              "note": null,
+              "sections": 4
+            },
+            {
+              "days": "M,W",
+              "start": "09:00:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 3
+            }
+          ]
+        },
+        {
+          "course": "COMM 1008",
+          "count": 50,
+          "pct_of_cohort": 0.4132,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 3
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 3
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W,F",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W,F",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "T,Th",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 2
+            }
+          ]
+        },
+        {
+          "course": "MATH 2200",
+          "count": 41,
+          "pct_of_cohort": 0.3388,
+          "units": 4,
+          "units_estimated": false,
+          "req_type": "Major / Gen Ed",
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "18:00:00",
+              "end": "19:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "16:00:00",
+              "end": "17:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "13:00:00",
+              "end": "14:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "08:15:00",
+              "end": "09:55:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "11:00:00",
+              "end": "12:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:00:00",
+              "end": "12:40:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "BA 1008",
+          "count": 33,
+          "pct_of_cohort": 0.2727,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "Major / Gen Ed",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 3
+            }
+          ]
+        },
+        {
+          "course": "MATH 1010",
+          "count": 28,
+          "pct_of_cohort": 0.2314,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "18:50:00",
+              "end": "19:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "18:00:00",
+              "end": "18:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "08:00:00",
+              "end": "08:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "09:00:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "PHIL 1019",
+          "count": 27,
+          "pct_of_cohort": 0.2231,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 4
+            },
+            {
+              "days": "M,W",
+              "start": "12:00:00",
+              "end": "12:50:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W",
+              "start": "16:00:00",
+              "end": "17:15:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W",
+              "start": "09:00:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "16:00:00",
+              "end": "17:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "BA 1000",
+          "count": 24,
+          "pct_of_cohort": 0.1983,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "Major",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 2
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "MATH 1050",
+          "count": 22,
+          "pct_of_cohort": 0.1818,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "19:15:00",
+              "end": "19:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "18:00:00",
+              "end": "19:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "14:45:00",
+              "end": "15:35:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "13:00:00",
+              "end": "13:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "BA 1028",
+          "count": 22,
+          "pct_of_cohort": 0.1818,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "Major / Gen Ed",
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "09:30:00",
+              "end": "10:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "17:30:00",
+              "end": "18:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ACCT 2200",
+          "count": 21,
+          "pct_of_cohort": 0.1736,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "Major",
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "17:30:00",
+              "end": "18:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ART 1019",
+          "count": 17,
+          "pct_of_cohort": 0.1405,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 8
+            }
+          ]
+        },
+        {
+          "course": "ECON 2018",
+          "count": 14,
+          "pct_of_cohort": 0.1157,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "Major / Gen Ed",
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ART 1009",
+          "count": 12,
+          "pct_of_cohort": 0.0992,
+          "units": 2,
+          "units_estimated": true,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "08:00:00",
+              "end": "08:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "08:51:00",
+              "end": "09:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "08:00:00",
+              "end": "08:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "10:51:00",
+              "end": "11:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "08:51:00",
+              "end": "09:40:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "BIOL 1009",
+          "count": 12,
+          "pct_of_cohort": 0.0992,
+          "units": 2,
+          "units_estimated": true,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "T",
+              "start": "10:00:00",
+              "end": "12:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "13:00:00",
+              "end": "15:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "10:00:00",
+              "end": "12:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "16:00:00",
+              "end": "18:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "13:00:00",
+              "end": "13:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "Th",
+              "start": "16:00:00",
+              "end": "18:30:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "CMPS 2010",
+          "count": 10,
+          "pct_of_cohort": 0.0826,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "T",
+              "start": "10:00:00",
+              "end": "12:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W,F",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "07:20:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W,F",
+              "start": "08:00:00",
+              "end": "08:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "CHEM 1010",
+          "count": 10,
+          "pct_of_cohort": 0.0826,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "GEOL 1009",
+          "count": 10,
+          "pct_of_cohort": 0.0826,
+          "units": 2,
+          "units_estimated": true,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            },
+            {
+              "days": "Th",
+              "start": "16:00:00",
+              "end": "18:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "13:00:00",
+              "end": "15:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "17:30:00",
+              "end": "20:00:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:20:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "10:00:00",
+              "end": "12:30:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "MIS 2000",
+          "count": 10,
+          "pct_of_cohort": 0.0826,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": "Major",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 5
+            }
+          ]
+        },
+        {
+          "course": "THTR 1009",
+          "count": 10,
+          "pct_of_cohort": 0.0826,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "M,W,F",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W,F",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ENGL 950",
+          "count": 9,
+          "pct_of_cohort": 0.0744,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "F",
+              "start": "13:00:00",
+              "end": "13:50:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "F",
+              "start": "09:00:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "16:00:00",
+              "end": "16:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ENGL 1100",
+          "count": 9,
+          "pct_of_cohort": 0.0744,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "W (From: 2026-08-24 to 2026-12-15 at 16:00-17:15 at facility: DDH 100F (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 16:00-17:15 at facility: WSL 005 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "Th (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: DDH 104K (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "W (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: SCI III 102 (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "Th (From: 2026-08-24 to 2026-12-15 at 10:00-11:15 at facility: DDH 146H (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 10:00-11:15 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "Th (From: 2026-08-24 to 2026-12-15 at 08:30-09:45 at facility: SCI III 212 (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 08:30-09:45 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "Th (From: 2026-08-24 to 2026-12-15 at 11:30-12:45 at facility: BDC 156B (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 11:30-12:45 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ENGR 1618",
+          "count": 8,
+          "pct_of_cohort": 0.0661,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "T",
+              "start": "13:10:00",
+              "end": "14:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "17:30:00",
+              "end": "18:20:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "W",
+              "start": "10:10:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "13:10:00",
+              "end": "14:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "10:10:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "18:30:00",
+              "end": "20:10:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "CSUB 1009",
+          "count": 7,
+          "pct_of_cohort": 0.0579,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": "General Education",
+          "meeting_patterns": []
+        },
+        {
+          "course": "MATH 1209",
+          "count": 6,
+          "pct_of_cohort": 0.0496,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "BIOL 2210",
+          "count": 6,
+          "pct_of_cohort": 0.0496,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "T",
+              "start": "10:00:00",
+              "end": "12:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "Th",
+              "start": "16:00:00",
+              "end": "18:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "Th",
+              "start": "10:00:00",
+              "end": "12:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "16:00:00",
+              "end": "18:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "13:00:00",
+              "end": "15:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ECE 1618",
+          "count": 6,
+          "pct_of_cohort": 0.0496,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "T",
+              "start": "13:10:00",
+              "end": "14:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "17:30:00",
+              "end": "19:10:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "18:30:00",
+              "end": "20:10:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "17:30:00",
+              "end": "18:20:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "W",
+              "start": "10:10:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "13:10:00",
+              "end": "14:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ENGR 2350",
+          "count": 6,
+          "pct_of_cohort": 0.0496,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "13:25:00",
+              "end": "14:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "13:00:00",
+              "end": "13:25:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ENGL 1208",
+          "count": 4,
+          "pct_of_cohort": 0.0331,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 2
+            }
+          ]
+        },
+        {
+          "course": "GST 1210",
+          "count": 4,
+          "pct_of_cohort": 0.0331,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "W",
+              "start": "15:00:00",
+              "end": "15:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "16:00:00",
+              "end": "16:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "CHEM 1003",
+          "count": 4,
+          "pct_of_cohort": 0.0331,
+          "units": 4,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "08:00:00",
+              "end": "09:40:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "T,Th",
+              "start": "08:00:00",
+              "end": "09:40:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "MGMT 3000",
+          "count": 4,
+          "pct_of_cohort": 0.0331,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "19:00:00",
+              "end": "20:15:00",
+              "note": null,
+              "sections": 4
+            },
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 3
+            },
+            {
+              "days": "T,Th",
+              "start": "17:30:00",
+              "end": "18:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ECON 2028",
+          "count": 3,
+          "pct_of_cohort": 0.0248,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "KINE 1506",
+          "count": 3,
+          "pct_of_cohort": 0.0248,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "SOC 1008",
+          "count": 3,
+          "pct_of_cohort": 0.0248,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "PSYC 1018",
+          "count": 3,
+          "pct_of_cohort": 0.0248,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 3
+            },
+            {
+              "days": "M,W,F",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "KINE 1018",
+          "count": 3,
+          "pct_of_cohort": 0.0248,
+          "units": 2,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 4
+            },
+            {
+              "days": "M,W",
+              "start": "12:00:00",
+              "end": "12:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "KINE 1503",
+          "count": 3,
+          "pct_of_cohort": 0.0248,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:20:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W",
+              "start": "09:00:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "08:00:00",
+              "end": "08:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ATHL 1483",
+          "count": 3,
+          "pct_of_cohort": 0.0248,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "SOC 1018",
+          "count": 3,
+          "pct_of_cohort": 0.0248,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "16:00:00",
+              "end": "17:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ENGL 920",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "CHEM 1000",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "BIOL 1039",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 2,
+          "units_estimated": true,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "T",
+              "start": "10:00:00",
+              "end": "12:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "13:00:00",
+              "end": "15:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "Th",
+              "start": "10:00:00",
+              "end": "12:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "16:00:00",
+              "end": "16:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "HIST 1228",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 4
+            },
+            {
+              "days": "T,Th",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "HIST 1218",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 2
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "MATH 1055",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 6,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            },
+            {
+              "days": "M,W,F",
+              "start": "10:00:00",
+              "end": "11:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W,F",
+              "start": "08:00:00",
+              "end": "09:40:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "PSYC 2018",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 4
+            },
+            {
+              "days": "T,Th",
+              "start": "17:30:00",
+              "end": "18:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "17:30:00",
+              "end": "18:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "16:00:00",
+              "end": "17:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "HIST 1418",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 2
+            },
+            {
+              "days": "M,W",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "MATH 910",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "ANTH 1318",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "SOC 2018",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 3
+            },
+            {
+              "days": "F",
+              "start": "16:00:00",
+              "end": "17:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "CRJU 1108",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 2
+            },
+            {
+              "days": "T,Th",
+              "start": "16:00:00",
+              "end": "17:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "MUS 1019",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 3
+            }
+          ]
+        },
+        {
+          "course": "MATH 2205",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "ENGL 2070",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "PHIL 2019",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "BIOL 2010",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "W",
+              "start": "13:00:00",
+              "end": "15:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "13:00:00",
+              "end": "15:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "Th",
+              "start": "16:00:00",
+              "end": "18:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M",
+              "start": "13:00:00",
+              "end": "15:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "16:00:00",
+              "end": "18:30:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ECON 2200",
+          "count": 2,
+          "pct_of_cohort": 0.0165,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": "Major",
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W,F",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W,F",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "20:30:00",
+              "end": "21:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "19:00:00",
+              "end": "20:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "THTR 1109",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "M,W,F",
+              "start": "12:00:00",
+              "end": "12:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "RS 1128",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "MATH 2320",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "NURS 1010",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 2,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "BA 2100",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "Major",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 2
+            },
+            {
+              "days": "T,Th",
+              "start": "19:00:00",
+              "end": "20:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "19:00:00",
+              "end": "20:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "CAFS 2000",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "T",
+              "start": "17:30:00",
+              "end": "20:00:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 2
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "HIST 1428",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "KINE 1505",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "MUS 1049",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": "General Education",
+          "meeting_patterns": []
+        },
+        {
+          "course": "MATH 1051",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "THTR 1019",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": "General Education",
+          "meeting_patterns": []
+        },
+        {
+          "course": "PLSI 1018",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 5
+            },
+            {
+              "days": "M",
+              "start": "16:00:00",
+              "end": "18:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "17:30:00",
+              "end": "18:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T",
+              "start": "13:00:00",
+              "end": "15:30:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "THTR 1008",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W,F",
+              "start": "12:00:00",
+              "end": "12:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "KINE 2018",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": "General Education",
+          "meeting_patterns": []
+        },
+        {
+          "course": "MUS 1039",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "COMM 2518",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "12:00:00",
+              "end": "12:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "KINE 1535",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "08:30:00",
+              "end": "09:20:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "KINE 1507",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "PHIL 2129",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "ATHL 1563",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "GST 2230",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "GST 2840",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "ATHL 1493",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ERM 2900",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "COMM 3088",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "PSYC 2030",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "16:00:00",
+              "end": "17:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "PSYC 4130",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "PSYC 4340",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W,F",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W,F",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "RS 4518",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "16:00:00",
+              "end": "17:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "BA 3108",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 4
+            },
+            {
+              "days": "T,Th",
+              "start": "19:00:00",
+              "end": "20:15:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W",
+              "start": "19:00:00",
+              "end": "20:15:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W",
+              "start": "17:30:00",
+              "end": "18:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "16:00:00",
+              "end": "17:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ACCT 2350",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "GEOL 3328",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 6
+            }
+          ]
+        },
+        {
+          "course": "BA 3008",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "16:00:00",
+              "end": "17:15:00",
+              "note": null,
+              "sections": 4
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W",
+              "start": "17:30:00",
+              "end": "18:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "13:00:00",
+              "end": "14:15:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "CMPS 2680",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W,F",
+              "start": "09:00:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "PPA 2008",
+          "count": 1,
+          "pct_of_cohort": 0.0083,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 4
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        }
+      ],
+      "candidate_schedules": [
+        {
+          "courses": [
+            {
+              "course": "ENGL 1109",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.6281,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "No Patterns",
+                  "start": null,
+                  "end": null,
+                  "note": "asynchronous / no fixed meeting time",
+                  "sections": 3
+                },
+                {
+                  "days": "MF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 100F (Lecture Room)), W (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 2
+                },
+                {
+                  "days": "MW (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: HUM 1108 (Lecture Room)), F (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "WF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 103G (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "T",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "CSUB 1029",
+              "units": 2,
+              "units_estimated": false,
+              "pct_of_cohort": 0.5372,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "16:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:20:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 3
+                }
+              ]
+            },
+            {
+              "course": "COMM 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.4132,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "11:30:00",
+                  "end": "12:45:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "10:00:00",
+                  "end": "10:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 2
+                }
+              ]
+            },
+            {
+              "course": "MATH 2200",
+              "units": 4,
+              "units_estimated": false,
+              "pct_of_cohort": 0.3388,
+              "req_type": "Major / Gen Ed",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "18:00:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "17:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "13:00:00",
+                  "end": "14:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:15:00",
+                  "end": "09:55:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "12:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "11:00:00",
+                  "end": "12:40:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "BA 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2727,
+              "req_type": "Major / Gen Ed",
+              "meeting_patterns": [
+                {
+                  "days": "No Patterns",
+                  "start": null,
+                  "end": null,
+                  "note": "asynchronous / no fixed meeting time",
+                  "sections": 3
+                }
+              ]
+            }
+          ],
+          "total_units": 15,
+          "score": 0.438
+        },
+        {
+          "courses": [
+            {
+              "course": "ENGL 1109",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.6281,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "No Patterns",
+                  "start": null,
+                  "end": null,
+                  "note": "asynchronous / no fixed meeting time",
+                  "sections": 3
+                },
+                {
+                  "days": "MF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 100F (Lecture Room)), W (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 2
+                },
+                {
+                  "days": "MW (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: HUM 1108 (Lecture Room)), F (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "WF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 103G (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "T",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "CSUB 1029",
+              "units": 2,
+              "units_estimated": false,
+              "pct_of_cohort": 0.5372,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "16:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:20:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 3
+                }
+              ]
+            },
+            {
+              "course": "COMM 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.4132,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "11:30:00",
+                  "end": "12:45:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "10:00:00",
+                  "end": "10:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 2
+                }
+              ]
+            },
+            {
+              "course": "MATH 2200",
+              "units": 4,
+              "units_estimated": false,
+              "pct_of_cohort": 0.3388,
+              "req_type": "Major / Gen Ed",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "18:00:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "17:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "13:00:00",
+                  "end": "14:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:15:00",
+                  "end": "09:55:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "12:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "11:00:00",
+                  "end": "12:40:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "MATH 1010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.2314,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "18:50:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "18:00:00",
+                  "end": "18:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "08:00:00",
+                  "end": "08:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            }
+          ],
+          "total_units": 15,
+          "score": 0.4298
+        },
+        {
+          "courses": [
+            {
+              "course": "ENGL 1109",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.6281,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "No Patterns",
+                  "start": null,
+                  "end": null,
+                  "note": "asynchronous / no fixed meeting time",
+                  "sections": 3
+                },
+                {
+                  "days": "MF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 100F (Lecture Room)), W (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 2
+                },
+                {
+                  "days": "MW (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: HUM 1108 (Lecture Room)), F (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "WF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 103G (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "T",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "CSUB 1029",
+              "units": 2,
+              "units_estimated": false,
+              "pct_of_cohort": 0.5372,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "16:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:20:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 3
+                }
+              ]
+            },
+            {
+              "course": "COMM 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.4132,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "11:30:00",
+                  "end": "12:45:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "10:00:00",
+                  "end": "10:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 2
+                }
+              ]
+            },
+            {
+              "course": "MATH 2200",
+              "units": 4,
+              "units_estimated": false,
+              "pct_of_cohort": 0.3388,
+              "req_type": "Major / Gen Ed",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "18:00:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "17:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "13:00:00",
+                  "end": "14:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:15:00",
+                  "end": "09:55:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "12:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "11:00:00",
+                  "end": "12:40:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "PHIL 1019",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2231,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "No Patterns",
+                  "start": null,
+                  "end": null,
+                  "note": "asynchronous / no fixed meeting time",
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W",
+                  "start": "16:00:00",
+                  "end": "17:15:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "17:15:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            }
+          ],
+          "total_units": 15,
+          "score": 0.4281
+        },
+        {
+          "courses": [
+            {
+              "course": "ENGL 1109",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.6281,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "No Patterns",
+                  "start": null,
+                  "end": null,
+                  "note": "asynchronous / no fixed meeting time",
+                  "sections": 3
+                },
+                {
+                  "days": "MF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 100F (Lecture Room)), W (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 2
+                },
+                {
+                  "days": "MW (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: HUM 1108 (Lecture Room)), F (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "WF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 103G (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "T",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "CSUB 1029",
+              "units": 2,
+              "units_estimated": false,
+              "pct_of_cohort": 0.5372,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "16:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:20:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 3
+                }
+              ]
+            },
+            {
+              "course": "COMM 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.4132,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "11:30:00",
+                  "end": "12:45:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "10:00:00",
+                  "end": "10:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 2
+                }
+              ]
+            },
+            {
+              "course": "MATH 2200",
+              "units": 4,
+              "units_estimated": false,
+              "pct_of_cohort": 0.3388,
+              "req_type": "Major / Gen Ed",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "18:00:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "17:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "13:00:00",
+                  "end": "14:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:15:00",
+                  "end": "09:55:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "12:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "11:00:00",
+                  "end": "12:40:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "BA 1000",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.1983,
+              "req_type": "Major",
+              "meeting_patterns": [
+                {
+                  "days": "No Patterns",
+                  "start": null,
+                  "end": null,
+                  "note": "asynchronous / no fixed meeting time",
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "13:00:00",
+                  "end": "14:15:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            }
+          ],
+          "total_units": 15,
+          "score": 0.4231
+        },
+        {
+          "courses": [
+            {
+              "course": "ENGL 1109",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.6281,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "No Patterns",
+                  "start": null,
+                  "end": null,
+                  "note": "asynchronous / no fixed meeting time",
+                  "sections": 3
+                },
+                {
+                  "days": "MF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 100F (Lecture Room)), W (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 2
+                },
+                {
+                  "days": "MW (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: HUM 1108 (Lecture Room)), F (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "WF (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: DDH 103G (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 09:00-09:50 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "T",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "CSUB 1029",
+              "units": 2,
+              "units_estimated": false,
+              "pct_of_cohort": 0.5372,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "16:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:20:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 3
+                }
+              ]
+            },
+            {
+              "course": "COMM 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.4132,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "11:30:00",
+                  "end": "12:45:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "10:00:00",
+                  "end": "10:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 2
+                }
+              ]
+            },
+            {
+              "course": "MATH 2200",
+              "units": 4,
+              "units_estimated": false,
+              "pct_of_cohort": 0.3388,
+              "req_type": "Major / Gen Ed",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "18:00:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "17:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "13:00:00",
+                  "end": "14:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:15:00",
+                  "end": "09:55:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "12:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "11:00:00",
+                  "end": "12:40:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "MATH 1050",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.1818,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "19:15:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "18:00:00",
+                  "end": "19:15:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M",
+                  "start": "14:45:00",
+                  "end": "15:35:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "13:00:00",
+                  "end": "14:15:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M",
+                  "start": "13:00:00",
+                  "end": "13:50:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            }
+          ],
+          "total_units": 15,
+          "score": 0.4198
+        }
+      ]
+    },
+    "Spring": {
+      "cohort_size": 15,
+      "course_frequency": [
+        {
+          "course": "GEOL 2010",
+          "count": 14,
+          "pct_of_cohort": 0.9333,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "T",
+              "start": "13:00:00",
+              "end": "15:30:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "MATH 1010",
+          "count": 6,
+          "pct_of_cohort": 0.4,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "18:50:00",
+              "end": "19:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "18:00:00",
+              "end": "18:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "08:00:00",
+              "end": "08:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "T,Th",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "09:00:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "COMM 1008",
+          "count": 3,
+          "pct_of_cohort": 0.2,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "General Education",
+          "meeting_patterns": [
+            {
+              "days": "T,Th",
+              "start": "11:30:00",
+              "end": "12:45:00",
+              "note": null,
+              "sections": 3
+            },
+            {
+              "days": "T,Th",
+              "start": "10:00:00",
+              "end": "11:15:00",
+              "note": null,
+              "sections": 3
+            },
+            {
+              "days": "T,Th",
+              "start": "14:30:00",
+              "end": "15:45:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W,F",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "M,W,F",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "T,Th",
+              "start": "08:30:00",
+              "end": "09:45:00",
+              "note": null,
+              "sections": 2
+            }
+          ]
+        },
+        {
+          "course": "ENGL 1100",
+          "count": 3,
+          "pct_of_cohort": 0.2,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "W (From: 2026-08-24 to 2026-12-15 at 16:00-17:15 at facility: DDH 100F (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 16:00-17:15 at facility: WSL 005 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "Th (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: DDH 104K (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "W (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: SCI III 102 (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "Th (From: 2026-08-24 to 2026-12-15 at 10:00-11:15 at facility: DDH 146H (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 10:00-11:15 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "Th (From: 2026-08-24 to 2026-12-15 at 08:30-09:45 at facility: SCI III 212 (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 08:30-09:45 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "Th (From: 2026-08-24 to 2026-12-15 at 11:30-12:45 at facility: BDC 156B (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 11:30-12:45 at facility: WSL 003 (Computer Lab)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "ENGL 950",
+          "count": 3,
+          "pct_of_cohort": 0.2,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "F",
+              "start": "13:00:00",
+              "end": "13:50:00",
+              "note": null,
+              "sections": 2
+            },
+            {
+              "days": "F",
+              "start": "09:00:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "10:00:00",
+              "end": "10:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "F",
+              "start": "16:00:00",
+              "end": "16:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "CSUB 1029",
+          "count": 3,
+          "pct_of_cohort": 0.2,
+          "units": 2,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "11:00:00",
+              "end": "11:50:00",
+              "note": null,
+              "sections": 5
+            },
+            {
+              "days": "T,Th",
+              "start": "12:00:00",
+              "end": "12:50:00",
+              "note": null,
+              "sections": 5
+            },
+            {
+              "days": "T,Th",
+              "start": "16:00:00",
+              "end": "16:50:00",
+              "note": null,
+              "sections": 4
+            },
+            {
+              "days": "T,Th",
+              "start": "08:30:00",
+              "end": "09:20:00",
+              "note": null,
+              "sections": 4
+            },
+            {
+              "days": "M,W",
+              "start": "12:00:00",
+              "end": "12:50:00",
+              "note": null,
+              "sections": 4
+            },
+            {
+              "days": "M,W",
+              "start": "09:00:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 3
+            }
+          ]
+        },
+        {
+          "course": "MATH 1030",
+          "count": 2,
+          "pct_of_cohort": 0.1333,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "BA 1008",
+          "count": 2,
+          "pct_of_cohort": 0.1333,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": "Major / Gen Ed",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 3
+            }
+          ]
+        },
+        {
+          "course": "MIS 2000",
+          "count": 2,
+          "pct_of_cohort": 0.1333,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": "Major",
+          "meeting_patterns": [
+            {
+              "days": "No Patterns",
+              "start": null,
+              "end": null,
+              "note": "asynchronous / no fixed meeting time",
+              "sections": 5
+            }
+          ]
+        },
+        {
+          "course": "CSUB 1019",
+          "count": 1,
+          "pct_of_cohort": 0.0667,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": "General Education",
+          "meeting_patterns": []
+        },
+        {
+          "course": "GST 1211",
+          "count": 1,
+          "pct_of_cohort": 0.0667,
+          "units": 3,
+          "units_estimated": true,
+          "req_type": null,
+          "meeting_patterns": []
+        },
+        {
+          "course": "MATH 953",
+          "count": 1,
+          "pct_of_cohort": 0.0667,
+          "units": 1,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "F",
+              "start": "08:50:00",
+              "end": "09:40:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "19:05:00",
+              "end": "19:30:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "MATH 2120",
+          "count": 1,
+          "pct_of_cohort": 0.0667,
+          "units": 5,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "W (From: 2026-08-24 to 2026-12-15 at 11:00-12:40 at facility: SCI III 212 (Lecture Room)), MF (From: 2026-08-24 to 2026-12-15 at 11:00-12:15 at facility: SCI III 212 (Lecture Room)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            },
+            {
+              "days": "M,W",
+              "start": "17:00:00",
+              "end": "19:05:00",
+              "note": null,
+              "sections": 1
+            },
+            {
+              "days": "MW (From: 2026-08-24 to 2026-12-15 at 08:00-09:40 at facility: SCI III 213 (Lecture Room)), F (From: 2026-08-24 to 2026-12-15 at 08:00-08:50 at facility: SCI III 213 (Lecture Room)",
+              "start": null,
+              "end": null,
+              "note": "day/time not cleanly parseable from source data",
+              "sections": 1
+            }
+          ]
+        },
+        {
+          "course": "FREN 1000",
+          "count": 1,
+          "pct_of_cohort": 0.0667,
+          "units": 3,
+          "units_estimated": false,
+          "req_type": null,
+          "meeting_patterns": [
+            {
+              "days": "M,W",
+              "start": "09:00:00",
+              "end": "09:50:00",
+              "note": null,
+              "sections": 1
+            }
+          ]
+        }
+      ],
+      "candidate_schedules": [
+        {
+          "courses": [
+            {
+              "course": "GEOL 2010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.9333,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "T",
+                  "start": "13:00:00",
+                  "end": "15:30:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "MATH 1010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.4,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "18:50:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "18:00:00",
+                  "end": "18:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "08:00:00",
+                  "end": "08:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "COMM 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "11:30:00",
+                  "end": "12:45:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "10:00:00",
+                  "end": "10:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 2
+                }
+              ]
+            },
+            {
+              "course": "ENGL 1100",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "W (From: 2026-08-24 to 2026-12-15 at 16:00-17:15 at facility: DDH 100F (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 16:00-17:15 at facility: WSL 005 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: DDH 104K (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "W (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: SCI III 102 (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 10:00-11:15 at facility: DDH 146H (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 10:00-11:15 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 08:30-09:45 at facility: SCI III 212 (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 08:30-09:45 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 11:30-12:45 at facility: BDC 156B (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 11:30-12:45 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "CSUB 1029",
+              "units": 2,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "16:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:20:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 3
+                }
+              ]
+            }
+          ],
+          "total_units": 14,
+          "score": 0.3867
+        },
+        {
+          "courses": [
+            {
+              "course": "GEOL 2010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.9333,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "T",
+                  "start": "13:00:00",
+                  "end": "15:30:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "MATH 1010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.4,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "18:50:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "18:00:00",
+                  "end": "18:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "08:00:00",
+                  "end": "08:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "COMM 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "11:30:00",
+                  "end": "12:45:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "10:00:00",
+                  "end": "10:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 2
+                }
+              ]
+            },
+            {
+              "course": "ENGL 1100",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "W (From: 2026-08-24 to 2026-12-15 at 16:00-17:15 at facility: DDH 100F (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 16:00-17:15 at facility: WSL 005 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: DDH 104K (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "W (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: SCI III 102 (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 10:00-11:15 at facility: DDH 146H (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 10:00-11:15 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 08:30-09:45 at facility: SCI III 212 (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 08:30-09:45 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 11:30-12:45 at facility: BDC 156B (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 11:30-12:45 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "MATH 1030",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.1333,
+              "req_type": null,
+              "meeting_patterns": []
+            }
+          ],
+          "total_units": 15,
+          "score": 0.3733
+        },
+        {
+          "courses": [
+            {
+              "course": "GEOL 2010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.9333,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "T",
+                  "start": "13:00:00",
+                  "end": "15:30:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "MATH 1010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.4,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "18:50:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "18:00:00",
+                  "end": "18:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "08:00:00",
+                  "end": "08:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "COMM 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "11:30:00",
+                  "end": "12:45:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "10:00:00",
+                  "end": "10:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 2
+                }
+              ]
+            },
+            {
+              "course": "ENGL 1100",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "W (From: 2026-08-24 to 2026-12-15 at 16:00-17:15 at facility: DDH 100F (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 16:00-17:15 at facility: WSL 005 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: DDH 104K (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "W (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: SCI III 102 (Lecture Room)), M (From: 2026-08-24 to 2026-12-15 at 13:00-14:15 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 10:00-11:15 at facility: DDH 146H (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 10:00-11:15 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 08:30-09:45 at facility: SCI III 212 (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 08:30-09:45 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                },
+                {
+                  "days": "Th (From: 2026-08-24 to 2026-12-15 at 11:30-12:45 at facility: BDC 156B (Lecture Room)), T (From: 2026-08-24 to 2026-12-15 at 11:30-12:45 at facility: WSL 003 (Computer Lab)",
+                  "start": null,
+                  "end": null,
+                  "note": "day/time not cleanly parseable from source data",
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "BA 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.1333,
+              "req_type": "Major / Gen Ed",
+              "meeting_patterns": [
+                {
+                  "days": "No Patterns",
+                  "start": null,
+                  "end": null,
+                  "note": "asynchronous / no fixed meeting time",
+                  "sections": 3
+                }
+              ]
+            }
+          ],
+          "total_units": 15,
+          "score": 0.3733
+        },
+        {
+          "courses": [
+            {
+              "course": "GEOL 2010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.9333,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "T",
+                  "start": "13:00:00",
+                  "end": "15:30:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "MATH 1010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.4,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "18:50:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "18:00:00",
+                  "end": "18:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "08:00:00",
+                  "end": "08:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "COMM 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "11:30:00",
+                  "end": "12:45:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "10:00:00",
+                  "end": "10:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 2
+                }
+              ]
+            },
+            {
+              "course": "CSUB 1029",
+              "units": 2,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "16:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:20:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 3
+                }
+              ]
+            },
+            {
+              "course": "MATH 1030",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.1333,
+              "req_type": null,
+              "meeting_patterns": []
+            }
+          ],
+          "total_units": 14,
+          "score": 0.3733
+        },
+        {
+          "courses": [
+            {
+              "course": "GEOL 2010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.9333,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "T",
+                  "start": "13:00:00",
+                  "end": "15:30:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "MATH 1010",
+              "units": 3,
+              "units_estimated": true,
+              "pct_of_cohort": 0.4,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "18:50:00",
+                  "end": "19:40:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "18:00:00",
+                  "end": "18:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "M,W",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "08:00:00",
+                  "end": "08:50:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 1
+                },
+                {
+                  "days": "F",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 1
+                }
+              ]
+            },
+            {
+              "course": "COMM 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": "General Education",
+              "meeting_patterns": [
+                {
+                  "days": "T,Th",
+                  "start": "11:30:00",
+                  "end": "12:45:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "10:00:00",
+                  "end": "11:15:00",
+                  "note": null,
+                  "sections": 3
+                },
+                {
+                  "days": "T,Th",
+                  "start": "14:30:00",
+                  "end": "15:45:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "10:00:00",
+                  "end": "10:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "M,W,F",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 2
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:45:00",
+                  "note": null,
+                  "sections": 2
+                }
+              ]
+            },
+            {
+              "course": "CSUB 1029",
+              "units": 2,
+              "units_estimated": false,
+              "pct_of_cohort": 0.2,
+              "req_type": null,
+              "meeting_patterns": [
+                {
+                  "days": "M,W",
+                  "start": "11:00:00",
+                  "end": "11:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 5
+                },
+                {
+                  "days": "T,Th",
+                  "start": "16:00:00",
+                  "end": "16:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "T,Th",
+                  "start": "08:30:00",
+                  "end": "09:20:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "12:00:00",
+                  "end": "12:50:00",
+                  "note": null,
+                  "sections": 4
+                },
+                {
+                  "days": "M,W",
+                  "start": "09:00:00",
+                  "end": "09:50:00",
+                  "note": null,
+                  "sections": 3
+                }
+              ]
+            },
+            {
+              "course": "BA 1008",
+              "units": 3,
+              "units_estimated": false,
+              "pct_of_cohort": 0.1333,
+              "req_type": "Major / Gen Ed",
+              "meeting_patterns": [
+                {
+                  "days": "No Patterns",
+                  "start": null,
+                  "end": null,
+                  "note": "asynchronous / no fixed meeting time",
+                  "sections": 3
+                }
+              ]
+            }
+          ],
+          "total_units": 14,
+          "score": 0.3733
+        }
+      ]
+    }
+  }
+}

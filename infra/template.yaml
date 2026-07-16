@@ -23,6 +23,18 @@ Globals:
     Environment:
       Variables:
         BEDROCK_MODEL_ID: !Ref BedrockModelId
+  Api:
+    # Preflight (OPTIONS) support for the static frontend in frontend/web/,
+    # which calls this API cross-origin from wherever it's hosted (S3/
+    # CloudFront/local static server). The actual GET/POST responses still
+    # need Access-Control-Allow-Origin set by the Lambda itself (Lambda
+    # proxy integration doesn't inject headers into non-preflight
+    # responses) — see CORS_HEADERS in api/handlers/recommendation.py and
+    # api/handlers/ask.py.
+    Cors:
+      AllowOrigin: "'*'"
+      AllowHeaders: "'Content-Type'"
+      AllowMethods: "'GET,POST,OPTIONS'"
 
 Resources:
   RecommendationFunction:
