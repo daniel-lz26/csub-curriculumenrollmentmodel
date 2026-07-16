@@ -1,35 +1,40 @@
 // Frontend configuration — the only file most people need to touch.
-//
-// API_BASE_URL: the "ApiUrl" output from `infra/deploy.sh` (SAM), e.g.
-//   "https://abc123.execute-api.us-west-2.amazonaws.com/Prod"
-// Leave it "" to run in offline/demo mode: the app reads the bundled
-// snapshot at ./data/recommendation.json instead of calling AWS, and the
-// Q&A box is disabled (there's no Bedrock call to make without an API).
-const API_BASE_URL = "";
 
-// BSBA concentrations shown in the "Concentration" picker in the masthead.
-// Add/remove/rename freely — this list is presentation only. Per
-// CHANGES.md, freshman-year course-taking is nearly identical across all
-// 10 concentrations, so the mining layer pools them and does not compute
-// separate data per concentration; changing this selector changes the
-// page's labels only, not which courses/rationale are shown. If the
-// mining layer is ever extended to be concentration-aware, this is the
-// list to wire a real `?concentration=` query param to.
-const BSBA_CONCENTRATIONS = [
-  "General Business",
-  "Accounting",
-  "Economics",
-  "Entrepreneurship",
-  "Finance",
-  "Health Care Management",
-  "Human Resource Management",
-  "Management",
-  "Marketing",
-  "Supply Chain Logistics",
+// ---- Schedule blocks (schedule_engine artifacts) ---------------------------
+// Each entry is a generated artifact from `python3 -m schedule_engine
+// generate --major "..."` (see ../../schedule_engine/README.md) — a real,
+// conflict-checked set of cohort schedule blocks for that major, Fall 2026.
+// This is what drives the major picker, the block/calendar view, and the
+// comparison view. To add a major: generate its artifact, copy the JSON into
+// data/artifacts/, and add a line here.
+const ARTIFACTS_BASE_PATH = "./data/artifacts/";
+// { file, label } — label is what shows in the Major picker. Filenames alone
+// aren't user-friendly, so every entry needs a human label; the picker won't
+// fall back to the raw filename.
+const MAJOR_ARTIFACTS = [
+  { file: "ba_general_business.json", label: "General Business" },
+  { file: "ba_accounting.json", label: "Accounting" },
+  { file: "ba_economics.json", label: "Economics" },
+  { file: "ba_entrepreneurship.json", label: "Entrepreneurship" },
+  { file: "ba_finance.json", label: "Finance" },
+  { file: "ba_health_care_management.json", label: "Health Care Management" },
+  { file: "ba_human_resource_management.json", label: "Human Resource Management" },
+  { file: "ba_management.json", label: "Management" },
+  { file: "ba_marketing.json", label: "Marketing" },
+  { file: "ba_public_administration.json", label: "Public Administration" },
+  { file: "ba_supply_chain_logistics.json", label: "Supply Chain Logistics" },
+  { file: "agricultural_business.json", label: "Agricultural Business" },
 ];
+// No live endpoint serves these artifacts yet (schedule_engine has no
+// Lambda/API Gateway wiring — it's a CLI pipeline that writes local JSON).
+// Regenerate + re-copy into data/artifacts/ to refresh; there's nothing to
+// point at a deployed URL for here yet.
 
-// Path to the offline fallback snapshot (a copy of
-// data/output/recommendation.json), used whenever API_BASE_URL is unset or
-// a live fetch fails. Regenerate it with `python -m mining.co_occurrence`
-// and copy the output here to refresh the demo data.
-const LOCAL_SNAPSHOT_PATH = "./data/recommendation.json";
+// ---- Legacy Q&A endpoint (mining/co_occurrence.py + bedrock/client.py) ----
+// The free-text "Ask a question" box still calls the older recommendation
+// API (api/handlers/ask.py), which answers over the pooled, all-concentration
+// mining dataset — not the specific major/block currently on screen. Leave
+// API_BASE_URL "" to run it in offline/demo mode (Q&A disabled, since there's
+// no Bedrock call to make without a deployed API); set it to the "ApiUrl"
+// output from `infra/deploy.sh` to enable live Q&A.
+const API_BASE_URL = "";

@@ -94,17 +94,30 @@ table tbody tr:hover td{background-color:#fff9e6}
 .page-header .scope-row{display:flex;flex-wrap:wrap;gap:.5em;margin-top:.4em}
 .scope-tag{background:var(--color-universal-background-gray);border:1px solid var(--color-border-gray);color:#333}
 
-.assumptions-panel{border:1.5px solid var(--color-primary);border-left-width:6px;border-radius:var(--border-radius);padding:1.4em 1.6em;background:#f4f7fc}
-.assumptions-panel h2{font-size:1.05rem;color:var(--color-primary-deep);margin-bottom:.7em}
-.assumptions-panel dl{display:flex;flex-direction:column;gap:.8em;font-size:.9rem}
-.assumptions-panel dt{font-weight:700;color:var(--color-primary-deep);font-family:var(--font-family);margin-bottom:.15em}
-.assumptions-panel dd{color:#333;max-width:70ch}
+.assumptions-panel{border:1.5px solid var(--color-primary);border-left-width:6px;border-radius:var(--border-radius);padding:.75em 1.1em;background:#f4f7fc}
+.assumptions-panel h2{font-size:.88rem;color:var(--color-primary-deep);margin-bottom:.4em;text-transform:uppercase;letter-spacing:.03em}
+.assumptions-panel dl{display:grid;grid-template-columns:max-content 1fr;column-gap:1em;row-gap:.3em;font-size:.8rem;line-height:1.4}
+.assumptions-panel dl > div{display:contents}
+.assumptions-panel dt{font-weight:700;color:var(--color-primary-deep);font-family:var(--font-family);white-space:nowrap}
+.assumptions-panel dd{color:#333}
+@media (max-width: 640px){
+  .assumptions-panel dl{grid-template-columns:1fr}
+  .assumptions-panel dl > div{display:block;margin-bottom:.3em}
+}
 
 .top-pick{border:2px solid var(--color-gold-deep);border-radius:var(--border-radius);overflow:hidden;box-shadow:0 var(--box-shadow) var(--box-shadow-blur) rgba(0,0,0,.08)}
 .top-pick-head{background:var(--color-primary);color:#fff;padding:1em 1.4em;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.6em}
 .top-pick-head .title{font-family:var(--font-family-headings);font-size:1.15rem}
 .top-pick-head .support{font-family:var(--font-family-mono);font-size:.82rem;background:rgba(255,255,255,.15);padding:.35em .75em;border-radius:999px}
 .top-pick-badge{background:var(--color-gold);color:#4a3800;font-weight:700;font-size:.72rem;padding:.25em .6em;border-radius:4px;letter-spacing:.03em;text-transform:uppercase}
+.top-pick-badge.alt{background:var(--color-universal-background-gray);color:#333;border:1px solid var(--color-border-gray)}
+.score-caption{padding:.6em 1.4em 0;font-size:.78rem;color:var(--color-text-gray);font-style:italic}
+.advisories-banner{margin:1em 1.4em 0;padding:.8em 1em;border:1px solid var(--color-warning);background:#fff8e1;border-radius:var(--border-radius);font-size:.85rem}
+.advisories-banner strong{display:block;margin-bottom:.3em;color:#6b5100}
+.advisories-banner ul{list-style:none;display:flex;flex-direction:column;gap:.25em}
+.no-time-tag{font-style:italic;color:var(--color-text-gray)}
+.no-time-tag.tba{color:var(--color-term-element-unknown);font-weight:600}
+.popularity-cell{font-size:.82rem;color:var(--color-text-gray);white-space:nowrap}
 
 .req-tag{display:inline-flex;align-items:center;gap:.4em;font-size:.75rem;font-weight:600;padding:.25em .65em;border-radius:999px;white-space:nowrap}
 .req-tag:before{content:"";width:.5rem;height:.5rem;border-radius:100%;flex-shrink:0}
@@ -191,6 +204,7 @@ footer.app-footer a{color:#fff}
 .calendar-legend{display:flex;flex-wrap:wrap;gap:1em;padding:.9em 1.2em;border-top:1px solid var(--color-border-gray-light);font-size:.8rem;background:var(--color-universal-background-gray)}
 .calendar-legend .legend-item{display:flex;align-items:center;gap:.45em}
 .calendar-legend .swatch{width:.75rem;height:.75rem;border-radius:3px;flex-shrink:0}
+.calendar-ok{padding:.6em 1.2em;font-size:.8rem;color:var(--color-success);font-weight:600;border-bottom:1px solid var(--color-border-gray-light)}
 .calendar-unplottable{padding:.9em 1.2em;border-top:1px solid var(--color-border-gray-light);font-size:.85rem;color:var(--color-text-gray)}
 .calendar-unplottable ul{list-style:none;display:flex;flex-direction:column;gap:.3em;margin-top:.4em}
 .calendar-empty{padding:1.6em;text-align:center;color:var(--color-text-gray);font-style:italic}

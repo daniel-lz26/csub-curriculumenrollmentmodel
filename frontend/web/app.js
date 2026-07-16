@@ -3,7 +3,6 @@
 /* ============================================================
    Constants
    ============================================================ */
-const TERM_OPTIONS = ["Fall", "Spring"];
 const DAY_COLUMNS = [
   { label: "Mon", key: "Mon" },
   { label: "Tue", key: "Tue" },
@@ -14,7 +13,6 @@ const DAY_COLUMNS = [
   { label: "Sun", key: "Sun" },
 ];
 const TOKEN_TO_DAY = { M: "Mon", T: "Tue", W: "Wed", Th: "Thu", F: "Fri", Sa: "Sat", Su: "Sun" };
-const KNOWN_TOKENS = ["Th", "Sa", "Su", "M", "T", "W", "F"]; // longest-match-first order
 
 const CAL_START_MIN = 7 * 60;   // 7:00am
 const CAL_END_MIN = 21 * 60;    // 9:00pm
@@ -22,16 +20,28 @@ const CAL_RANGE_MIN = CAL_END_MIN - CAL_START_MIN;
 
 const REQ_TAG_CLASS = { "Major": "major", "General Education": "gened", "Major / Gen Ed": "gem" };
 const CAL_BLOCK_CLASS = { "Major": "req-major", "General Education": "req-gened", "Major / Gen Ed": "req-gem" };
+const ONLINE_MODE = "On-Line/Web";
+
+// The generator's beam-search score is a weighted sum (see
+// schedule_engine/config.py BASE_WEIGHTS) of these four signals. It's an
+// arbitrary-scale ranking number for comparing blocks against each other
+// within the *same* major/run — not a percentage, probability, or
+// cross-major-comparable figure. Shown with this definition attached
+// everywhere it appears, per explicit request — never bare.
+const SCORE_DEFINITION =
+  "Fit score: a weighted composite of four signals — how much of each course's meeting time falls in the preferred window, how popular the course was with real historical freshmen, how healthy the section's seat count is, and how compact the resulting week is (few campus days, small gaps). Higher is a better match for this block's preference profile. It is not a percentage, probability, or a number comparable across different majors.";
+// Shorter version for space-constrained inline captions (full definition
+// above is still used in title="" tooltips).
+const SCORE_DEFINITION_SHORT =
+  "Composite of time-window fit, popularity, seat health, and compactness — higher is a better match for this profile, not a percentage or a cross-major comparison.";
 
 /* ============================================================
    State
    ============================================================ */
 const state = {
-  mode: API_BASE_URL ? "live" : "demo", // "live" | "demo" | "offline-fallback"
-  localSnapshot: null,   // full mine() JSON, loaded lazily
-  term: TERM_OPTIONS[0],
-  view: null,            // normalized view model for the current term (see fetchTerm)
-  activeScheduleIndex: 0,
+  artifact: null,        // currently loaded schedule_engine artifact
+  activeBlockIndex: 0,    // index into state.blocksSorted
+  blocksSorted: [],       // artifact.blocks sorted by score desc
   qaThread: [],
   qaBusy: false,
 };
@@ -41,8 +51,8 @@ const state = {
    ============================================================ */
 const el = {
   statusRibbon: document.getElementById("statusRibbon"),
-  concentrationSelect: document.getElementById("concentrationSelect"),
-  termSelect: document.getElementById("termSelect"),
+  majorSelect: document.getElementById("majorSelect"),
+  blockSelect: document.getElementById("blockSelect"),
   cohortChip: document.getElementById("cohortChip"),
   pageTitle: document.getElementById("pageTitle"),
   scopeRow: document.getElementById("scopeRow"),
@@ -50,123 +60,79 @@ const el = {
   assumptionsList: document.getElementById("assumptionsList"),
   stateBannerHost: document.getElementById("stateBannerHost"),
   topPickSection: document.getElementById("topPickSection"),
+  topPickBadge: document.getElementById("topPickBadge"),
   topPickTitle: document.getElementById("topPickTitle"),
   topPickSupport: document.getElementById("topPickSupport"),
+  scoreCaption: document.getElementById("scoreCaption"),
+  advisoriesBanner: document.getElementById("advisoriesBanner"),
   topPickBody: document.getElementById("topPickBody"),
   calendarWrap: document.getElementById("calendarWrap"),
   calendarSourceLabel: document.getElementById("calendarSourceLabel"),
+  calendarConflictBanner: document.getElementById("calendarConflictBanner"),
   calendarGrid: document.getElementById("calendarGrid"),
   calendarLegend: document.getElementById("calendarLegend"),
   calendarUnplottable: document.getElementById("calendarUnplottable"),
   rationaleBox: document.getElementById("rationaleBox"),
   rationaleText: document.getElementById("rationaleText"),
-  rationaleMeta: document.getElementById("rationaleMeta"),
   comparisonSection: document.getElementById("comparisonSection"),
   comparisonList: document.getElementById("comparisonList"),
   qaThread: document.getElementById("qaThread"),
   qaEmptyState: document.getElementById("qaEmptyState"),
   qaInput: document.getElementById("qaInput"),
   qaSubmit: document.getElementById("qaSubmit"),
-  appFooter: document.getElementById("appFooter"),
 };
 
 /* ============================================================
-   Day/time parsing
+   Time helpers — artifact times are already clean "HH:MM" 24h strings
+   and days are already an array of M/T/W/Th/F tokens (real, conflict-
+   checked sections), so there's no free-text parsing needed here (unlike
+   the older mining-output format).
    ============================================================ */
-function parseDayTokens(daysStr) {
-  if (!daysStr) return [];
-  const raw = daysStr.trim();
-  if (raw.includes(",")) {
-    return raw.split(",").map((s) => s.trim()).filter(Boolean);
-  }
-  const tokens = [];
-  let i = 0;
-  while (i < raw.length) {
-    const hit = KNOWN_TOKENS.find((tok) => raw.startsWith(tok, i));
-    if (!hit) { i += 1; continue; }
-    tokens.push(hit);
-    i += hit.length;
-  }
-  return tokens;
-}
-
-function timeToMinutes(hhmmss) {
-  const [h, m] = hhmmss.split(":").map(Number);
+function timeToMinutes(hhmm) {
+  const [h, m] = hhmm.split(":").map(Number);
   return h * 60 + m;
 }
 
-function formatTime12h(hhmmss) {
-  const [hStr, mStr] = hhmmss.split(":");
-  let h = Number(hStr);
-  const m = Number(mStr);
+function formatTime12h(hhmm) {
+  let [h, m] = hhmm.split(":").map(Number);
   const ampm = h >= 12 ? "PM" : "AM";
   h = h % 12;
   if (h === 0) h = 12;
   return `${h}:${String(m).padStart(2, "0")}${ampm}`;
 }
 
-// A meeting_patterns entry is "plottable" if it has a clean start/end and
-// day tokens we recognize. Async ("No Patterns") and free-text entries
-// with an embedded caveat note (unparseable source rows) are not.
-function plottableSlot(pattern) {
-  if (!pattern || pattern.note || !pattern.start || !pattern.end) return false;
-  const tokens = parseDayTokens(pattern.days);
-  return tokens.length > 0 && tokens.every((t) => TOKEN_TO_DAY[t]);
+// A course is plottable on the calendar only if it has real days AND a
+// real start/end time. Anything else (TBA face-to-face sections, async
+// online sections) is explicitly excluded and called out to the user
+// instead of being silently dropped or shown with a fabricated time.
+function isPlottable(course) {
+  return Array.isArray(course.days) && course.days.length > 0 && !!course.start && !!course.end;
 }
 
-function bestSlotFor(course) {
-  const patterns = course.meeting_patterns || [];
-  return patterns.find(plottableSlot) || null;
+function isAsyncOnline(course) {
+  return !isPlottable(course) && course.mode === ONLINE_MODE;
+}
+
+// Face-to-face/hybrid sections with no meeting time on file are genuinely
+// TBA (registrar hasn't posted a room/time yet) — distinct from an async
+// online section, which has no meeting time by design.
+function meetingLabel(course) {
+  if (isPlottable(course)) {
+    return `${course.days.join("")} · ${formatTime12h(course.start)}–${formatTime12h(course.end)}`;
+  }
+  if (isAsyncOnline(course)) {
+    return `<span class="no-time-tag">Online — async, no fixed meeting time</span>`;
+  }
+  return `<span class="no-time-tag tba">TBA</span>`;
 }
 
 /* ============================================================
    Fetching
    ============================================================ */
-async function loadLocalSnapshot() {
-  if (state.localSnapshot) return state.localSnapshot;
-  const resp = await fetch(LOCAL_SNAPSHOT_PATH);
-  if (!resp.ok) throw new Error(`Local snapshot fetch failed: ${resp.status}`);
-  state.localSnapshot = await resp.json();
-  return state.localSnapshot;
-}
-
-function viewFromLocalSnapshot(snapshot, term, offline) {
-  const termData = snapshot.terms[term] || { cohort_size: 0, course_frequency: [], candidate_schedules: [] };
-  return {
-    major: snapshot.major,
-    class_year: snapshot.class_year,
-    unit_target: snapshot.unit_target,
-    assumptions: snapshot.assumptions,
-    cohort_size: termData.cohort_size,
-    candidate_schedules: termData.candidate_schedules,
-    rationale: null,
-    rationale_error: null,
-    offline: !!offline,
-  };
-}
-
-async function fetchTerm(term) {
-  if (state.mode === "live") {
-    try {
-      const resp = await fetch(`${API_BASE_URL.replace(/\/$/, "")}/recommendation?term=${encodeURIComponent(term)}`);
-      const body = await resp.json().catch(() => ({}));
-      if (!resp.ok) {
-        throw new Error(body.error || `API returned ${resp.status}`);
-      }
-      return { ...body, offline: false, networkError: null };
-    } catch (err) {
-      // Can't reach the API at all (bad URL, CORS, stack not deployed,
-      // network down) — fall back to the bundled snapshot so the chair
-      // still sees course data, and say plainly that it's a connectivity
-      // problem rather than "no data."
-      const snapshot = await loadLocalSnapshot();
-      const view = viewFromLocalSnapshot(snapshot, term, true);
-      view.networkError = err.message;
-      return view;
-    }
-  }
-  const snapshot = await loadLocalSnapshot();
-  return viewFromLocalSnapshot(snapshot, term, true);
+async function loadArtifact(filename) {
+  const resp = await fetch(`${ARTIFACTS_BASE_PATH}${filename}`);
+  if (!resp.ok) throw new Error(`Could not load ${filename}: ${resp.status}`);
+  return resp.json();
 }
 
 /* ============================================================
@@ -174,145 +140,147 @@ async function fetchTerm(term) {
    ============================================================ */
 function renderStatusRibbon() {
   el.statusRibbon.classList.remove("mode-demo", "mode-live", "mode-error");
-  if (state.mode === "live" && state.view && !state.view.networkError) {
-    el.statusRibbon.classList.add("mode-live");
-    el.statusRibbon.textContent = `LIVE — connected to ${API_BASE_URL}`;
-  } else if (state.view && state.view.networkError) {
-    el.statusRibbon.classList.add("mode-error");
-    el.statusRibbon.textContent = `Can't reach the API (${state.view.networkError}) — showing the bundled local snapshot instead. Check config.js API_BASE_URL and that infra/deploy.sh has run.`;
-  } else {
-    el.statusRibbon.classList.add("mode-demo");
-    el.statusRibbon.textContent = "DEMO MODE — showing a locally cached data snapshot, not a live API. Set API_BASE_URL in config.js after deploying to go live.";
-  }
+  el.statusRibbon.classList.add("mode-demo");
+  el.statusRibbon.textContent =
+    `Showing generated schedule blocks from schedule_engine (${state.artifact.sections_snapshot} section snapshot). ` +
+    (API_BASE_URL
+      ? `Q&A is live against ${API_BASE_URL}.`
+      : `Q&A is in offline/demo mode — set API_BASE_URL in config.js to enable it.`);
 }
 
-function populatePickers() {
-  el.concentrationSelect.innerHTML = BSBA_CONCENTRATIONS
-    .map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`)
+function populateMajorPicker() {
+  el.majorSelect.innerHTML = MAJOR_ARTIFACTS
+    .map((m) => `<option value="${escapeHtml(m.file)}">${escapeHtml(m.label)}</option>`)
     .join("");
-  el.termSelect.innerHTML = TERM_OPTIONS
-    .map((t) => `<option value="${t}">${t}</option>`)
+}
+
+// Single source of truth for how a block is identified in text, used by the
+// block picker, the selected-block card, the calendar caption, and the
+// comparison list — so those four places can never show a different name
+// for the same block.
+function blockShortLabel(block, index) {
+  return index === 0 ? `★ Top pick (Block ${block.block_id})` : `Block ${block.block_id}`;
+}
+function blockFullLabel(block, index) {
+  return `Block ${block.block_id} — ${block.label}${index === 0 ? " (top pick)" : ""}`;
+}
+
+function populateBlockPicker() {
+  el.blockSelect.innerHTML = state.blocksSorted
+    .map((b, i) => `<option value="${i}">${escapeHtml(blockFullLabel(b, i))}</option>`)
     .join("");
-  el.termSelect.value = state.term;
+  el.blockSelect.value = state.activeBlockIndex;
 }
 
 /* ============================================================
    Rendering — page header / assumptions
    ============================================================ */
-function renderHeader(view) {
-  const concentration = el.concentrationSelect.value || BSBA_CONCENTRATIONS[0];
-  el.cohortChip.textContent = `Cohort: ${view.cohort_size} incoming BSBA freshmen`;
-  el.pageTitle.textContent = `Recommended ${state.term} freshman block`;
+function renderHeader() {
+  const a = state.artifact;
+  const totalSeats = a.blocks.reduce((sum, b) => sum + (b.cohort_capacity || 0), 0);
+  el.cohortChip.textContent = `${a.blocks.length} block${a.blocks.length === 1 ? "" : "s"} · ~${totalSeats} planned seats`;
+  el.pageTitle.textContent = `${a.major} — ${a.term} freshman blocks`;
+
+  const prefs = a.preferences || {};
+  const window_ = prefs.preferred_window || {};
   el.scopeRow.innerHTML = [
-    `Major: Business Administration (${escapeHtml(concentration)} concentration)`,
-    `Class year: ${escapeHtml(view.class_year || "Freshman")}`,
-    `Target load: ${view.unit_target ? view.unit_target.join("–") : "14–15"} units`,
+    `Major: ${escapeHtml(a.major)}`,
+    `Term: ${escapeHtml(a.term)}`,
+    `Preference profile: ${escapeHtml(prefs.profile || "default")}`,
+    `Preferred window: ${escapeHtml(window_.start || "?")}–${escapeHtml(window_.end || "?")}`,
   ].map((t) => `<span class="tag scope-tag">${t}</span>`).join("");
 
   el.assumptionsPanel.hidden = false;
-  const a = view.assumptions || {};
-  const rows = [];
-  if (a.req_type) rows.push(["Requirement type (GEM classification)", a.req_type]);
-  if (a.meeting_patterns) rows.push(["Meeting time patterns", a.meeting_patterns]);
-  rows.push([
-    "Concentration selector",
-    "Freshman-year course-taking is nearly identical across all 10 BSBA concentrations, so the data above is pooled across all of them — the picker above changes this page's labels only, not the underlying recommendation.",
-  ]);
+  const rows = [
+    ["What this is", "Real, section-level Fall 2026 blocks — every course/time was open at the snapshot, and each block is deterministically validated conflict-free."],
+    ["Fit score", SCORE_DEFINITION_SHORT],
+    ["Meeting times", "No listed time → “TBA” (not yet scheduled) or “Online — async”; neither is plotted on the calendar below."],
+    ["Popularity", "“N/D mined freshmen” = N of D real historical freshmen in this major took that course."],
+  ];
+  if (a.notes && a.notes.length) {
+    rows.push(["Generator notes", a.notes.join(" ")]);
+  }
   el.assumptionsList.innerHTML = rows
-    .map(([dt, dd]) => `<div><dt>${escapeHtml(dt)}</dt><dd>${escapeHtml(dd)}</dd></div>`)
+    .map(([dt, dd]) => `<div><dt>${escapeHtml(dt)}</dt><dd>${dd}</dd></div>`)
     .join("");
 }
 
 /* ============================================================
-   Rendering — state banners (errors / empty states)
+   Rendering — state banners
    ============================================================ */
 function bannerHtml(kind, message) {
   const cls = { info: "notification-info", warning: "notification-warning", error: "notification-error" }[kind];
   return `<div class="notification-banner ${cls}"><div class="grid"><p>${message}</p></div></div>`;
 }
 
-function classifyRationaleError(msg) {
-  const lower = (msg || "").toLowerCase();
-  if (/credential|access.?denied|not set|unrecognizedclient|forbidden/.test(lower)) {
-    return { kind: "error", text: `The AI rationale couldn't be generated — Bedrock access isn't configured for this environment (${escapeHtml(msg)}). The course table above is still accurate; only the written explanation is unavailable. Contact whoever owns AWS deployment.` };
-  }
-  if (/throttl|timeout|rate|temporar|503|529/.test(lower)) {
-    return { kind: "warning", text: "The AI rationale is taking longer than usual to generate. This is temporary — try again in a moment. The course table above is unaffected." };
-  }
-  return { kind: "warning", text: `The AI rationale is unavailable right now (${escapeHtml(msg)}). The course table above is still accurate.` };
-}
-
-function renderStateBanner(view) {
+function renderStateBanner() {
   const banners = [];
-  if (view.networkError) {
-    banners.push(bannerHtml("error", `Can't reach the API at <code>${escapeHtml(API_BASE_URL)}</code> (${escapeHtml(view.networkError)}). Showing the last-known local snapshot instead — course data below may be stale and no live AI rationale/Q&amp;A is available.`));
-  }
-  if (view.cohort_size === 0 || !view.candidate_schedules || view.candidate_schedules.length === 0) {
-    banners.push(bannerHtml("info", `${escapeHtml(state.term)} doesn't have enough historical enrollment yet to generate a recommendation. Try another term, or check back once more data is available.`));
+  if (!state.artifact.blocks || state.artifact.blocks.length === 0) {
+    banners.push(bannerHtml("info", `No schedule blocks were generated for ${escapeHtml(state.artifact.major)}. Check schedule_engine's generator notes below, or try another major.`));
   }
   el.stateBannerHost.innerHTML = banners.join("");
 }
 
 /* ============================================================
-   Rendering — top pick + comparison table rows (shared)
+   Rendering — course rows (shared by selected block + comparison view)
    ============================================================ */
-function meetingSummaryHtml(course) {
-  const patterns = course.meeting_patterns || [];
-  if (!patterns.length) {
-    return `<span class="no-data">no post-census meeting data</span>`;
-  }
-  const best = patterns[0];
-  if (best.note) {
-    return `${escapeHtml(best.days)}<span class="caveat">${escapeHtml(best.note)}</span>`;
-  }
-  return `${escapeHtml(best.days)} · ${formatTime12h(best.start)}–${formatTime12h(best.end)}<span class="caveat">informational, not conflict-checked</span>`;
-}
-
 function reqTagHtml(reqType) {
-  if (!reqType) return `<span class="req-tag unknown">Not in freshman roadmap</span>`;
   const cls = REQ_TAG_CLASS[reqType] || "unknown";
-  const label = reqType === "Major / Gen Ed" ? "GEM" : reqType === "General Education" ? "Gen ed" : reqType;
+  const label = reqType === "Major / Gen Ed" ? "GEM" : reqType === "General Education" ? "Gen ed" : reqType || "Elective";
   return `<span class="req-tag ${cls}">${escapeHtml(label)}</span>`;
 }
 
-function unitsHtml(course) {
-  if (course.units_estimated) {
-    return `<span class="units-estimated" title="Not found in the E3E4 offering catalog; units defaulted to ${course.units}">${course.units} <span class="uncertain-flag">(uncertain)</span></span>`;
-  }
-  return `<span class="units-clean">${course.units}</span>`;
+function popularityHtml(course) {
+  if (!course.freshman_popularity) return `<span class="popularity-cell">—</span>`;
+  return `<span class="popularity-cell">${escapeHtml(course.freshman_popularity)}</span>`;
 }
 
-function pctHtml(course, cohortSize) {
-  const pct = Math.round(course.pct_of_cohort * 100);
-  const n = cohortSize ? Math.round(course.pct_of_cohort * cohortSize) : null;
-  return `<span class="pct-cell"><span class="infobar-graph"><span class="bar" style="width:${pct}%"></span></span><span class="infobar-value">${pct}%</span>${n !== null ? `<span class="n">(${n}/${cohortSize})</span>` : ""}</span>`;
-}
-
-function courseRowsHtml(schedule, cohortSize) {
-  return schedule.courses
-    .map(
-      (c) => `<tr>
-        <td><strong>${escapeHtml(c.course)}</strong></td>
-        <td>${unitsHtml(c)}</td>
-        <td>${pctHtml(c, cohortSize)}</td>
+function courseRowsHtml(block) {
+  return block.courses
+    .map((c) => {
+      const seatNote = c.waitlist > 0
+        ? ` <span class="uncertain-flag">(waitlist ${c.waitlist})</span>`
+        : c.seats_open_at_generation <= 0
+        ? ` <span class="uncertain-flag">(full)</span>`
+        : "";
+      return `<tr>
+        <td><strong>${escapeHtml(c.course)}</strong><br><span style="color:var(--color-text-gray);font-size:.82rem">${escapeHtml(c.title || "")} · sec ${escapeHtml(c.section)}${seatNote}</span></td>
+        <td>${escapeHtml(c.requirement)}</td>
+        <td class="units-clean">${c.units}</td>
+        <td>${popularityHtml(c)}</td>
         <td>${reqTagHtml(c.req_type)}</td>
-        <td class="meeting-cell">${meetingSummaryHtml(c)}</td>
-      </tr>`
-    )
+        <td class="meeting-cell">${meetingLabel(c)}</td>
+      </tr>`;
+    })
     .join("");
 }
 
-function renderTopPick(view) {
-  const schedule = view.candidate_schedules[state.activeScheduleIndex];
-  if (!schedule) {
+function renderAdvisories(block) {
+  if (!block.advisories || !block.advisories.length) {
+    el.advisoriesBanner.innerHTML = "";
+    return;
+  }
+  el.advisoriesBanner.innerHTML = `<div class="advisories-banner"><strong>Seat advisories</strong><ul>${block.advisories
+    .map((a) => `<li>${escapeHtml(a)}</li>`)
+    .join("")}</ul></div>`;
+}
+
+function renderSelectedBlock() {
+  const block = state.blocksSorted[state.activeBlockIndex];
+  if (!block) {
     el.topPickSection.hidden = true;
     return;
   }
   el.topPickSection.hidden = false;
-  const isTop = state.activeScheduleIndex === 0;
-  el.topPickTitle.textContent = `${schedule.total_units} units · ${schedule.courses.length} courses${isTop ? "" : ` (alternative #${state.activeScheduleIndex + 1})`}`;
-  el.topPickSupport.textContent = `support score ${schedule.score.toFixed(2)}`;
-  el.topPickBody.innerHTML = courseRowsHtml(schedule, view.cohort_size);
+  const isTop = state.activeBlockIndex === 0;
+  el.topPickBadge.textContent = isTop ? "Top pick" : `Block ${block.block_id}`;
+  el.topPickBadge.classList.toggle("alt", !isTop);
+  el.topPickTitle.textContent = `${blockFullLabel(block, state.activeBlockIndex)} · ${block.total_units} units · ${block.courses.length} courses`;
+  el.topPickSupport.textContent = `fit score ${block.score.toFixed(2)}`;
+  el.topPickSupport.title = SCORE_DEFINITION;
+  el.scoreCaption.textContent = SCORE_DEFINITION_SHORT;
+  renderAdvisories(block);
+  el.topPickBody.innerHTML = courseRowsHtml(block);
 }
 
 /* ============================================================
@@ -322,20 +290,23 @@ function courseColor(course) {
   return CAL_BLOCK_CLASS[course.req_type] || "req-unknown";
 }
 
-function renderCalendar(view) {
-  const schedule = view.candidate_schedules[state.activeScheduleIndex];
-  if (!schedule) {
+function minutesToHHMM(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function renderCalendar() {
+  const block = state.blocksSorted[state.activeBlockIndex];
+  if (!block) {
     el.calendarWrap.hidden = true;
     return;
   }
   el.calendarWrap.hidden = false;
-  const isTop = state.activeScheduleIndex === 0;
-  el.calendarSourceLabel.textContent = isTop ? "the top pick" : `alternative #${state.activeScheduleIndex + 1}`;
+  el.calendarSourceLabel.textContent = blockFullLabel(block, state.activeBlockIndex);
 
-  // Header row
   const headerRow = `<div class="cal-header-row"><div class="cal-corner"></div>${DAY_COLUMNS.map((d) => `<div class="cal-day-head">${d.label}</div>`).join("")}</div>`;
 
-  // Time axis
   const timeLabels = [];
   for (let min = CAL_START_MIN; min <= CAL_END_MIN; min += 60) {
     const topPct = ((min - CAL_START_MIN) / CAL_RANGE_MIN) * 100;
@@ -345,32 +316,52 @@ function renderCalendar(view) {
   }
   const timeAxis = `<div class="cal-time-axis">${timeLabels.join("")}</div>`;
 
-  // Day columns + blocks
   const blocksByDay = {};
   DAY_COLUMNS.forEach((d) => (blocksByDay[d.key] = []));
-  const unplottable = [];
+  const excluded = [];
 
-  schedule.courses.forEach((course) => {
-    const slot = bestSlotFor(course);
-    if (!slot) {
-      const reason = (course.meeting_patterns || []).length ? "no cleanly-parseable meeting time on file" : "no post-census meeting data";
-      unplottable.push(`${course.course} — ${reason}`);
+  block.courses.forEach((course) => {
+    if (!isPlottable(course)) {
+      excluded.push(`${course.course} — ${isAsyncOnline(course) ? "online, asynchronous (no fixed meeting time)" : "TBA (not yet scheduled by the registrar)"}`);
       return;
     }
-    const startMin = Math.max(CAL_START_MIN, timeToMinutes(slot.start));
-    const endMin = Math.min(CAL_END_MIN, timeToMinutes(slot.end));
+    const startMin = Math.max(CAL_START_MIN, timeToMinutes(course.start));
+    const endMin = Math.min(CAL_END_MIN, timeToMinutes(course.end));
     if (endMin <= startMin) return;
-    const tokens = parseDayTokens(slot.days);
-    tokens.forEach((tok) => {
+    course.days.forEach((tok) => {
       const dayKey = TOKEN_TO_DAY[tok];
       if (!dayKey) return;
       blocksByDay[dayKey].push({ course, startMin, endMin });
     });
   });
 
+  // Explicit conflict check, not just an absence of visual overlap. Blocks
+  // are generated conflict-free (schedule_engine/validator.py), but this
+  // renders that guarantee visibly instead of asking the reader to trust it
+  // — and it would catch a real problem if an artifact were hand-edited
+  // outside the validator.
+  const conflicts = [];
+  DAY_COLUMNS.forEach((d) => {
+    const items = blocksByDay[d.key];
+    for (let i = 0; i < items.length; i += 1) {
+      for (let j = i + 1; j < items.length; j += 1) {
+        const A = items[i], B = items[j];
+        if (A.startMin < B.endMin && B.startMin < A.endMin) {
+          conflicts.push(
+            `${A.course.course} vs ${B.course.course} on ${d.label} (${formatTime12h(minutesToHHMM(A.startMin))}–${formatTime12h(minutesToHHMM(A.endMin))} overlaps ${formatTime12h(minutesToHHMM(B.startMin))}–${formatTime12h(minutesToHHMM(B.endMin))})`
+          );
+        }
+      }
+    }
+  });
+  if (conflicts.length) {
+    el.calendarConflictBanner.innerHTML = `<div class="notification-banner notification-error"><div class="grid"><p><strong>Time conflict detected</strong> in ${escapeHtml(blockFullLabel(block, state.activeBlockIndex))}: ${conflicts.map(escapeHtml).join("; ")}. This block should not be published as-is.</p></div></div>`;
+  } else {
+    el.calendarConflictBanner.innerHTML = `<div class="calendar-ok">&#10003; No time conflicts among the ${block.courses.filter(isPlottable).length} scheduled course${block.courses.filter(isPlottable).length === 1 ? "" : "s"} shown below.</div>`;
+  }
+
   const dayColsHtml = DAY_COLUMNS.map((d) => {
     const items = blocksByDay[d.key].sort((a, b) => a.startMin - b.startMin);
-    // Simple overlap handling: group overlapping items and split width evenly.
     const groups = [];
     items.forEach((item) => {
       const group = groups.find((g) => g.some((other) => item.startMin < other.endMin && other.startMin < item.endMin));
@@ -384,9 +375,10 @@ function renderCalendar(view) {
           const heightPct = ((item.endMin - item.startMin) / CAL_RANGE_MIN) * 100;
           const widthPct = 100 / group.length;
           const leftPct = widthPct * idx;
-          return `<div class="cal-block ${courseColor(item.course)}" style="top:${topPct}%;height:${heightPct}%;left:calc(${leftPct}% + 2px);width:calc(${widthPct}% - 4px)" title="${escapeHtml(item.course.course)} — ${formatTime12h(minutesToHHMMSS(item.startMin))}-${formatTime12h(minutesToHHMMSS(item.endMin))}">
+          const timeStr = `${formatTime12h(minutesToHHMM(item.startMin))}-${formatTime12h(minutesToHHMM(item.endMin))}`;
+          return `<div class="cal-block ${courseColor(item.course)}" style="top:${topPct}%;height:${heightPct}%;left:calc(${leftPct}% + 2px);width:calc(${widthPct}% - 4px)" title="${escapeHtml(item.course.course)} — ${timeStr}">
             <strong>${escapeHtml(item.course.course)}</strong>
-            <span class="cal-time">${formatTime12h(minutesToHHMMSS(item.startMin))}-${formatTime12h(minutesToHHMMSS(item.endMin))}</span>
+            <span class="cal-time">${timeStr}</span>
           </div>`;
         })
       )
@@ -395,108 +387,114 @@ function renderCalendar(view) {
   }).join("");
 
   const bodyRow = `<div class="cal-body-row">${timeAxis}${dayColsHtml}</div>`;
-
   el.calendarGrid.innerHTML = headerRow + bodyRow;
 
-  // Legend
   const legendEntries = [
-    ["Major", "req-major"],
-    ["General Education", "req-gened"],
-    ["Major / Gen Ed (GEM)", "req-gem"],
-    ["Not in freshman roadmap", "req-unknown"],
+    ["Major", "major"],
+    ["General Education", "gened"],
+    ["Major / Gen Ed (GEM)", "gem"],
+    ["Elective / other", "unknown"],
   ];
   el.calendarLegend.innerHTML = legendEntries
-    .map(([label, cls]) => `<span class="legend-item"><span class="swatch ${cls}" style="background:var(--color-term-element-${cls === "req-major" ? "major" : cls === "req-gened" ? "general-education" : cls === "req-gem" ? "elective" : "unknown"})"></span>${escapeHtml(label)}</span>`)
+    .map(([label, key]) => {
+      const varName = key === "major" ? "major" : key === "gened" ? "general-education" : key === "gem" ? "elective" : "unknown";
+      return `<span class="legend-item"><span class="swatch" style="background:var(--color-term-element-${varName})"></span>${escapeHtml(label)}</span>`;
+    })
     .join("");
 
-  if (unplottable.length) {
+  if (excluded.length) {
     el.calendarUnplottable.hidden = false;
-    el.calendarUnplottable.innerHTML = `Not shown on the calendar (informational meeting-time gaps, per the assumptions panel above):<ul>${unplottable.map((u) => `<li>${escapeHtml(u)}</li>`).join("")}</ul>`;
+    el.calendarUnplottable.innerHTML = `Not shown on the calendar (no usable meeting time on file):<ul>${excluded.map((u) => `<li>${escapeHtml(u)}</li>`).join("")}</ul>`;
   } else {
     el.calendarUnplottable.hidden = true;
     el.calendarUnplottable.innerHTML = "";
   }
 }
 
-function minutesToHHMMSS(min) {
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:00`;
-}
-
 /* ============================================================
-   Rendering — rationale
+   Rendering — "why this block" (deterministic, no LLM call)
    ============================================================ */
-function renderRationale(view) {
-  if (!view.candidate_schedules || !view.candidate_schedules.length) {
+function renderRationale() {
+  const block = state.blocksSorted[state.activeBlockIndex];
+  if (!block) {
     el.rationaleBox.hidden = true;
     return;
   }
   el.rationaleBox.hidden = false;
-  if (view.offline) {
-    el.rationaleText.textContent = "Live AI rationale isn't available in demo mode. Set API_BASE_URL in config.js to a deployed API to generate a rationale here.";
-    el.rationaleMeta.textContent = "offline / demo mode";
-    return;
+  const isTop = state.activeBlockIndex === 0;
+  const campusDays = new Set(block.courses.filter(isPlottable).flatMap((c) => c.days)).size;
+  const tbaCount = block.courses.filter((c) => !isPlottable(c) && !isAsyncOnline(c)).length;
+  const asyncCount = block.courses.filter(isAsyncOnline).length;
+  const popular = block.courses.filter((c) => c.freshman_popularity).sort((a, b) => {
+    const pa = parseInt(a.freshman_popularity, 10) || 0;
+    const pb = parseInt(b.freshman_popularity, 10) || 0;
+    return pb - pa;
+  })[0];
+
+  const parts = [];
+  parts.push(
+    `${blockFullLabel(block, state.activeBlockIndex)}${isTop ? " is the highest fit-score block generated for this major" : ""} — fit score ${block.score.toFixed(2)} (see the definition above).`
+  );
+  parts.push(`It covers ${block.courses.length} courses (${block.total_units} units) across ${campusDays} campus day${campusDays === 1 ? "" : "s"}${block.cohort_capacity ? `, sized for ~${block.cohort_capacity} students given current seat availability` : ""}.`);
+  if (popular) {
+    parts.push(`${popular.course} is the most historically popular course in this block (${popular.freshman_popularity}).`);
   }
-  if (view.rationale) {
-    el.rationaleText.textContent = view.rationale;
-    el.rationaleMeta.textContent = `generated · claude on bedrock · ${state.term} · business administration freshman cohort`;
-    return;
+  if (block.advisories && block.advisories.length) {
+    parts.push(`${block.advisories.length} section${block.advisories.length === 1 ? " needs" : "s need"} attention before this can be published — see the advisory banner above.`);
   }
-  if (view.rationale_error) {
-    const { text } = classifyRationaleError(view.rationale_error);
-    el.rationaleText.innerHTML = text;
-    el.rationaleMeta.textContent = "";
-    return;
+  if (tbaCount) {
+    parts.push(`${tbaCount} course${tbaCount === 1 ? "" : "s"} ${tbaCount === 1 ? "is" : "are"} still TBA and excluded from the week view below.`);
   }
-  el.rationaleText.textContent = "No rationale available for this term.";
-  el.rationaleMeta.textContent = "";
+  if (asyncCount) {
+    parts.push(`${asyncCount} course${asyncCount === 1 ? " is" : "s are"} fully online/asynchronous and also excluded from the week view.`);
+  }
+  el.rationaleText.textContent = parts.join(" ");
 }
 
 /* ============================================================
    Rendering — comparison view
    ============================================================ */
-function renderComparison(view) {
-  const others = view.candidate_schedules
-    .map((s, i) => ({ s, i }))
-    .filter(({ i }) => i !== state.activeScheduleIndex);
+function renderComparison() {
+  const others = state.blocksSorted.map((b, i) => ({ b, i })).filter(({ i }) => i !== state.activeBlockIndex);
   if (!others.length) {
     el.comparisonSection.hidden = true;
     return;
   }
   el.comparisonSection.hidden = false;
   el.comparisonList.innerHTML = others
-    .map(({ s, i }) => {
-      const courseList = s.courses.map((c) => c.course).join(" · ");
+    .map(({ b, i }) => {
+      const courseList = b.courses.map((c) => c.course).join(" · ");
       return `<details class="candidate-alt">
         <summary>
-          <span><span class="rank">${i === 0 ? "Top pick" : `Alt #${i + 1}`}</span>&nbsp;${escapeHtml(courseList)} — ${s.total_units} units</span>
-          <span class="support">support score ${s.score.toFixed(2)}</span>
+          <span><span class="rank">${escapeHtml(blockShortLabel(b, i))}</span>&nbsp;${escapeHtml(b.label)}: ${escapeHtml(courseList)} — ${b.total_units} units</span>
+          <span class="support" title="${escapeHtml(SCORE_DEFINITION)}">fit score ${b.score.toFixed(2)}</span>
         </summary>
         <div class="alt-body">
+          ${b.advisories && b.advisories.length ? `<div class="advisories-banner"><strong>Seat advisories</strong><ul>${b.advisories.map((a) => `<li>${escapeHtml(a)}</li>`).join("")}</ul></div>` : ""}
           <div class="table-wrapper">
             <table class="table-zebra">
-              <thead><tr><th>Course</th><th>Units</th><th>% of cohort</th><th>Requirement</th><th>Typical meeting pattern</th></tr></thead>
-              <tbody>${courseRowsHtml(s, view.cohort_size)}</tbody>
+              <thead><tr><th>Course</th><th>Requirement</th><th>Units</th><th>Freshman popularity</th><th>Requirement type</th><th>Meeting pattern</th></tr></thead>
+              <tbody>${courseRowsHtml(b)}</tbody>
             </table>
           </div>
-          <button class="button button-secondary calendar-swap-btn" data-schedule-index="${i}">View on calendar</button>
+          <button class="button button-secondary calendar-swap-btn" data-block-index="${i}">View on calendar</button>
         </div>
       </details>`;
     })
     .join("");
 
-  el.comparisonList.querySelectorAll("[data-schedule-index]").forEach((btn) => {
+  el.comparisonList.querySelectorAll("[data-block-index]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      state.activeScheduleIndex = Number(btn.dataset.scheduleIndex);
-      renderAll(state.view);
-      document.getElementById("calendarWrap").scrollIntoView({ behavior: "smooth", block: "start" });
+      state.activeBlockIndex = Number(btn.dataset.blockIndex);
+      el.blockSelect.value = state.activeBlockIndex;
+      renderAll();
+      el.calendarWrap.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 }
 
 /* ============================================================
-   Rendering — Q&A
+   Rendering — Q&A (legacy /ask endpoint, pooled mining dataset)
    ============================================================ */
 function renderQaThread() {
   if (!state.qaThread.length) {
@@ -506,24 +504,31 @@ function renderQaThread() {
   }
   el.qaThread.innerHTML = state.qaThread
     .map((turn) => {
-      if (turn.role === "q") {
-        return `<div class="qa-turn q">${escapeHtml(turn.text)}</div>`;
-      }
+      if (turn.role === "q") return `<div class="qa-turn q">${escapeHtml(turn.text)}</div>`;
       const errCls = turn.error ? " error" : "";
-      const guardrail = turn.error
-        ? ""
-        : `<span class="guardrail">If a question can't be answered from this data, this assistant says so rather than guessing.</span>`;
+      const guardrail = turn.error ? "" : `<span class="guardrail">If a question can't be answered from this data, this assistant says so rather than guessing.</span>`;
       return `<div class="qa-turn a${errCls}">${escapeHtml(turn.text)}${guardrail}</div>`;
     })
     .join("");
   el.qaThread.scrollTop = el.qaThread.scrollHeight;
 }
 
+function classifyError(msg) {
+  const lower = (msg || "").toLowerCase();
+  if (/credential|access.?denied|not set|unrecognizedclient|forbidden/.test(lower)) {
+    return `Bedrock access isn't configured for this environment (${msg}). Contact whoever owns AWS deployment.`;
+  }
+  if (/throttl|timeout|rate|temporar|503|529/.test(lower)) {
+    return "This is taking longer than usual — try again in a moment.";
+  }
+  return `Unavailable right now (${msg}).`;
+}
+
 async function submitQuestion() {
   const question = el.qaInput.value.trim();
   if (!question || state.qaBusy) return;
 
-  if (state.mode !== "live") {
+  if (!API_BASE_URL) {
     state.qaThread.push({ role: "q", text: question });
     state.qaThread.push({ role: "a", text: "Live Q&A requires a deployed API — set API_BASE_URL in config.js. In demo mode this assistant can't answer questions.", error: true });
     el.qaInput.value = "";
@@ -547,19 +552,12 @@ async function submitQuestion() {
     if (!resp.ok) throw new Error(body.error || `API returned ${resp.status}`);
     state.qaThread.push({ role: "a", text: body.answer });
   } catch (err) {
-    const { text } = classifyRationaleError(err.message);
-    state.qaThread.push({ role: "a", text: stripHtml(text), error: true });
+    state.qaThread.push({ role: "a", text: classifyError(err.message), error: true });
   } finally {
     state.qaBusy = false;
     el.qaSubmit.disabled = false;
     renderQaThread();
   }
-}
-
-function stripHtml(html) {
-  const div = document.createElement("div");
-  div.innerHTML = html;
-  return div.textContent || "";
 }
 
 /* ============================================================
@@ -569,29 +567,32 @@ function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
-function renderAll(view) {
+function renderAll() {
   renderStatusRibbon();
-  renderHeader(view);
-  renderStateBanner(view);
-  renderTopPick(view);
-  renderCalendar(view);
-  renderRationale(view);
-  renderComparison(view);
+  renderHeader();
+  renderStateBanner();
+  renderSelectedBlock();
+  renderCalendar();
+  renderRationale();
+  renderComparison();
 }
 
-async function loadTerm(term) {
-  state.term = term;
-  state.activeScheduleIndex = 0;
-  el.pageTitle.textContent = `Loading ${term} recommendation…`;
-  const view = await fetchTerm(term);
-  state.view = view;
-  renderAll(view);
+async function selectMajor(filename) {
+  const known = MAJOR_ARTIFACTS.find((m) => m.file === filename);
+  el.pageTitle.textContent = `Loading ${known ? known.label : filename}…`;
+  const artifact = await loadArtifact(filename);
+  state.artifact = artifact;
+  state.blocksSorted = [...(artifact.blocks || [])].sort((a, b) => b.score - a.score);
+  state.activeBlockIndex = 0;
+  populateBlockPicker();
+  renderAll();
 }
 
 function wireControls() {
-  el.termSelect.addEventListener("change", () => loadTerm(el.termSelect.value));
-  el.concentrationSelect.addEventListener("change", () => {
-    if (state.view) renderHeader(state.view);
+  el.majorSelect.addEventListener("change", () => selectMajor(el.majorSelect.value).catch(showFatalError));
+  el.blockSelect.addEventListener("change", () => {
+    state.activeBlockIndex = Number(el.blockSelect.value);
+    renderAll();
   });
   el.qaSubmit.addEventListener("click", submitQuestion);
   el.qaInput.addEventListener("keydown", (e) => {
@@ -599,15 +600,23 @@ function wireControls() {
   });
 }
 
+function showFatalError(err) {
+  el.stateBannerHost.innerHTML = bannerHtml(
+    "error",
+    `Could not load schedule data: ${escapeHtml(err.message)}. If running locally, make sure you're serving this folder over http:// (not file://) — see frontend/web/README.md.`
+  );
+  el.statusRibbon.textContent = "ERROR — no data source available";
+  el.statusRibbon.classList.remove("mode-demo", "mode-live");
+  el.statusRibbon.classList.add("mode-error");
+}
+
 async function init() {
-  populatePickers();
+  populateMajorPicker();
   wireControls();
   try {
-    await loadTerm(state.term);
+    await selectMajor(MAJOR_ARTIFACTS[0].file);
   } catch (err) {
-    el.stateBannerHost.innerHTML = bannerHtml("error", `Could not load any data (API or local snapshot): ${escapeHtml(err.message)}. If running locally, make sure you're serving this folder over http:// (not file://) — see frontend/web/README.md.`);
-    el.statusRibbon.textContent = "ERROR — no data source available";
-    el.statusRibbon.classList.add("mode-error");
+    showFatalError(err);
   }
 }
 

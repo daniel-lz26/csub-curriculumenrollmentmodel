@@ -23,14 +23,14 @@
     </div>
     <div class="controls">
       <div class="picker">
-        <label for="concentrationSelect">Concentration</label>
-        <select id="concentrationSelect"></select>
+        <label for="majorSelect">Major</label>
+        <select id="majorSelect"></select>
       </div>
       <div class="picker">
-        <label for="termSelect">Term</label>
-        <select id="termSelect"></select>
+        <label for="blockSelect">Block</label>
+        <select id="blockSelect"></select>
       </div>
-      <span class="cohort-chip" id="cohortChip">Cohort: —</span>
+      <span class="cohort-chip" id="cohortChip">—</span>
     </div>
   </div>
 </header>
@@ -39,7 +39,7 @@
   <div class="grid">
     <span class="eyebrow">Decision support &middot; not a scheduling engine</span>
     <h1 class="h1" id="pageTitle">Recommended freshman block</h1>
-    <p class="intro">A candidate 14&ndash;15 unit schedule for incoming BS Business Administration freshmen, generated from historical course-taking patterns and explained by a generative-AI reasoning layer. For the department chair to review, adjust, and approve &mdash; not to auto-publish.</p>
+    <p class="intro">Real, conflict-checked cohort schedule blocks for incoming freshmen, built from the actual Fall 2026 section catalog, degree roadmap, and historical freshman course-taking patterns &mdash; not just a theoretical combination. For the department chair to review, adjust, and approve &mdash; not to auto-publish.</p>
     <div class="scope-row" id="scopeRow"></div>
   </div>
 </div>
@@ -56,28 +56,31 @@
     <!-- ============ STATE BANNER (errors / empty states) ============ -->
     <div id="stateBannerHost"></div>
 
-    <!-- ============ TOP PICK ============ -->
+    <!-- ============ SELECTED BLOCK ============ -->
     <div id="topPickSection" hidden>
       <div class="section-title-row" style="margin-bottom:.9em">
-        <h2><span class="step-no">01</span>Top candidate schedule</h2>
+        <h2><span class="step-no">01</span>Selected block</h2>
       </div>
       <div class="top-pick">
         <div class="top-pick-head">
           <div>
-            <span class="top-pick-badge">Top pick</span>
+            <span class="top-pick-badge" id="topPickBadge">Top pick</span>
             <div class="title" id="topPickTitle" style="margin-top:.3em"></div>
           </div>
-          <span class="support" id="topPickSupport"></span>
+          <span class="support" id="topPickSupport" title=""></span>
         </div>
+        <div class="score-caption" id="scoreCaption"></div>
+        <div id="advisoriesBanner"></div>
         <div class="table-wrapper">
           <table class="table-zebra">
             <thead>
               <tr>
                 <th>Course</th>
-                <th>Units</th>
-                <th>% of cohort</th>
                 <th>Requirement</th>
-                <th>Typical meeting pattern</th>
+                <th>Units</th>
+                <th>Freshman popularity</th>
+                <th>Requirement type</th>
+                <th>Meeting pattern</th>
               </tr>
             </thead>
             <tbody id="topPickBody"></tbody>
@@ -93,27 +96,28 @@
       </div>
       <p class="calendar-caption">Monday&ndash;Sunday layout of <span class="calendar-source" id="calendarSourceLabel">the top pick</span>'s most common current meeting slots. Informational only &mdash; not checked for conflicts across courses.</p>
       <div class="calendar-wrapper">
+        <div id="calendarConflictBanner"></div>
         <div class="calendar-grid" id="calendarGrid"></div>
         <div class="calendar-legend" id="calendarLegend"></div>
         <div class="calendar-unplottable" id="calendarUnplottable" hidden></div>
       </div>
     </div>
 
-    <!-- ============ RATIONALE ============ -->
+    <!-- ============ WHY THIS BLOCK (computed, not LLM-generated) ============ -->
     <div class="rationale-box tip" id="rationaleBox" hidden>
       <div>
-        <strong>Bedrock rationale</strong>
+        <strong>Why this block</strong>
         <p class="quote" id="rationaleText"></p>
-        <div class="meta-line" id="rationaleMeta"></div>
+        <div class="meta-line" id="rationaleMeta">computed directly from the artifact — no AI call</div>
       </div>
     </div>
 
     <!-- ============ COMPARISON VIEW ============ -->
     <div id="comparisonSection" hidden>
       <div class="section-title-row" style="margin-bottom:.9em">
-        <h2><span class="step-no">03</span>Compare candidate schedules</h2>
+        <h2><span class="step-no">03</span>Compare blocks</h2>
       </div>
-      <p style="margin-top:-.6em;color:var(--color-text-gray);font-size:.92rem">Every other candidate block considered, so a runner-up mentioned in the rationale can be inspected course-by-course, not just taken on faith. Use "View on calendar" to swap the week view above to that schedule.</p>
+      <p style="margin-top:-.6em;color:var(--color-text-gray);font-size:.92rem">Every other generated block for this major, ranked by fit score, so an alternative can be inspected course-by-course instead of taken on faith. Use "View on calendar" to swap the week view above to that block.</p>
       <div style="display:flex;flex-direction:column;gap:.9em" id="comparisonList"></div>
     </div>
 
@@ -122,6 +126,7 @@
       <div class="section-title-row" style="margin-bottom:.9em">
         <h2><span class="step-no">04</span>Ask a question</h2>
       </div>
+      <p style="margin-top:-.6em;color:var(--color-text-gray);font-size:.92rem">Grounded in pooled historical enrollment patterns across all BSBA concentrations &mdash; general background, not specific to the block above.</p>
       <div class="qa-box">
         <div class="qa-thread" id="qaThread">
           <div class="qa-empty" id="qaEmptyState">Ask a follow-up about this term's data, e.g. "What if we can only run one section of ACCT 2200?"</div>
