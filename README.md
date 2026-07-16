@@ -148,6 +148,20 @@ Thin layer exposing:
 - `POST /ask` — takes a staff question, returns Kiro's answer grounded in
   the computed data
 
+Deploy with `infra/deploy.sh` (wraps `sam build`, then `sam deploy`) rather
+than calling `sam build`/`sam deploy` directly. `CodeUri` is the repo root
+so both Lambdas can import the sibling `mining`/`bedrock` packages, but
+`sam build`'s Python builder has no path-exclude mechanism — `.samignore`
+looks like it should provide one but doesn't (verified against SAM CLI
+1.163.0 / aws-lambda-builders 1.65.0: neither references "samignore"; it
+only ever applied to a legacy zip-packaging flow this project doesn't use).
+Without pruning, the build pulls in the full `data/raw/` (130MB+ of source
+xlsx/csv) and test directories, which alone pushes each function past
+Lambda's 250MB unzipped limit — `deploy.sh` strips those paths from the
+build output before deploying. Each Lambda's execution role has an inline
+`bedrock:InvokeModel` policy (see `infra/template.yaml`), needed since
+`bedrock/client.py` calls Bedrock Runtime directly via IAM, not an API key.
+
 ### 5. Frontend — Streamlit
 Chair-facing, not a chatbot-first UI: pick a term, see the recommended
 lineup and rationale up front — including each course's requirement type
@@ -183,9 +197,14 @@ conflict-checked — with a Q&A box underneath for follow-ups.
 │   │   ├── recommendation.py
 │   │   └── ask.py
 │   └── tests/
-├── infra/                          # SAM template (API Gateway + Lambda)
+├── infra/
+│   ├── template.yaml                # SAM template (API Gateway + Lambda)
+│   └── deploy.sh                    # build + prune + deploy — see note below
 └── frontend/
-    └── app.py                      # Streamlit
+    ├── app.py                       # Streamlit
+    ├── requirements.txt             # frontend-only deps (streamlit); not
+    │                                 # bundled into the Lambda package
+    └── FRONTEND_SPEC.md             # feature/design notes for the UI
 ```
 
 ---

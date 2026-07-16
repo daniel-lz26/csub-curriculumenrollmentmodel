@@ -131,3 +131,80 @@ mining layer:
 
 Everything else in `README.md` (data layer, mining layer, Bedrock reasoning
 layer, API layer, Streamlit frontend) stands as designed.
+
+---
+
+**Date:** July 15, 2026
+**Trigger:** Preparing the API Gateway + Lambda layer for deployment ahead
+of the mining pipeline being wired to a live data source (S3 → mining
+Lambda per the README architecture diagram, not built yet) — so the API
+layer is ready to point at that pipeline's output once it exists.
+
+## Verdict: infra was not deployable as committed — two real bugs found and fixed
+
+Confirmed AWS access first: the `myisb_IsbUsersPS-668855907013` profile has
+`AdministratorAccess` on account 668855907013, and Bedrock's
+`anthropic.claude-3-haiku-20240307-v1:0` model is actually invokable in
+`us-west-2` (tested directly via `aws bedrock-runtime invoke-model`, got a
+real response) — so the Bedrock reasoning layer isn't just theoretical.
+
+### Bug 1 — `infra/template.yaml` had a stale/unused parameter and a missing permission
+`AnthropicApiKey` was wired as a required deploy parameter and passed into
+the Lambda environment, but `bedrock/client.py` is fully Bedrock/IAM-based
+(confirmed: `ANTHROPIC_API_KEY` isn't referenced anywhere in that file) —
+the parameter was dead plumbing from an earlier design, likely predating
+the Bedrock switch. Replaced it with a `BedrockModelId` parameter (defaults
+to the Haiku model, overridable per-stage) and added an inline
+`bedrock:InvokeModel` IAM policy to both functions' execution roles, which
+was missing entirely — without it, both Lambdas would have failed at
+runtime with an access-denied error on their first real Bedrock call.
+
+### Bug 2 — `.samignore` doesn't do anything, and the build was 521MB/function
+`CodeUri` is the repo root (so both Lambdas can import the sibling
+`mining`/`bedrock` packages unchanged), and `.samignore` was written to
+exclude `data/raw/`, test directories, and `frontend/` from the deployment
+package. Checked directly against the installed SAM CLI (1.163.0) and
+`aws-lambda-builders` (1.65.0) source: neither package contains the string
+"samignore" anywhere. It has never been a real exclude mechanism for
+`sam build`'s standard Python/pip build — it only ever applied to a legacy
+raw-zip `sam package` flow this project doesn't use. Net effect: `sam
+build` was silently bundling the full 130MB+ `data/raw/` (including the
+133MB E3E4 snapshot CSV) plus `streamlit`'s entire dependency tree
+(`pyarrow`, `pydeck`, `pillow`, `altair` — frontend-only, never imported by
+`api/`, `bedrock/`, or `mining/`) into **both** Lambda packages, for a total
+of 521MB unzipped each — over Lambda's 250MB limit. This would have failed
+at `sam deploy` time, not silently.
+
+**Fix:**
+- Split `requirements.txt`: moved `streamlit` to a new `frontend/requirements.txt`
+  (which extends the root file via `-r ../requirements.txt`), since it's
+  only used by `frontend/app.py`.
+- Added `infra/deploy.sh` as the one documented deploy entrypoint: runs
+  `sam build`, then prunes `data/raw`, `api/tests`, `mining/tests`,
+  `frontend/`, and a few dev-only directories from each function's build
+  output, then runs `sam deploy`. Final package size: 128MB/function.
+- Left `.samignore` in place but rewrote its header comment so it's
+  documentation of the actual (lack of) behavior rather than a landmine for
+  the next person who assumes it works.
+- Added `/infra/.aws-sam/` to `.gitignore` (build output, wasn't being
+  ignored before).
+
+**Not yet done:** the actual `sam deploy` — building/pruning is verified
+working locally, but running it requires creating real AWS resources
+(API Gateway, 2 Lambda functions, IAM roles) under the profile above, which
+needs explicit sign-off before running.
+
+## Also added: `frontend/FRONTEND_SPEC.md`
+
+Design/feature notes for the Streamlit UI, written against the actual JSON
+schema `mine()` produces rather than generic dashboard advice. Highest-
+priority finding: `mine()` computes a top-level `assumptions` block
+(methodology caveats for `req_type` and `meeting_patterns`) that
+`frontend/app.py` never renders — directly relevant to the README's
+"process write-up" deliverable, which asks for the methodology to be
+handed off in a form CSUB can reproduce for another major. Also flagged:
+uncertainty signals (`units_estimated`, unknown `req_type`, missing
+meeting patterns) are inconsistently surfaced today, candidate schedules
+other than the top pick are shown as flat text with no course-level detail,
+and cohort size/percentage are shown disconnected from each other. Full
+detail and priority order in the spec file itself.

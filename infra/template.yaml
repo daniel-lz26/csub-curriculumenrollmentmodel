@@ -7,12 +7,12 @@ Description: >
   Lambdas can import the sibling `mining` and `bedrock` packages unchanged.
 
 Parameters:
-  AnthropicApiKey:
+  BedrockModelId:
     Type: String
-    NoEcho: true
+    Default: anthropic.claude-3-haiku-20240307-v1:0
     Description: >
-      Anthropic API key used by bedrock/client.py. Passed as a parameter for
-      the hackathon; move to Secrets Manager before this goes beyond a demo.
+      Bedrock model ID invoked by bedrock/client.py. Overridable per-stage
+      without a redeploy of application code.
 
 Globals:
   Function:
@@ -22,13 +22,19 @@ Globals:
     MemorySize: 512
     Environment:
       Variables:
-        ANTHROPIC_API_KEY: !Ref AnthropicApiKey
+        BEDROCK_MODEL_ID: !Ref BedrockModelId
 
 Resources:
   RecommendationFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: api.handlers.recommendation.handler
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: bedrock:InvokeModel
+              Resource:
+                - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/*"
       Events:
         GetRecommendation:
           Type: Api
@@ -40,6 +46,12 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: api.handlers.ask.handler
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: bedrock:InvokeModel
+              Resource:
+                - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/*"
       Events:
         PostAsk:
           Type: Api

@@ -222,3 +222,6 @@ __marimo__/
 /data/output/
 *.xlsx
 *.csv
+
+# SAM build output
+/infra/.aws-sam/

@@ -1,6 +1,15 @@
-# Excluded from the `sam build` deployment package (CodeUri is repo root).
+# NOTE: this file has no effect. Verified against SAM CLI 1.163.0 /
+# aws-lambda-builders 1.65.0 — neither package references "samignore"
+# anywhere; it was never a real exclude mechanism for `sam build`'s
+# Python/pip CopySource step (only ever applied to the legacy raw-zip
+# `sam package` flow, which this project doesn't use). CodeUri is the
+# repo root, so `sam build` copies everything, including data/raw and
+# test directories. See infra/deploy.sh, which prunes those paths from
+# the build output before deploying. Keeping this file only so the next
+# person doesn't reintroduce the same wrong assumption.
+#
 # data/output/recommendation.json IS needed at runtime (see api/handlers/_data.py)
-# and is intentionally not excluded here.
+# and is intentionally not listed below.
 .git/
 .claude/
 .pytest_cache/
