@@ -55,10 +55,18 @@ left blank it says so rather than pretending to answer.
 
 ## Point Q&A at the real AWS API
 
-Once `infra/deploy.sh` has run and you have the `ApiUrl` stack output, set
-`API_BASE_URL` in `config.js` to that URL (no trailing slash needed). The
-status ribbon at the top reflects whether Q&A is live or offline. There is
-no deployed endpoint for the schedule_engine artifacts themselves yet —
+`infra/deploy.sh` does this for you automatically when you run it: it reads
+the deployed `ApiUrl` stack output and patches it into the copy of
+`config.js` it uploads to FrontendBucket, so the live site always has Q&A
+enabled without editing this repo. The repo's own `config.js` stays blank on
+purpose, so local `python -m http.server` runs stay in offline/demo mode.
+
+If you want live Q&A while developing locally too, set `API_BASE_URL` in
+your local `config.js` to the stack's `ApiUrl` output (no trailing slash
+needed) — just don't commit that change. The status ribbon at the top
+reflects whether Q&A is live or offline either way.
+
+There is no deployed endpoint for the schedule_engine artifacts themselves —
 that's still a CLI-only pipeline (see `schedule_engine/README.md`); the
 Major/Block pickers always read the bundled local JSON regardless of
 `API_BASE_URL`.
@@ -86,6 +94,9 @@ add/remove a filename there (and make sure the matching file exists in
 
 ## Deploying as a real static site
 
-Any static host works (S3 + CloudFront, GitHub Pages, Netlify). Upload
-`index.html`, `styles.css`, `config.js`, `app.js`, and `data/` as-is — set
+`infra/deploy.sh` provisions an S3 bucket (`FrontendBucket`, static website
+hosting) and syncs this whole folder to it, patching `API_BASE_URL` along
+the way (see above) — just run it from `infra/`. Any other static host works
+too (CloudFront in front of the same bucket, GitHub Pages, Netlify); upload
+`index.html`, `styles.css`, `config.js`, `app.js`, and `data/` as-is and set
 `API_BASE_URL` in `config.js` first if you want live Q&A.

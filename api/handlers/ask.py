@@ -26,8 +26,8 @@ def handler(event: dict, context=None) -> dict:
     if not question:
         return {"statusCode": 400, "headers": CORS_HEADERS, "body": json.dumps({"error": "Missing 'question'"})}
 
-    data = load_mined_data()
     try:
+        data = load_mined_data()
         answer = answer_question(question, data)
     except RuntimeError as e:
         return {"statusCode": 503, "headers": CORS_HEADERS, "body": json.dumps({"error": str(e)})}

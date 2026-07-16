@@ -142,31 +142,47 @@ student-level data:
 - **Ad hoc Q&A:** answers staff follow-up questions ("what if we can't
   offer X?") by re-filtering/re-explaining the same computed dataset
 
-### 4. API layer — API Gateway + Lambda
-Thin layer exposing:
-- `GET /recommendation?term=` — returns the top combo(s) + rationale
-- `POST /ask` — takes a staff question, returns Kiro's answer grounded in
-  the computed data
+### 4. API layer — API Gateway + Lambda + S3
+One endpoint: `POST /ask` — takes a staff question, returns Kiro's answer
+grounded in the computed data. (An earlier `GET /recommendation` endpoint
+was dropped — nothing in the current frontend called it; `bedrock/client.py`'s
+`generate_recommendation` still backs the Streamlit tool below directly,
+in-process, with no Lambda involved.)
 
-Deploy with `infra/deploy.sh` (wraps `sam build`, then `sam deploy`) rather
-than calling `sam build`/`sam deploy` directly. `CodeUri` is the repo root
-so both Lambdas can import the sibling `mining`/`bedrock` packages, but
-`sam build`'s Python builder has no path-exclude mechanism — `.samignore`
-looks like it should provide one but doesn't (verified against SAM CLI
-1.163.0 / aws-lambda-builders 1.65.0: neither references "samignore"; it
-only ever applied to a legacy zip-packaging flow this project doesn't use).
-Without pruning, the build pulls in the full `data/raw/` (130MB+ of source
-xlsx/csv) and test directories, which alone pushes each function past
-Lambda's 250MB unzipped limit — `deploy.sh` strips those paths from the
-build output before deploying. Each Lambda's execution role has an inline
-`bedrock:InvokeModel` policy (see `infra/template.yaml`), needed since
-`bedrock/client.py` calls Bedrock Runtime directly via IAM, not an API key.
+Two S3 buckets, both created by `infra/template.yaml`:
+- **DataBucket** — private. Holds the precomputed mining cache
+  (`recommendation.json`). `AskFunction` reads it from S3 at call time (see
+  `api/handlers/_data.py`) rather than bundling it into the Lambda zip, so a
+  stale/missing local file can't silently break a deploy.
+- **FrontendBucket** — public, static website hosting. Serves
+  `frontend/web/` (the schedule_engine-driven UI — see below).
 
-### 5. Frontend — Streamlit
-Chair-facing, not a chatbot-first UI: pick a term, see the recommended
-lineup and rationale up front — including each course's requirement type
-and typical meeting time, with a caption noting meeting times aren't
-conflict-checked — with a Q&A box underneath for follow-ups.
+Deploy with `infra/deploy.sh` (wraps `sam build`/`sam deploy`, then uploads
+`recommendation.json` to DataBucket and syncs `frontend/web/` to
+FrontendBucket) rather than calling `sam`/`aws s3` directly. `CodeUri` is the
+repo root so the Lambda can import the sibling `mining`/`bedrock` packages,
+but `sam build`'s Python builder has no path-exclude mechanism —
+`.samignore` looks like it should provide one but doesn't (verified against
+SAM CLI 1.163.0 / aws-lambda-builders 1.65.0: neither references
+"samignore"; it only ever applied to a legacy zip-packaging flow this
+project doesn't use). Without pruning, the build pulls in the full
+`data/raw/` (130MB+ of source xlsx/csv) and test directories, which alone
+pushes the function past Lambda's 250MB unzipped limit — `deploy.sh` strips
+those paths from the build output before deploying. The Lambda's execution
+role has inline `bedrock:InvokeModel` and DataBucket-read policies (see
+`infra/template.yaml`); Bedrock access needed since `bedrock/client.py`
+calls Bedrock Runtime directly via IAM, not an API key.
+
+### 5. Frontend
+Two frontends exist:
+- **`frontend/web/`** (current, deployed to FrontendBucket) — a static
+  HTML/JS site driven by `schedule_engine`'s generated per-major schedule
+  blocks (see `schedule_engine/README.md` and `frontend/web/README.md`),
+  with the `/ask` Q&A box wired to the API above.
+- **`frontend/app.py`** (Streamlit, local-only, not deployed) — the original
+  chair-facing tool: pick a term, see the recommended lineup and rationale
+  up front, with a Q&A box underneath. Calls `bedrock/client.py` and
+  `mining/co_occurrence.py` in-process, no API Gateway involved.
 
 ---
 

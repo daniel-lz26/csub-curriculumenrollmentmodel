@@ -8,8 +8,6 @@
 # the build output before deploying. Keeping this file only so the next
 # person doesn't reintroduce the same wrong assumption.
 #
-# data/output/recommendation.json IS needed at runtime (see api/handlers/_data.py)
-# and is intentionally not listed below.
 .git/
 .claude/
 .pytest_cache/
@@ -20,4 +18,5 @@ mining/tests/
 api/tests/
 infra/
 data/raw/
+data/output/
 .env

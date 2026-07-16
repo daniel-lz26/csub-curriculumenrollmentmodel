@@ -1,10 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  API Gateway + Lambda layer for the BS Business Administration Freshman
-  Scheduling Tool. Serves the precomputed mining/Bedrock output as JSON
-  (see README.md architecture diagram). CodeUri is the repo root so both
-  Lambdas can import the sibling `mining` and `bedrock` packages unchanged.
+  API Gateway + Lambda + S3 for the BSBA Freshman Scheduling Tool. AskFunction
+  serves the legacy Q&A endpoint over the precomputed mining output (stored in
+  DataBucket, not bundled -- see api/handlers/_data.py). FrontendBucket hosts
+  the static site in frontend/web/ (schedule_engine artifacts + the Q&A UI).
+  CodeUri is the repo root so the Lambda can import the sibling `mining` and
+  `bedrock` packages unchanged.
 
 Parameters:
   BedrockModelId:
@@ -20,50 +22,70 @@ Globals:
     CodeUri: ../
     Timeout: 30
     MemorySize: 512
-    Environment:
-      Variables:
-        BEDROCK_MODEL_ID: !Ref BedrockModelId
   Api:
     # Preflight (OPTIONS) support for the static frontend in frontend/web/,
-    # which calls this API cross-origin from wherever it's hosted (S3/
-    # CloudFront/local static server). The actual GET/POST responses still
-    # need Access-Control-Allow-Origin set by the Lambda itself (Lambda
-    # proxy integration doesn't inject headers into non-preflight
-    # responses) — see CORS_HEADERS in api/handlers/recommendation.py and
-    # api/handlers/ask.py.
+    # which calls this API cross-origin from FrontendBucket's website
+    # endpoint. The actual GET/POST responses still need
+    # Access-Control-Allow-Origin set by the Lambda itself (Lambda proxy
+    # integration doesn't inject headers into non-preflight responses) — see
+    # CORS_HEADERS in api/handlers/ask.py.
     Cors:
       AllowOrigin: "'*'"
       AllowHeaders: "'Content-Type'"
       AllowMethods: "'GET,POST,OPTIONS'"
 
 Resources:
-  RecommendationFunction:
-    Type: AWS::Serverless::Function
+  # Precomputed mining cache (recommendation.json) that AskFunction reads at
+  # call time via boto3 (see api/handlers/_data.py) instead of bundling it
+  # into the Lambda zip. Private -- only the Lambda's execution role can read
+  # it. Populated/refreshed by infra/deploy.sh, not by application code.
+  DataBucket:
+    Type: AWS::S3::Bucket
+
+  # Static hosting for frontend/web/ (schedule_engine artifacts + the Q&A
+  # UI). Public read + website hosting since this is a public-facing staff
+  # tool with no auth in front of it yet (see template's CORS note above).
+  FrontendBucket:
+    Type: AWS::S3::Bucket
     Properties:
-      Handler: api.handlers.recommendation.handler
-      Policies:
-        - Statement:
-            - Effect: Allow
-              Action: bedrock:InvokeModel
-              Resource:
-                - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/*"
-      Events:
-        GetRecommendation:
-          Type: Api
-          Properties:
-            Path: /recommendation
-            Method: get
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
+  FrontendBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FrontendBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub "${FrontendBucket.Arn}/*"
 
   AskFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: api.handlers.ask.handler
+      Environment:
+        Variables:
+          BEDROCK_MODEL_ID: !Ref BedrockModelId
+          DATA_BUCKET: !Ref DataBucket
       Policies:
         - Statement:
             - Effect: Allow
               Action: bedrock:InvokeModel
               Resource:
                 - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/*"
+        - Statement:
+            - Effect: Allow
+              Action: s3:GetObject
+              Resource: !Sub "${DataBucket.Arn}/*"
       Events:
         PostAsk:
           Type: Api
@@ -75,3 +97,14 @@ Outputs:
   ApiUrl:
     Description: Base invoke URL for the deployed stage
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  DataBucketName:
+    Description: >
+      S3 bucket holding the precomputed mining cache (recommendation.json)
+      that AskFunction reads at runtime. infra/deploy.sh uploads it here.
+    Value: !Ref DataBucket
+  FrontendBucketName:
+    Description: S3 bucket for the static frontend. infra/deploy.sh syncs frontend/web/ here.
+    Value: !Ref FrontendBucket
+  FrontendWebsiteUrl:
+    Description: Static website endpoint for the frontend -- open this URL to use the tool.
+    Value: !GetAtt FrontendBucket.WebsiteURL
