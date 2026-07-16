@@ -21,6 +21,14 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# `python3` on some Windows setups resolves to the Microsoft Store's stub
+# ("Python was not found; run without arguments to install...") instead of a
+# real interpreter, even when `python` itself works fine. Actually invoke it
+# rather than just checking PATH (`command -v` would still find the broken
+# stub) and fall back to `python` if it fails.
+PYTHON=python3
+python3 -c "" >/dev/null 2>&1 || PYTHON=python
+
 sam build --template-file template.yaml
 
 for fn in AdvisorFunction; do
@@ -75,7 +83,7 @@ cd ..
 #    request time (see api/handlers/_data.py) instead of it being bundled
 #    into the Lambda zip. The source xlsx is small, so this always
 #    regenerates rather than only rebuilding when missing.
-python3 -m advisor.build_data
+"$PYTHON" -m advisor.build_data
 aws s3 cp data/output/roadmap_advisor.json "s3://$DATA_BUCKET/roadmap_advisor.json"
 
 # 2. Static frontend -> FrontendBucket. API_BASE_URL is patched into a
