@@ -64,7 +64,8 @@ _output() {
 API_URL=$(_output ApiUrl)
 DATA_BUCKET=$(_output DataBucketName)
 FRONTEND_BUCKET=$(_output FrontendBucketName)
-FRONTEND_URL=$(_output FrontendWebsiteUrl)
+FRONTEND_URL=$(_output FrontendUrl)
+FRONTEND_DISTRIBUTION_ID=$(_output FrontendDistributionId)
 
 echo "Stack outputs: ApiUrl=$API_URL DataBucket=$DATA_BUCKET FrontendBucket=$FRONTEND_BUCKET"
 
@@ -89,6 +90,10 @@ sed -E "s#const API_BASE_URL = \"[^\"]*\";#const API_BASE_URL = \"${API_URL%/}\"
 rm -rf "$TMP_FRONTEND/README.md" "$TMP_FRONTEND/__pycache__"
 aws s3 sync "$TMP_FRONTEND/" "s3://$FRONTEND_BUCKET/" --delete
 
+# 3. Invalidate the CloudFront cache so the sync above is visible immediately
+#    instead of waiting out FrontendCachePolicy's TTL (see template.yaml).
+aws cloudfront create-invalidation --distribution-id "$FRONTEND_DISTRIBUTION_ID" --paths "/*" >/dev/null
+
 echo ""
 echo "Deployed."
 echo "  Frontend:  $FRONTEND_URL"
@@ -96,3 +101,6 @@ echo "  API:       $API_URL"
 echo ""
 echo "If you haven't yet, run ./set_openai_key.sh once to store the real OpenAI key"
 echo "(the secret currently holds a placeholder -- /advisor will 503 until it's set)."
+echo ""
+echo "Note: if this is the first deploy since adding CloudFront, the distribution"
+echo "can take 10-20 minutes to finish propagating before the URL above works."

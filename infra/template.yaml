@@ -1,13 +1,15 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  API Gateway + Lambda + S3 for the BSBA Freshman Scheduling Tool.
-  AdvisorFunction serves the schedule "what-if" advisor (OpenAI-backed,
+  API Gateway + Lambda + S3 + CloudFront for the BSBA Freshman Scheduling
+  Tool. AdvisorFunction serves the schedule "what-if" advisor (OpenAI-backed,
   grounded in a precomputed degree-roadmap/prerequisite dataset stored in
   DataBucket -- see api/handlers/advisor.py and advisor/roadmap.py).
   FrontendBucket hosts the static site in frontend/web/ (schedule_engine
-  artifacts + the advisor UI). CodeUri is the repo root so the Lambda can
-  import the sibling `advisor`/`mining` packages unchanged.
+  artifacts + the advisor UI), served through CloudFront for a clean HTTPS
+  URL -- the bucket itself is private, readable only via Origin Access
+  Control from that one distribution. CodeUri is the repo root so the Lambda
+  can import the sibling `advisor`/`mining` packages unchanged.
 
 Parameters:
   OpenAIModel:
@@ -25,11 +27,11 @@ Globals:
     MemorySize: 512
   Api:
     # Preflight (OPTIONS) support for the static frontend in frontend/web/,
-    # which calls this API cross-origin from FrontendBucket's website
-    # endpoint. The actual GET/POST responses still need
-    # Access-Control-Allow-Origin set by the Lambda itself (Lambda proxy
-    # integration doesn't inject headers into non-preflight responses) — see
-    # CORS_HEADERS in api/handlers/advisor.py.
+    # which calls this API cross-origin from the CloudFront-served frontend.
+    # The actual GET/POST responses still need Access-Control-Allow-Origin
+    # set by the Lambda itself (Lambda proxy integration doesn't inject
+    # headers into non-preflight responses) — see CORS_HEADERS in
+    # api/handlers/advisor.py.
     Cors:
       AllowOrigin: "'*'"
       AllowHeaders: "'Content-Type'"
@@ -52,20 +54,12 @@ Resources:
   DataBucket:
     Type: AWS::S3::Bucket
 
-  # Static hosting for frontend/web/ (schedule_engine artifacts + the
-  # advisor UI). Public read + website hosting since this is a public-facing
-  # staff/student tool with no auth in front of it yet (see CORS note above).
+  # Origin storage for frontend/web/ (schedule_engine artifacts + the
+  # advisor UI). Fully private -- default S3 public-access-block settings
+  # apply (no overrides needed); the only reader is the CloudFront
+  # distribution below, via Origin Access Control.
   FrontendBucket:
     Type: AWS::S3::Bucket
-    Properties:
-      WebsiteConfiguration:
-        IndexDocument: index.html
-        ErrorDocument: index.html
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
-        BlockPublicPolicy: false
-        IgnorePublicAcls: false
-        RestrictPublicBuckets: false
 
   FrontendBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -74,9 +68,78 @@ Resources:
       PolicyDocument:
         Statement:
           - Effect: Allow
-            Principal: "*"
+            Principal:
+              Service: cloudfront.amazonaws.com
             Action: s3:GetObject
             Resource: !Sub "${FrontendBucket.Arn}/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${FrontendDistribution.Id}"
+
+  FrontendOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "${AWS::StackName}-frontend-oac"
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # Explicit cache policy rather than a hardcoded AWS managed-policy ID, so
+  # the TTLs are visible here instead of a magic UUID. infra/deploy.sh
+  # invalidates on every deploy, so these TTLs mainly matter for
+  # between-deploy traffic, not for how fast an update becomes visible.
+  FrontendCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        Name: !Sub "${AWS::StackName}-frontend-cache"
+        DefaultTTL: 300
+        MaxTTL: 3600
+        MinTTL: 0
+        ParametersInCacheKeyAndForwardedToOrigin:
+          CookiesConfig:
+            CookieBehavior: none
+          HeadersConfig:
+            HeaderBehavior: none
+          QueryStringsConfig:
+            QueryStringBehavior: none
+          EnableAcceptEncodingGzip: true
+          EnableAcceptEncodingBrotli: true
+
+  FrontendDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2
+        # US/Canada/Europe only -- this is a CSUB-only tool, no need to pay
+        # for the full global edge network.
+        PriceClass: PriceClass_100
+        Origins:
+          - Id: FrontendS3Origin
+            DomainName: !GetAtt FrontendBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt FrontendOriginAccessControl.Id
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+        DefaultCacheBehavior:
+          TargetOriginId: FrontendS3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          CachePolicyId: !Ref FrontendCachePolicy
+        # This is a plain multi-page static site (no client-side router), so
+        # these just make a typo'd path show the app shell instead of a bare
+        # CloudFront/S3 error page -- not SPA fallback routing.
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
 
   # Holds the OpenAI API key. Created with a placeholder value -- the real
   # key is never a CloudFormation parameter (which would persist it in the
@@ -128,9 +191,14 @@ Outputs:
   FrontendBucketName:
     Description: S3 bucket for the static frontend. infra/deploy.sh syncs frontend/web/ here.
     Value: !Ref FrontendBucket
-  FrontendWebsiteUrl:
-    Description: Static website endpoint for the frontend -- open this URL to use the tool.
-    Value: !GetAtt FrontendBucket.WebsiteURL
+  FrontendUrl:
+    Description: CloudFront URL for the frontend -- open this to use the tool.
+    Value: !Sub "https://${FrontendDistribution.DomainName}"
+  FrontendDistributionId:
+    Description: >
+      CloudFront distribution ID -- infra/deploy.sh uses this to invalidate
+      the cache after syncing frontend/web/, so updates show up immediately.
+    Value: !Ref FrontendDistribution
   OpenAIApiKeySecretArn:
     Description: >
       Secrets Manager secret ARN for the OpenAI key -- pass to

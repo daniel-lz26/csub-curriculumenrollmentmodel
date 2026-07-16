@@ -168,8 +168,11 @@ Two S3 buckets, both created by `infra/template.yaml`:
   from S3 at call time (see `api/handlers/_data.py`) rather than bundling it
   into the Lambda zip, so a stale/missing local file can't silently break a
   deploy.
-- **FrontendBucket** — public, static website hosting. Serves
-  `frontend/web/` (the schedule_engine-driven UI — see below).
+- **FrontendBucket** — private. Serves `frontend/web/` (the
+  schedule_engine-driven UI — see below) through a CloudFront distribution
+  (`FrontendDistribution`) for a clean HTTPS URL; the bucket itself has no
+  public access at all, only readable via Origin Access Control from that
+  one distribution.
 
 The OpenAI API key lives in Secrets Manager (`OpenAIApiKeySecret`), created
 with a placeholder value by `template.yaml` — the real key is never a
@@ -178,8 +181,10 @@ CloudFormation parameter (which would persist it in stack history). Run
 for the key, never echoes it or puts it in shell history).
 
 Deploy with `infra/deploy.sh` (wraps `sam build`/`sam deploy`, then uploads
-`roadmap_advisor.json` to DataBucket and syncs `frontend/web/` to
-FrontendBucket) rather than calling `sam`/`aws s3` directly. `CodeUri` is the
+`roadmap_advisor.json` to DataBucket, syncs `frontend/web/` to
+FrontendBucket, and invalidates the CloudFront cache so the sync is visible
+immediately) rather than calling `sam`/`aws s3`/`aws cloudfront` directly.
+`CodeUri` is the
 repo root so the Lambda can import the sibling `advisor`/`mining` packages,
 but `sam build`'s Python builder has no path-exclude mechanism —
 `.samignore` looks like it should provide one but doesn't (verified against
