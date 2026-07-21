@@ -21,6 +21,59 @@ st.caption("Staff decision support: recommended course lineups from real histori
 
 data = load_mined_data()
 
+# ---------------------------------------------------------------------------
+# Assumptions & methodology panel
+# ---------------------------------------------------------------------------
+# The mining layer already calculates an "assumptions" dictionary and stores
+# it in the recommendation data. This dictionary explains how the results
+# were produced and what limitations the user should understand.
+#
+# We use .get() instead of directly accessing data["assumptions"] so the app
+# will not crash if an older recommendation.json file does not contain this
+# newer field. In that situation, the panel will display a fallback message.
+assumptions = data.get("assumptions", {})
+
+# Retrieve the two methodology explanations created by
+# mining/co_occurrence.py:
+#
+# 1. "req_type" explains how courses are labeled as Major, General Education,
+#    or Major / General Education.
+#
+# 2. "meeting_patterns" explains where typical meeting times come from and
+#    warns the user that those times are informational rather than guaranteed
+#    conflict-free section assignments.
+requirement_assumption = assumptions.get(
+    "req_type",
+    "Requirement labels are not available in the current recommendation data.",
+)
+
+meeting_time_assumption = assumptions.get(
+    "meeting_patterns",
+    "Meeting-time methodology is not available in the current recommendation data.",
+)
+
+# This heading is intentionally outside an expander. A department chair or
+# advisor should see the data limitations immediately instead of having to
+# search for them.
+st.markdown("### Assumptions & methodology")
+
+# st.info() gives the methodology a visually distinct information-panel
+# appearance in Streamlit. The text is written for staff users who need to
+# understand how much confidence to place in the recommendation.
+st.info(
+    f"**Requirement labels:** {requirement_assumption}\n\n"
+    f"**Meeting-time information:** {meeting_time_assumption}"
+)
+
+# This reminder reinforces an important project limitation directly beside
+# the recommendation interface. The mining code reports common meeting
+# patterns, but it does not choose actual sections or test every course
+# combination for a time conflict.
+st.caption(
+    "Important: meeting times are informational patterns from the source data. "
+    "They are not guaranteed section assignments and are not conflict-checked."
+)
+
 term = st.selectbox("Term", options=list(data["terms"].keys()))
 term_data = data["terms"][term]
 
